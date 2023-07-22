@@ -1,5 +1,5 @@
 <template>
-    <v-sheet rounded="lg" width="100%" class="pa-4 mx-auto my-5">
+    <v-sheet rounded="lg" width="100%" class="pa-4 mx-auto my-5" @click="onDiscussionClick(discussions.id)">
         <div class="d-flex flex-row align-center ma-2 pa-2">
             <v-sheet>
                 <v-avatar color="brown">
@@ -37,6 +37,9 @@
 </template>
 <script setup>
 import { defineProps } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+
+const router = useRouter()
 const props = defineProps({
     discussions: { type: Object  },
 })
@@ -57,4 +60,11 @@ const operateIcons=[
         iconColor:"warning"
     },
 ]
+
+const onDiscussionClick = (id) => {
+  router.push({
+    name: 'Discussion',
+    params: { id } 
+  })
+}
 </script>
