@@ -2,14 +2,12 @@
   <v-container>
     <v-row justify="space-between">
       <v-col cols="2">
-        <v-sheet rounded="lg" width="100%" class="pa-4 text-center mx-auto">
-          <v-list :items="items"></v-list>
-        </v-sheet>
+        <Classification/>
       </v-col>
       <v-col cols="6">
         <div class="d-flex flex-row align-center my-4">
           <v-avatar color="brown" class="mr-4">
-            <span class="text-h5">{{ user.initials }}</span>
+            <span class="text-h5">aa</span>
           </v-avatar>
           <v-responsive max-width="800">
             <v-text-field label="在想些什麼呢" variant="solo" single-line density="compact" hide-details="auto"
@@ -18,7 +16,6 @@
           <v-dialog v-model="isDialog" width="50%">
             <v-sheet rounded="lg" class="pa-5 text-center ">
               <div class="ma-5">
-
               <v-row justify="end" no-gutters class="flex-row align-center">
                 <v-col>
                   <v-spacer />
@@ -64,14 +61,7 @@
         </v-window>
       </v-col>
       <v-col cols="2" >
-        <v-sheet rounded="lg" width="100%" class="pa-4  mx-auto flex-wrap flex-row">
-          <div class="text-h5 text-center mb-3">熱門關鍵字</div>
-          <v-sheet v-for="keyword in keywords" :key="keyword">
-            <v-btn prepend-icon="mdi-pound" variant="text">
-              {{ keyword }}
-            </v-btn>
-          </v-sheet>
-        </v-sheet>
+        <Keywords/>
       </v-col>
     </v-row>
   </v-container>
@@ -79,31 +69,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import Discussion from '@/components/Discussion.vue';
+import Discussion from '@/components/Discussion.vue'
+import Keywords from '@/components/Keywords.vue'
+import Classification from '@/components/Classification.vue'
 
-const user = {
-  initials: 'JD',
-  fullName: 'John Doe',
-  email: 'john.doe@doe.com',
-}
-const items = [
-  {
-    title: '金融業',
-    value: 1,
-  },
-  {
-    title: '科技業',
-    value: 2,
-  },
-  {
-    title: '補教業',
-    value: 3,
-  },
-  {
-    title: '公職',
-    value: 3,
-  },
-]
 const discussions = [
   {
     title: '成功找到工作啦',
@@ -122,10 +91,6 @@ const discussions = [
     content: 'fgdgdgdgdgdgdfgdgeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeesdfsdfsdfsdfsdf',
   },
 ]
-const keywords = ["fdsf", "dgfg", "rhtr", "fdsf", "dgfg", "rhtr", "fdsf", "dgfg", "rhtr", "fdsf",
-  "dgfg", "rhtr", "fdsf", "dgfg", "rhtr", "fdsf", "dgfg", "rhtr",
-  "fdsf", "dgfg", "rhtr", "fdsf", "dgfg", "rhtr",]
 const discussionTab = ref("hot")
 const isDialog = ref(false)
-console.log(isDialog.value)
 </script>
