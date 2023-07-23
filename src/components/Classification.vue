@@ -1,5 +1,5 @@
 <template>
-    <v-sheet rounded="lg" height="calc(100%-96px)" width="100%" class="my-4 text-center mx-auto">
+    <v-sheet rounded="lg" width="100%" class="my-4 text-center mx-auto class-width">
         <v-list :items="items"></v-list>
     </v-sheet>
 </template>
@@ -23,3 +23,8 @@ const items = [
     },
 ]
 </script>
+<style>
+    .class-width{
+        height:calc(100vh - 136px)
+    }
+</style>
