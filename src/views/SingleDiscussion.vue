@@ -6,7 +6,7 @@
             </v-col>
             <v-col cols="6">
                 <v-sheet rounded="t-lg" width="100%">
-                    <div class="pa-4 mx-auto my-5" style="min-height:calc(100vh - 150px)">
+                    <div class="pa-4 mx-auto my-5 discussion-block">
                         <div class="d-flex flex-row align-center ma-2 pa-2">
                             <v-avatar color="brown">
                                 <span class="text-h5">女</span>
@@ -46,12 +46,31 @@
 
                         <Comment v-for="comment in comments" :comment="comment" />
                     </div>
-                    <div class="comment-block d-flex">
+                    <div class="addcomment-block" v-if="isUseComment">
+                        <div class="d-flex flex-row align-center my-4 pa-2">
+                            <v-avatar color="brown" class="mr-4">
+                                <span class="text-h5">aa</span>
+                            </v-avatar>
+                            <div class="text-h5">劉賊賊</div>
+                        </div>
+                        <v-textarea class="ma-4" variant="plain" rows="2" no-resize placeholder="留言"></v-textarea>
+                        <div class="d-flex mr-4 pb-6 justify-end">
+                            <v-btn color="disabled" variant="text">
+                                <div class="text-h5" @click="isUseComment = !isUseComment">取消</div>
+                            </v-btn>
+                            <v-btn color="primary" >
+                                <div class="text-h5" @click="isUseComment = !isUseComment">送出</div>
+                            </v-btn>
+                        </div>
+                    </div>
+                    <div class="comment-block d-flex" v-else>
                         <v-row justify="space-between" width="100%">
                             <div class="d-flex flex-row align-center pl-10 ">
                                 <v-icon icon="mdi-account-circle"></v-icon>
-                                <v-text-field label="留言..." variant="plain" single-line density="compact"
-                                    hide-details="auto" class="mx-2" />
+
+                                <v-text-field placeholder="留言..."  variant="plain" density="compact"  hide-details="auto" rows="3"
+                                    class="mx-2" @click="isUseComment = !isUseComment" />
+
                             </div>
                             <div class="d-flex flex-row align-center px-10  mr-10">
                                 <v-icon color="error">mdi-heart</v-icon>
@@ -68,8 +87,11 @@
 </template>
   
 <script setup>
+import { ref } from 'vue';
 import Keywords from '@/components/Keywords.vue'
 import Comment from '@/components/Comment.vue'
+
+const isUseComment = ref(false)
 const discussion = {
     "discussion_id": 1,
     "poster": "Jane",
@@ -110,6 +132,17 @@ const comments = [
     position: sticky;
     bottom: 0;
     border-top: 2px #DED9D9 solid
+}
+
+.addcomment-block {
+    background-color: #FCFBFB;
+    height: fit-content;
+    position: sticky;
+    bottom: 0;
+    border-top: 2px #DED9D9 solid
+}
+.discussion-block{
+    min-height:calc(100vh - 150px)
 }
 </style>
 
