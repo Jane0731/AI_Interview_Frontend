@@ -53,7 +53,17 @@
                                 </template>
                                 100
                             </v-btn>
-                        </v-sheet>
+                    <div class="comment-block d-flex">
+                        <v-row justify="space-between" width="100%">
+                            <div class="d-flex flex-row align-center pl-10 ">
+                                <v-icon icon="mdi-account-circle"></v-icon>
+                                <v-text-field label="留言..." variant="plain" single-line density="compact"
+                                    hide-details="auto" class="mx-2" />
+                            </div>
+                            <div class="d-flex flex-row align-center px-10  mr-10">
+                                <v-icon color="error">mdi-heart</v-icon>
+                            </div>
+                        </v-row>
                     </div>
                 </v-sheet>
             </v-col>
@@ -86,4 +96,13 @@ const operateIcons = [
     },
 ]
 </script>
+<style>
+.comment-block {
+    background-color: #FCFBFB;
+    height: 50px;
+    position: sticky;
+    bottom: 0;
+    border-top: 2px #DED9D9 solid
+}
+</style>
   
