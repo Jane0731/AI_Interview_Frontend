@@ -54,7 +54,7 @@
         </v-tabs>
         <v-window v-model="discussionTab">
           <v-window-item key="hot" value="hot">
-            <Discussion v-for="discussion in discussions" :discussions="discussion" @click="onDiscussionClick" />
+            <Discussion v-for="discussion in discussions" :discussion="discussion" @click="onDiscussionClick" />
           </v-window-item>
           <v-window-item key="new" value="new">
             <Discussion v-for="discussion in discussions" :discussions="discussion" />
@@ -69,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import Discussion from '@/components/Discussion.vue'
 import Keywords from '@/components/Keywords.vue'
 import Classification from '@/components/Classification.vue'
