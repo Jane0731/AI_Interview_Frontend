@@ -1,5 +1,5 @@
 <template>
-    <v-sheet rounded="lg" width="100%" class="pa-4 mx-auto my-5" @click="onDiscussionClick(discussion.id)">
+    <v-sheet rounded="lg" width="100%"  @click="onDiscussionClick(discussion.id)">
         <div class="d-flex flex-row align-center ma-2 pa-2">
             <v-sheet>
                 <v-avatar color="brown">
@@ -41,30 +41,30 @@ import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 const props = defineProps({
-    discussion: { type: Object  },
+    discussion: { type: Object },
 })
-const operateIcons=[
+const operateIcons = [
     {
-        id:1,
-        iconName:"mdi-heart",
-        iconColor:"error"
+        id: 1,
+        iconName: "mdi-heart",
+        iconColor: "error"
     },
     {
-        id:2,
-        iconName:"mdi-comment",
-        iconColor:"primary"
+        id: 2,
+        iconName: "mdi-comment",
+        iconColor: "primary"
     },
     {
-        id:3,
-        iconName:"mdi-bookmark",
-        iconColor:"warning"
+        id: 3,
+        iconName: "mdi-bookmark",
+        iconColor: "warning"
     },
 ]
 
 const onDiscussionClick = (id) => {
-  router.push({
-    name: 'Discussion',
-    params: { id } 
-  })
+    router.push({
+        name: 'Discussion',
+        params: { id }
+    })
 }
 </script>

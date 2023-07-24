@@ -54,10 +54,14 @@
         </v-tabs>
         <v-window v-model="discussionTab">
           <v-window-item key="hot" value="hot">
-            <Discussion v-for="discussion in discussions" :discussion="discussion" @click="onDiscussionClick" />
+            <div v-for="discussion in discussions" class="pa-4 mx-auto my-5">
+              <Discussion :discussion="discussion" />
+            </div>
           </v-window-item>
           <v-window-item key="new" value="new">
-            <Discussion v-for="discussion in discussions" :discussions="discussion" />
+            <div v-for="discussion in discussions" class="pa-4 mx-auto my-5">
+              <Discussion :discussion="discussion" />
+            </div>
           </v-window-item>
         </v-window>
       </v-col>
@@ -76,22 +80,22 @@ import Classification from '@/components/Classification.vue'
 
 const discussions = [
   {
-    id:1,
+    id: 1,
     title: '成功找到工作啦',
     content: 'fgdgdgdgdgdgdfgdgeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeesdfsdfsdfsdfsdf',
   },
   {
-    id:2,
+    id: 2,
     title: '成功找到工作啦',
     content: 'fgdgdgdgdgdgdfgdgeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeesdfsdfsdfsdfsdf',
   },
   {
-    id:3,
+    id: 3,
     title: '成功找到工作啦',
     content: 'fgdgdgdgdgdgdfgdgeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeesdfsdfsdfsdfsdf',
   },
   {
-    id:4,
+    id: 4,
     title: '成功找到工作啦',
     content: 'fgdgdgdgdgdgdfgdgeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeesdfsdfsdfsdfsdf',
   },
