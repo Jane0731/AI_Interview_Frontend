@@ -16,6 +16,11 @@ const routes = [
         name: 'Discussion',
         component: () => import('@/views/SingleDiscussion.vue'),
       },
+      {
+        path: '/profile/',
+        name: 'profile',
+        component: () => import('@/views/Profile.vue'),
+      },
     ],
   },
 ]
