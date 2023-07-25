@@ -73,36 +73,31 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import Discussion from '@/components/Discussion.vue'
 import Keywords from '@/components/Keywords.vue'
 import Classification from '@/components/Classification.vue'
+import axios from "@/axios.config";
+import moment from 'moment'
+import 'moment/dist/locale/zh-tw'
+moment.locales();
 
-const discussions = [
-  {
-    id: 1,
-    title: '成功找到工作啦',
-    content: 'fgdgdgdgdgdgdfgdgeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeesdfsdfsdfsdfsdf',
-  },
-  {
-    id: 2,
-    title: '成功找到工作啦',
-    content: 'fgdgdgdgdgdgdfgdgeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeesdfsdfsdfsdfsdf',
-  },
-  {
-    id: 3,
-    title: '成功找到工作啦',
-    content: 'fgdgdgdgdgdgdfgdgeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeesdfsdfsdfsdfsdf',
-  },
-  {
-    id: 4,
-    title: '成功找到工作啦',
-    content: 'fgdgdgdgdgdgdfgdgeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeesdfsdfsdfsdfsdf',
-  },
-]
+const discussions = reactive([])
 const discussionTab = ref("hot")
 const isDialog = ref(false)
 
+onMounted(() => {
+  axios
+    .get("discussion")
+    .then((response) => {
+      response.data.forEach((discussion) => {
+        discussion.created_at=moment(discussion.created_at).fromNow()
+      })
+      Object.assign(discussions, response.data);
 
-
+    })
+    .catch((error) => {
+      console.log(error)
+    });
+})
 </script>
