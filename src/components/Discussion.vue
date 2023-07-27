@@ -3,11 +3,11 @@
         <div class="d-flex flex-row align-center ma-2 pa-2">
             <v-sheet>
                 <v-avatar color="brown">
-                    <span class="text-h5">{{ discussion.user.name }}</span>
+                    <span class="text-h5">{{ discussion.poster_name }}</span>
                 </v-avatar>
             </v-sheet>
             <v-sheet class="ml-2 mr-4">
-                <div class="text-body-1">{{ discussion.category.name }}</div>
+                <div class="text-body-1">{{ discussion.category }}</div>
             </v-sheet>
             <v-sheet>
                 <div class="text-body-2">{{ discussion.created_at }}</div>
@@ -52,14 +52,10 @@
 
         </div>
         <div class="text-h6 ma-2 pa-2">
-            <v-sheet>
                 {{ discussion.title }}
-            </v-sheet>
         </div>
         <div class="text-body-2 ma-2 pa-2">
-            <v-sheet>
                 {{ discussion.content }}
-            </v-sheet>
         </div>
         <div class="d-flex flex-row align-center ma-2 pa-2">
             <v-sheet>
