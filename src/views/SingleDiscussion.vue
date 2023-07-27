@@ -9,16 +9,16 @@
                     <div class="pa-4 mx-auto my-5 discussion-block">
                         <div class="d-flex flex-row align-center ma-2 pa-2">
                             <v-avatar color="brown">
-                                <span class="text-h5">女</span>
+                                <span class="text-h5" >{{ discussion.poster_sex }}</span>
                             </v-avatar>
-                            <div class="text-body-1 ml-2 mr-4">{{ discussion.poster }}</div>
+                            <div class="text-body-1 ml-2 mr-4">{{ discussion.poster_name }}</div>
                         </div>
                         <div class="text-h6 ma-2 pa-2">
                             {{ discussion.title }}
                         </div>
                         <div class="d-flex flex-row align-center ma-2 pa-2">
-                            <div class="text-body-1 mr-4">{{ discussion.classification }}</div>
-                            <div class="text-body-2">{{ discussion.posting_time }}</div>
+                            <div class="text-body-1 mr-4">{{ discussion.category }}</div>
+                            <div class="text-body-2">{{ discussion.created_at }}</div>
                         </div>
                         <div class="text-body-2 ma-2 pa-2">{{ discussion.content }} </div>
                         <div class="ma-2 pa-2">
@@ -87,22 +87,18 @@
 </template>
   
 <script setup>
-import { ref } from 'vue';
+import { ref,onMounted,reactive } from 'vue';
 import Keywords from '@/components/Keywords.vue'
 import Comment from '@/components/Comment.vue'
-
+import { useRouter, useRoute } from 'vue-router'
+import axios from "@/axios.config";
+import moment from 'moment'
+import 'moment/dist/locale/zh-tw'
+moment.locales();
+const route = useRoute()
 const isUseComment = ref(false)
-const discussion = {
-    "discussion_id": 1,
-    "poster": "Jane",
-    "classification": "閒聊",
-    "posting_time": "2020-09-07T05:31:09.000000Z",
-    "title": "面試都穿啥",
-    "content": "把拉把拉Dfdgfdgdfgdfg",
-    "favorites": 20,
-    "comments": 20,
-    "tags": ["面試穿搭", "dfg"]
-}
+const discussion = reactive({})
+
 const comments = [
     {
         "id": 1,
@@ -124,6 +120,18 @@ const comments = [
         "update_at": "2020-09-07T05:31:09.000000Z"
     },
 ]
+onMounted(() => {
+  axios
+    .get("discussion/"+route.params.id)
+    .then((response) => {
+      response.data.created_at=moment(discussion.created_at).fromNow()
+      Object.assign(discussion, response.data);
+      console.log(discussion)
+    })
+    .catch((error) => {
+      console.log(error)
+    });
+})
 </script>
 <style>
 .comment-block {
