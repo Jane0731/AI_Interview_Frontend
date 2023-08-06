@@ -1,6 +1,6 @@
 <template>
   <v-app-bar color="primary" scroll-behavior="elevate">
-    <v-app-bar-title class="text-h5 " >面試去好卡</v-app-bar-title>
+    <v-app-bar-title class="text-h5 ">面試去好卡</v-app-bar-title>
     <!-- <v-responsive max-width="600">
       <v-text-field label="搜尋" variant="solo" single-line density="compact" hide-details="auto"
         prepend-inner-icon="mdi-magnify">
@@ -14,7 +14,7 @@
     <v-btn variant="text" icon="mdi-bell"></v-btn>
 
     <div class="mx-5">
-      <v-menu>
+      <v-menu v-if="token">
         <template v-slot:activator="{ props }">
           <v-btn icon="mdi-dots-vertical" v-bind="props">
             <v-avatar color="brown">
@@ -36,33 +36,52 @@
           </v-list-item>
         </v-list>
       </v-menu>
+      <v-btn icon="mdi-account" v-else variant="text" @click="login">
+      </v-btn>
     </div>
 
   </v-app-bar>
 </template>
 <script setup>
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user';
+import { useAuthStore } from '@/stores/auth'
+import { onActivated,ref	 } from 'vue';
 
+const authStore = useAuthStore()
 const router = useRouter()
-
-const onDiscussionsClick = (id) => {
-    router.push({
-        name: 'AllDiscussions',
-    })
+// const userStore = useUserStore()
+//     const token=localStorage.getItem("token")
+//     console.log(token,token==true,"test")
+const token=ref(localStorage.getItem("token"))
+onActivated	(()=>{
+  token.value=localStorage.getItem("token")
+})
+const onDiscussionsClick = () => {
+  router.push({
+    name: 'AllDiscussions',
+  })
 }
-
-const onExperiencesClick = (id) => {
-    router.push({
-        name: 'AllExperiences',
-    })
+const onExperiencesClick = () => {
+  router.push({
+    name: 'AllExperiences',
+  })
 }
 
 const onProfileClick = (id) => {
-    router.push({
-        name: 'profile',
-    })
+  router.push({
+    name: 'Profile',
+  })
 }
-const logout=()=>{
-
+const logout = async() => {
+  await authStore.logout()
+  router.push({
+    name: 'Login',
+  })
+}
+const login= () => {
+  router.push({
+    name: 'Login',
+  })
 }
 </script>

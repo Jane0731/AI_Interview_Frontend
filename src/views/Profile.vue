@@ -17,7 +17,7 @@
                 </v-sheet>
             </v-col>
             <v-col cols="7">
-                <v-sheet rounded="xl" width="100%" class="my-4 mx-auto ">
+                <v-sheet rounded="xl" width="100%" class="my-4 mx-auto class-width">
                     <v-window v-model="tab">
                         <v-window-item value="基本資料">
                             <About />
@@ -42,11 +42,11 @@
 </template>
 
 <script setup>
-import About from '@/components/AboutMe.vue'
-import Resume from '@/components/Resume.vue'
-import Posts from '@/components/Posts.vue'
-import Favorites from '@/components/Favorites.vue'
-import InterviewRecords from '@/components/InterviewRecords.vue'
+import About from '@/components/profile/AboutMe.vue'
+import Resume from '@/components/profile/Resume.vue'
+import Posts from '@/components/profile/Posts.vue'
+import Favorites from '@/components/profile/Favorites.vue'
+import InterviewRecords from '@/components/profile/InterviewRecords.vue'
 
 import { ref } from 'vue';
 

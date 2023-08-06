@@ -1,6 +1,8 @@
 <template>
   <v-container>
+
     <v-row justify="space-between">
+
       <v-col cols="2">
         <Classification />
       </v-col>
@@ -9,63 +11,24 @@
           <v-avatar color="brown" class="mr-4">
             <span class="text-h5">aa</span>
           </v-avatar>
-          <v-responsive max-width="800">
-            <v-text-field label="在想些什麼呢" variant="solo" single-line density="compact" hide-details="auto"
-              @click="isDialog = true" />
+          <v-responsive max-width="800" @click="openAddDiscussionDialog()">
+            <v-text-field label="在想些什麼呢" variant="solo" single-line density="compact" hide-details="auto" readonly="" />
           </v-responsive>
-          <v-dialog v-model="isDialog" width="50%">
-            <v-sheet rounded="lg" class="pa-5 text-center ">
-              <div class="ma-5">
-                <v-row justify="end" no-gutters class="flex-row align-center">
-                  <v-col>
-                    <v-spacer />
-                  </v-col>
-                  <v-col>
-                    <div class="text-h5">新增討論</div>
-                  </v-col>
-                  <v-col class="text-right">
-                    <v-btn variant="plain" icon="mdi-close-circle-outline" size="x-large"
-                      @click="isDialog = false"></v-btn>
-                  </v-col>
-                </v-row>
-                <v-divider class="mt-3 mb-5"></v-divider>
-                <div class="d-flex flex-row align-center my-4">
-                  <v-avatar color="brown" class="mr-4">
-                    <span class="text-h5">aa</span>
-                  </v-avatar>
-                  <div class="text-h5">劉賊賊</div>
-                </div>
-                <v-textarea clearable label="討論" variant="outlined" rows="10"></v-textarea>
-                <v-btn color="primary" width="100%" @click="isDialog = false">
-                  <div class="text-h5">發布</div>
-                </v-btn>
-              </div>
-            </v-sheet>
-          </v-dialog>
         </div>
+        <Tabs v-model="tabsName" :values="tabValues" />
+        <TabWindow v-model="tabsName" :values="tabValues">
+          <template v-slot:view>
+            <div v-for="discussion in discussions" class="pa-4 mx-auto my-5">
+              <Discussion :discussion="discussion" />
+            </div>
+          </template>
+        </TabWindow>
+        <DiscussionDialog :user="{ name: '劉賊賊', id: 1 }" />
 
-        <v-tabs v-model="discussionTab">
-          <v-tab value="hot">
-            熱門討論
-          </v-tab>
-          <v-tab value="new">
-            最新討論
-          </v-tab>
-        </v-tabs>
-        <v-window v-model="discussionTab">
-          <v-window-item key="hot" value="hot">
-            <div v-for="discussion in discussions" class="pa-4 mx-auto my-5">
-              <Discussion :discussion="discussion" />
-            </div>
-          </v-window-item>
-          <v-window-item key="new" value="new">
-            <div v-for="discussion in discussions" class="pa-4 mx-auto my-5">
-              <Discussion :discussion="discussion" />
-            </div>
-          </v-window-item>
-        </v-window>
       </v-col>
       <v-col cols="2">
+        <Alert />
+
         <Keywords />
       </v-col>
     </v-row>
@@ -73,31 +36,37 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import Discussion from '@/components/Discussion.vue'
 import Keywords from '@/components/Keywords.vue'
 import Classification from '@/components/Classification.vue'
-import axios from "@/axios.config";
-import moment from 'moment'
-import 'moment/dist/locale/zh-tw'
-moment.locales();
+import { useDiscussionStore } from '@/stores/discussion'
+import { useDialogStore } from '@/stores/dialog'
 
-const discussions = reactive([])
-const discussionTab = ref("hot")
-const isDialog = ref(false)
+import Alert from '@/components/Alert.vue'
 
-onMounted(() => {
-  axios
-    .get("discussion")
-    .then((response) => {
-      response.data.forEach((discussion) => {
-        discussion.created_at=moment(discussion.created_at).fromNow()
-      })
-      Object.assign(discussions, response.data);
+import Tabs from '@/components/Tabs.vue'
+import TabWindow from '@/components/TabWindow.vue'
+import DiscussionDialog from '@/components/DiscussionDialog.vue'
 
-    })
-    .catch((error) => {
-      console.log(error)
-    });
+const discussionStore = useDiscussionStore()
+const dialogStore = useDialogStore()
+
+const discussions = discussionStore.discussions
+
+const tabValues = [{ id: "hot", description: "熱門討論" }, { id: "new", description: "最新討論" }]
+const tabsName = ref("discussionTab")
+
+
+
+onMounted(async () => {
+  await discussionStore.getAllDiscussions()
 })
+
+
+
+const openAddDiscussionDialog = () => {
+  dialogStore.changeDialogStatus()
+  dialogStore.setDialogContent("新增討論", "發布", 1)
+}
 </script>

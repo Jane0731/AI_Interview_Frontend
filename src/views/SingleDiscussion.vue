@@ -87,17 +87,16 @@
 </template>
   
 <script setup>
-import { ref,onMounted,reactive } from 'vue';
+import { ref,onMounted } from 'vue';
 import Keywords from '@/components/Keywords.vue'
 import Comment from '@/components/Comment.vue'
-import { useRouter, useRoute } from 'vue-router'
-import axios from "@/axios.config";
-import moment from 'moment'
-import 'moment/dist/locale/zh-tw'
-moment.locales();
+import { useRoute } from 'vue-router'
+import { useDiscussionStore } from '@/stores/discussion'
+
+const discussionStore = useDiscussionStore()
+const discussion = discussionStore.discussion
 const route = useRoute()
 const isUseComment = ref(false)
-const discussion = reactive({})
 
 const comments = [
     {
@@ -120,17 +119,8 @@ const comments = [
         "update_at": "2020-09-07T05:31:09.000000Z"
     },
 ]
-onMounted(() => {
-  axios
-    .get("discussion/"+route.params.id)
-    .then((response) => {
-      response.data.created_at=moment(discussion.created_at).fromNow()
-      Object.assign(discussion, response.data);
-      console.log(discussion)
-    })
-    .catch((error) => {
-      console.log(error)
-    });
+onMounted(async() => {
+  await discussionStore.getDiscussion(route.params.id)
 })
 </script>
 <style>
