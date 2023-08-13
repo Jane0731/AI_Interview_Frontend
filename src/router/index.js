@@ -56,6 +56,16 @@ const routes = [
         },
         component: () => import("@/views/Signup.vue"),
       },
+      {
+        path: "/interview",
+        name: "Interview",
+        // beforeEnter: (to) => {
+
+        //   if (to.name == "Interview" && !localStorage.getItem('token'))
+        //   return { name: "Login" };
+        // },
+        component: () => import("@/views/Interview.vue"),
+      },
     ],
   },
 ];

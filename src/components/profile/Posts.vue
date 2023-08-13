@@ -1,7 +1,7 @@
 <template>
     <v-card width="100%">
         <v-sheet width="100%" color="primary" height="120" class="d-flex align-center justify-center pa-10">
-            <div class="text-h5">我的發文</div>
+            <div class="text-h4">我的發文</div>
         </v-sheet>
         <v-card-text class="overflow-auto cardtext-width">
             <v-tabs v-model="tab" grow>

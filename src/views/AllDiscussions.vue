@@ -6,7 +6,7 @@
       <v-col cols="2">
         <Classification />
       </v-col>
-      <v-col cols="6">
+      <v-col cols="7">
         <div class="d-flex flex-row align-center my-4">
           <v-avatar color="brown" class="mr-4">
             <span class="text-h5">aa</span>

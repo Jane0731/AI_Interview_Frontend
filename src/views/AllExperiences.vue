@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="6">
+      <v-col cols="8">
         <div class="mt-4 pa-4 mx-auto">
           <v-select clearable chips label="地區" class="py-4"
             :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']" multiple variant="outlined" />
@@ -15,10 +15,13 @@
           </template>
         </TabWindow>
       </v-col>
+      <Alert />
+
     </v-row>
+
     <v-btn icon="mdi-plus" size="x-large" class="suspend-button" color="grey-lighten-3"
       @click="openAddExperienceDialog()"> </v-btn>
-    <ExperienceDialog :user="{ name: '劉賊賊', id: 1 }" />
+    <ExperienceDialog />
 
   </v-container>
 </template>
@@ -30,66 +33,20 @@ import Tabs from '@/components/Tabs.vue'
 import TabWindow from '@/components/TabWindow.vue'
 import { useDialogStore } from '@/stores/dialog'
 import ExperienceDialog from '@/components/ExperienceDialog.vue'
+import { useExperienceStore } from '@/stores/experience'
+import Alert from '@/components/Alert.vue'
 
-import moment from 'moment'
-import 'moment/dist/locale/zh-tw'
-moment.locales();
 const tabValues = [{ id: "hot", description: "熱門分享" }, { id: "new", description: "最新分享" }]
 const tabsName = ref("experienceTab")
-const experiences = [
-  {
-    "id": 1,
-    "company": "鼎新",
-    "position": "開發工程師",
-    "interview_date": "2023/06/30",
-    "interview_sharing": "巴拉巴拉xxxxx巴拉巴拉xxxxx巴拉巴拉xxxxx巴拉巴拉xxxxx巴拉巴拉xxxxx巴拉巴拉xxxxx",
-    "interview_result": "已錄取",
-    "interview_difficulty": 1,
-    "interview_question": ["為何選擇我們公司"],
-    "created_at": "2023-07-24T13:18:05.000000Z",
-    "updated_at": "2023-07-24T13:18:05.000000Z",
-  },
-  {
-    "id": 2,
-    "company": "鼎新",
-    "position": "開發工程師",
-    "interview_date": "2023/06/30",
-    "interview_sharing": "巴拉巴拉xxxxx",
-    "interview_result": "已錄取",
-    "interview_difficulty": "簡單",
-    "interview_question": ["為何選擇我們公司"],
-    "created_at": "2023-07-24T13:18:05.000000Z",
-    "updated_at": "2023-07-24T13:18:05.000000Z",
-  },
-  {
-    "id": 3,
-    "company": "鼎新",
-    "position": "開發工程師",
-    "interview_date": "2023/06/30",
-    "interview_sharing": "巴拉巴拉xxxxx",
-    "interview_result": "已錄取",
-    "interview_difficulty": "簡單",
-    "interview_question": ["為何選擇我們公司"],
-    "created_at": "2023-07-24T13:18:05.000000Z",
-    "updated_at": "2023-07-24T13:18:05.000000Z",
-  },
-]
+
 const dialogStore = useDialogStore()
+const experienceStore=useExperienceStore()
+
+const experiences = experienceStore.experiences
 
 
-onMounted(() => {
-  // axios
-  //   .get("discussion")
-  //   .then((response) => {
-  //     response.data.forEach((discussion) => {
-  //       discussion.created_at=moment(discussion.created_at).fromNow()
-  //     })
-  //     Object.assign(discussions, response.data);
-
-  //   })
-  //   .catch((error) => {
-  //     console.log(error)
-  //   });
+onMounted(async() => {
+  await experienceStore.getAllExperiences()
 })
 const openAddExperienceDialog = () => {
   dialogStore.changeDialogStatus()

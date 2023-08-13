@@ -13,18 +13,20 @@
                 <div class="text-body-2">{{ experience.created_at }}</div>
             </v-sheet>
             <v-spacer></v-spacer>
-            <v-sheet v-if="isShowDotIcon">
+            <v-sheet v-show="(userId == experience.user_id)">
                 <v-menu location="end">
                     <template v-slot:activator="{ props }">
                         <v-btn variant="text" icon="mdi-dots-vertical" v-bind="props"></v-btn>
                     </template>
                     <v-list>
-                        <v-list-item @click="">
+                        <v-list-item @click.stop="openUpdateExperienceDialog()">
                             <v-list-item-title>
                                 <div class="text-body-1">編輯</div>
                             </v-list-item-title>
                         </v-list-item>
-                        <v-list-item @click="">
+                        <ExperienceDialog :experience="experience" />
+
+                        <v-list-item @click.stop="deleteExperience = !deleteExperience">
 
                             <v-dialog v-model="deleteExperience" width="20%" persistent>
                                 <template v-slot:activator="{ props }">
@@ -41,7 +43,8 @@
                                         <v-spacer></v-spacer>
 
                                         <v-btn color="primary" @click="deleteExperience = false">取消</v-btn>
-                                        <v-btn color="primary" @click="onDeleteExperience">刪除</v-btn>
+                                        <v-btn color="primary" :loading="loading"
+                                            @click="onDeleteExperience(experience.id)">刪除</v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
@@ -61,7 +64,7 @@
                         <div class="text-body-1">
                             <div>面試日期</div>
                             <div>
-                                {{ experience.interview_date }}
+                                {{ experience.date }}
                             </div>
                         </div>
                     </v-col>
@@ -69,7 +72,7 @@
                         <div class="text-body-1">
                             <div>面試狀態</div>
                             <div>
-                                {{ experience.interview_result }}
+                                {{ experience.result }}
                             </div>
                         </div>
                     </v-col>
@@ -77,7 +80,7 @@
                         <div class="text-body-1">
                             <div> 面試難度 </div>
                             <div>
-                                <v-rating size="small" density="compact" v-model="experience.interview_difficulty"
+                                <v-rating size="small" readonly density="compact" v-model="experience.difficulty" length="3"
                                     color="warning"></v-rating>
                             </div>
                         </div>
@@ -89,33 +92,37 @@
             <div>
                 面試過程
             </div>
-            <div class="text-body-2 my-3" :class="[isSingleExperience?'':'share-block']">
-                {{ experience.interview_sharing }}
+            <div class="text-body-2 my-3" :class="[isSingleExperience ? '' : 'share-block']">
+                {{ experience.description }}
             </div>
         </div>
         <div class="text-h6 ma-2 pa-2">
             <div>
                 面試問題
             </div>
-            <div class="my-3" v-for="question in experience.interview_question">
+            <div v-if="isSingleExperience" class="my-3" v-for="question in experience.questions">
                 <div class="text-body-2">
                     <v-chip label class="mr-3">Q</v-chip>
-                    {{ question }}
+                    {{ question.question }}
                 </div>
                 <div class="text-body-2 my-3">
                     <v-chip label class="mr-3">A</v-chip>
-                    {{ question }}
+                    {{ question.answer || "無資料" }}
                 </div>
             </div>
-        </div>
-        <div class="text-h6 ma-2 pa-2" v-if="isSingleExperience">
-            <div>
-                面試心得
+            <div v-else >
+                <div class="text-body-2">
+                    <v-chip label class="mr-3">Q</v-chip>
+                    {{ experience.questions[0].question }}
+                </div>
+                <div class="text-body-2 my-3">
+                    <v-chip label class="mr-3">A</v-chip>
+                    {{ experience.questions[0].answer || "無資料" }}
+                </div>
             </div>
-            <div class="text-body-2 my-3" :class="[isSingleExperience?'':'share-block']">
-                {{ experience.interview_review  }}
-            </div>
+
         </div>
+
         <div class="d-flex flex-row align-center py-2 px-2 justify-center">
             <v-sheet>
                 <v-btn prepend-icon="mdi-heart" variant="text">
@@ -134,7 +141,7 @@
                 </v-btn>
             </v-sheet>
             <v-spacer />
-            <v-sheet @click="onExperienceClick(experience.id)" v-if="isSingleExperience?false:true">
+            <v-sheet @click="onExperienceClick(experience.id)" v-if="isSingleExperience ? false : true">
                 <v-btn size="large" variant="tonal" class="ma-2">
                     查看更多
                 </v-btn>
@@ -145,15 +152,21 @@
 <script setup>
 import { defineProps, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useExperienceStore } from '@/stores/experience'
+import { useDialogStore } from '@/stores/dialog'
+
+import ExperienceDialog from './ExperienceDialog.vue';
+const experienceStore = useExperienceStore()
+const dialogStore = useDialogStore()
 
 const router = useRouter()
 const props = defineProps({
     experience: { type: Object },
-    isShowDotIcon: { type: Boolean, default: false },
     isSingleExperience: { type: Boolean, default: false }
-
 })
 const deleteExperience = ref(false)
+const userId = localStorage.getItem("userId")
+const loading = ref(false)
 
 const onExperienceClick = (id) => {
     router.push({
@@ -161,8 +174,17 @@ const onExperienceClick = (id) => {
         params: { id }
     })
 }
-const onDeleteExperience = (id) => {
-    //api
+const onDeleteExperience = async (id) => {
+    loading.value = true
+
+    deleteExperience.value = false
+
+    await experienceStore.deleteExperience(id)
+    loading.value = false
+}
+const openUpdateExperienceDialog = () => {
+    dialogStore.changeDialogStatus()
+    dialogStore.setDialogContent("編輯面試心得", "修改")
 }
 </script>
 <style scoped>

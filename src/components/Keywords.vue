@@ -1,5 +1,5 @@
 <template>
-    <v-sheet rounded="lg" width="100%" class="key-width my-4  mx-auto flex-wrap flex-row">
+    <v-sheet rounded="lg" width="100%" class="key-width my-4  mx-auto">
         <div class="text-h5 text-center mb-3">熱門關鍵字</div>
         <v-sheet v-for="keyword in keywords" :key="keyword">
             <v-btn prepend-icon="mdi-pound" variant="text">
@@ -9,9 +9,7 @@
     </v-sheet>
 </template>
 <script setup>
-const keywords = ["fdsf", "dgfg", "rhtr", "fdsf", "dgfg", "rhtr", "fdsf", "dgfg", "rhtr", "fdsf",
-    "dgfg", "rhtr", "fdsf", "dgfg", "rhtr", "fdsf", "dgfg", "rhtr",
-    "fdsf", "dgfg", "rhtr", "fdsf", "dgfg", "rhtr",]
+const keywords = ["fdsf", "dgfg", "rhtr", "fdsf", "dgfg", "rhtr", "fdsf", "dgfg", "rhtr", "fdsf" ]
 </script>
 <style>
     .key-width{

@@ -9,7 +9,7 @@
     <v-spacer></v-spacer>
     <v-btn variant="text" class="text-h6 mx-4" @click="onDiscussionsClick">討論版</v-btn>
     <v-btn variant="text" class="text-h6 mx-4" @click="onExperiencesClick">面試分享</v-btn>
-    <v-btn variant="text" class="text-h6 mx-4">模擬面試</v-btn>
+    <v-btn variant="text" class="text-h6 mx-4" @click="onInterviewClick">模擬面試</v-btn>
 
     <v-btn variant="text" icon="mdi-bell"></v-btn>
 
@@ -67,7 +67,11 @@ const onExperiencesClick = () => {
     name: 'AllExperiences',
   })
 }
-
+const onInterviewClick = () => {
+  router.push({
+    name: 'Interview',
+  })
+}
 const onProfileClick = (id) => {
   router.push({
     name: 'Profile',

@@ -7,7 +7,7 @@
                 </v-avatar>
             </v-sheet>
             <v-sheet class="ml-2 mr-4">
-                <div class="text-body-1">{{ discussion.category.name }}</div>
+                <div class="text-body-1">{{ discussion.categoryName }}</div>
             </v-sheet>
             <v-sheet>
                 <div class="text-body-2">{{ discussion.created_at }}</div>
@@ -115,7 +115,6 @@ const onDeleteDiscussion = async(id) => {
 
     await discussionStore.deleteDiscussion(id)
     loading.value = false
-    console.log("123")
 }
 const openUpdateDiscussionDialog = () => {
     dialogStore.changeDialogStatus()

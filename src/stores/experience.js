@@ -11,84 +11,90 @@ export const useExperienceStore = defineStore("experience", () => {
   const experiences = reactive([]);
   const experience = reactive({});
   const getAllExperiences = async () => {
-    // await axios
-    //   .get("/discussion")
-    //   .then((response) => {
-    //     response.data.forEach((discussion) => {
-    //       discussion.created_at = moment(discussion.created_at).fromNow();
-    //     });
-    //     Object.assign(discussions, response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    await axios
+      .get("/experience")
+      .then((response) => {
+        response.data.forEach((experience) => {
+          experience.created_at = moment(experience.created_at).fromNow();
+        });
+        Object.assign(experiences, response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const getExperience = async (id) => {
-    // await axios
-    //   .get("/discussion/" + id)
-    //   .then((response) => {
-
-    //     response.data.created_at = moment(response.data.created_at).fromNow();
-    //     Object.assign(discussion, response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
+    await axios
+      .get("/experience/" + id)
+      .then((response) => {
+        response.data.created_at = moment(response.data.created_at).fromNow();
+        Object.assign(experience, response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
-  const updateExperience = async(title, content, category_id, tags,discussion_id) => {
-    // const json = JSON.stringify({
-    //   title,
-    //   content,
-    //   category_id,
-    //   tags,
-    // });
-    // await axios
-    //   .patch("/discussion/"+discussion_id, JSON.parse(json))
-    //   .then((response) => {
-    //     const resultStore = useResultStore();
-    //     resultStore.success("編輯成功");
-    //     getAllDiscussions();
-    //   })
-    //   .catch((error) => {
-    //     const resultStore = useResultStore();
-    //     resultStore.error("編輯失敗");
-    //     console.log(error);
-    //   });
+  const updateExperience = async (experience_id,company, position, date, description, result, difficulty, questions) => {
+    const json = JSON.stringify({
+      company,
+      position,
+      date,
+      description,
+      result,
+      difficulty,
+      questions
+    });
+    await axios
+      .patch("/experience/"+experience_id, JSON.parse(json))
+      .then((response) => {
+        const resultStore = useResultStore();
+        resultStore.success("編輯成功");
+        getAllExperiences();
+      })
+      .catch((error) => {
+        const resultStore = useResultStore();
+        resultStore.error("編輯失敗");
+        console.log(error);
+      });
   };
-  const createExperience =  async(title, content, category_id, tags) => {
-    // const json = JSON.stringify({
-    //   title,
-    //   content,
-    //   category_id,
-    //   tags,
-    // });
-    // await axios
-    //   .post("/discussion", JSON.parse(json))
-    //   .then((response) => {
-    //     const resultStore = useResultStore();
-    //     resultStore.success("新增成功");
-    //     getAllDiscussions();
-    //   })
-    //   .catch((error) => {
-    //     const resultStore = useResultStore();
-    //     resultStore.error("新增失敗");
-    //     console.log(error);
-    //   });
+  const createExperience = async (company, position, date, description, result, difficulty, questions) => {
+    const json = JSON.stringify({
+      company,
+      position,
+      date,
+      description,
+      result,
+      difficulty,
+      questions
+    });
+    await axios
+      .post("/experience", JSON.parse(json))
+      .then((response) => {
+        console.log(response)
+        const resultStore = useResultStore();
+        resultStore.success("新增成功");
+        getAllExperiences();
+      })
+      .catch((error) => {
+        const resultStore = useResultStore();
+        resultStore.error("新增失敗");
+        console.log(error);
+      });
   };
   const deleteExperience = async (id) => {
-    // await axios
-    //   .delete("/discussion/" + id)
-    //   .then((response) => {
-    //     const resultStore = useResultStore();
-    //     resultStore.success("刪除成功");
-    //     getAllDiscussions();
+    await axios
+      .delete("/experience/" + id)
+      .then((response) => {
+        const resultStore = useResultStore();
+        resultStore.success("刪除成功");
+        getAllExperiences();
 
-    //   })
-    //   .catch((error) => {
-    //     const resultStore = useResultStore();
-    //     resultStore.error("刪除失敗");
-    //     console.log(error);
-    //   });
+      })
+      .catch((error) => {
+        const resultStore = useResultStore();
+        resultStore.error("刪除失敗");
+        console.log(error);
+      });
   };
 
   return {

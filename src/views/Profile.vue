@@ -1,12 +1,12 @@
 <template>
     <v-container>
         <v-row justify="center">
-            <v-col cols="2">
+            <v-col cols="3">
                 <v-sheet rounded="xl" width="100%" class="my-4 text-start mx-auto class-width">
                     <v-tabs v-model="tab" direction="vertical">
                         <v-sheet rounded="lg" width="80%" :color="tab==menuItem.menuName?'primary':'#B3B7C1'" v-for="menuItem in menuItems"
                             class="ma-5  text-center">
-                            <v-tab :value="menuItem.menuName" width="100%" class="pa-5 d-flex justify-center" height="100%">
+                            <v-tab :value="menuItem.menuName" width="100%" class="pa-4 d-flex justify-center" height="100%">
                                 <v-icon start size="x-large">
                                     {{ menuItem.menuIcon }}
                                 </v-icon>

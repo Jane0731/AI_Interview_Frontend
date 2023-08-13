@@ -1,7 +1,7 @@
 <template>
     <v-card width="100%" class="overflow-auto ">
         <v-sheet width="100%" color="primary" height="120" class=" d-flex align-center justify-center pa-10">
-            <div class="text-h5">面試紀錄</div>
+            <div class="text-h4">面試紀錄</div>
         </v-sheet>
         <v-card-text class="overflow-auto cardtext-width">
             <div class="ma-2 pa-2 text-h6">

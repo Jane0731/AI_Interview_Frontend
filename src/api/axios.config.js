@@ -4,7 +4,7 @@ import { useResultStore } from "@/stores/result";
 
 const axios = (baseURL) => {
   const instance = Axios.create({
-    baseURL: "http://192.168.0.11:8000/api",
+    baseURL: "http://127.0.0.1:8000/api",
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

@@ -17,60 +17,23 @@
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
 import Experience from '@/components/Experience.vue'
-import Comment from '@/components/Comment.vue'
 import { useRouter, useRoute } from 'vue-router'
 import moment from 'moment'
 import 'moment/dist/locale/zh-tw'
 moment.locales();
-const route = useRoute()
-const isUseComment = ref(false)
-const discussion = reactive({})
-const discussionUser = reactive({})
-const experience = {
-    "id": 1,
-    "company": "鼎新",
-    "position": "開發工程師",
-    "interview_date": "2023/06/30",
-    "interview_sharing": "巴拉巴拉xxxxx巴拉巴拉xxxxx巴拉巴拉xxxxx巴拉巴拉xxxxx巴拉巴拉xxxxx巴拉巴拉xxxxx",
-    "interview_result": "已錄取",
-    "interview_difficulty": 1,
-    "interview_question": ["為何選擇我們公司", "希望待遇?"],
-    "interview_review":"sdfsdfsdfsdsfsdfsdfdsfdsfsdfsdf",
-    "created_at": "2023-07-24T13:18:05.000000Z",
-    "updated_at": "2023-07-24T13:18:05.000000Z",
-}
-const comments = [
-    {
-        "id": 1,
-        "author": {
-            "id": 1,
-            "name": "RJ"
-        },
-        "comment": "ㄚㄚㄚㄚㄚ",
-        "update_at": "2020-09-07T05:31:09.000000Z"
+import { useExperienceStore } from '@/stores/experience'
+import { useCommentStore } from '@/stores/comment';
+const experienceStore = useExperienceStore()
+const commentStore = useCommentStore()
 
-    },
-    {
-        "id": 2,
-        "author": {
-            "id": 2,
-            "name": "Jane"
-        },
-        "comment": "ㄚㄚㄚㄚㄚ",
-        "update_at": "2020-09-07T05:31:09.000000Z"
-    },
-]
-onMounted(() => {
-    //   axios
-    //     .get("discussion/"+route.params.id)
-    //     .then((response) => {
-    //       response.data.created_at=moment(discussion.created_at).fromNow()
-    //       Object.assign(discussion, response.data);
-    //       Object.assign(discussionUser, discussion.user);
-    //     })
-    //     .catch((error) => {
-    //       console.log(error)
-    //     });
+const experience = experienceStore.experience
+const route = useRoute()
+
+const comments = commentStore.comments
+onMounted(async() => {
+  await experienceStore.getExperience(route.params.id)
+  await commentStore.getComment(route.params.id)
+
 })
 </script>
 <style>

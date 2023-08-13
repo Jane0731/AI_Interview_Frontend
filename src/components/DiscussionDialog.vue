@@ -24,8 +24,8 @@
                             <div class="text-h5">{{ user.name }}</div>
                         </v-sheet>
 
-                        <v-sheet width="15%" class="ml-2 justify-end">
-                            <v-select :rules="[rules.required]" v-model="category" :items="items" placeholder="討論類別"
+                        <v-sheet width="25%" class="ml-2 justify-end">
+                            <v-select :rules="[rules.required]" v-model="category" :items="items" item-value="id" item-title="name" placeholder="討論類別"
                                 variant="outlined"></v-select>
                         </v-sheet>
 
@@ -42,7 +42,7 @@
                                 </v-chip>
                             </template>
                         </v-select> -->
-                        <v-combobox v-model="tags" :items="items" chips clearable label="關鍵字" multiple variant="plain">
+                        <v-combobox v-model="tags" :items="items" item-value="id" item-title="name" chips clearable label="關鍵字" multiple variant="plain">
                             <template v-slot:selection="{ attrs, item, select, selected }">
                                 <v-chip v-bind="attrs" :model-value="selected" closable @click="select"
                                     @click:close="remove(item)">
@@ -66,23 +66,24 @@
 <script setup>
 import { useDialogStore } from '@/stores/dialog'
 import { useDiscussionStore } from '@/stores/discussion'
-
-import { ref, defineProps, onMounted } from 'vue';
+import { useCategorysStore } from '@/stores/category';
+import { ref, defineProps, onMounted ,watch} from 'vue';
 const props = defineProps({
     user: { type: Object },
     discussion: { type: Object, default: "" }
 })
 onMounted(() => {
+    categoryStore.getCategorys()
 })
-
 const discussionStore = useDiscussionStore()
+const categoryStore = useCategorysStore()
 
 const dialogStore = useDialogStore()
 const dialogContent = dialogStore.dialogContent
 const title = ref(props.discussion.title)
 const content = ref(props.discussion.content)
-const category = ref(props.discussion.category)
-const items = ['foo', 'bar', 'fizz', 'buzz', 'fizzbuzz', 'foobar']
+const category = ref(props.discussion.category_id)
+const items = categoryStore.categorys
 const tags = ref(props.discussion.tags)
 const form = ref(false)
 const loading = ref(false)
@@ -96,10 +97,10 @@ const onSubmit = async (discussionId) => {
     if (!form.value) return
     loading.value = true
     if (dialogContent.id == 1) {
-        await discussionStore.createDiscussion(title.value, content.value, 1, tags.value)
+        await discussionStore.createDiscussion(title.value, content.value, category.value, tags.value)
     }
     else {
-        await discussionStore.updateDiscussion(title.value, content.value, 1, tags.value, discussionId)
+        await discussionStore.updateDiscussion(title.value, content.value, category.value, tags.value, discussionId)
     }
     loading.value = false
     dialogStore.changeDialogStatus()

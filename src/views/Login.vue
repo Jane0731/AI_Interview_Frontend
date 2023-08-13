@@ -9,13 +9,11 @@
         </v-card-title>
         <v-form v-model="form" @submit.prevent="onSubmit" class="">
 
-            <div class="text-subtitle-1 ">帳號</div>
             <v-text-field density="compact" v-model="email" prepend-inner-icon="mdi-email-outline" type="email"
                 color="primary" variant="underlined" :readonly="loading"
                 :rules="[rules.required, rules.email]"></v-text-field>
 
-            <div class="text-subtitle-1 mt-2">密碼</div>
-            <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
+            <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline" class="mb-2"
                 :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" v-model="password" color="primary"
                 variant="underlined" :readonly="loading" :rules="[rules.required]"
                 @click:append-inner="showPassword = !showPassword"

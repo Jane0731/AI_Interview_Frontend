@@ -6,19 +6,16 @@
             </v-card-title>
             <v-form v-model="form" @submit.prevent="onSubmit" class="">
 
-                <div class="text-subtitle-1 ">電子郵件</div>
                 <v-text-field density="compact" v-model="email" prepend-inner-icon="mdi-email-outline" type="email"
                     color="primary" variant="underlined" :readonly="loading"
                     :rules="[rules.required, rules.email]"></v-text-field>
 
-                <div class="text-subtitle-1 mt-2">密碼</div>
                 <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
                     :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" v-model="password" color="primary"
                     variant="underlined" :readonly="loading" :rules="[rules.required, rules.password]"
                     @click:append-inner="showPassword = !showPassword"
                     :type="showPassword ? 'text' : 'password'"></v-text-field>
 
-                <div class="text-subtitle-1 mt-2">確認密碼</div>
                 <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
                     :append-inner-icon="showCConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'" v-model="confirmPassword"
                     color="primary" variant="underlined" :readonly="loading"
@@ -26,12 +23,10 @@
                     @click:append-inner="showCConfirmPassword = !showCConfirmPassword"
                     :type="showCConfirmPassword ? 'text' : 'password'"></v-text-field>
 
-                <div class="text-subtitle-1 mt-2">姓名</div>
                 <v-text-field density="compact" prepend-inner-icon="mdi-badge-account-outline" v-model="name"
                     color="primary" variant="underlined" :readonly="loading"
                     :rules="[rules.required, rules.name]"></v-text-field>
 
-                <div class="text-subtitle-1 mt-2">性別</div>
                 <v-radio-group v-model="sex" inline :rules="[rules.required]">
                     <v-radio label="男性" value="M" color="info"></v-radio>
                     <v-radio label="女性" value="F" color="info"></v-radio>

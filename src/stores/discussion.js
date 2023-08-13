@@ -3,6 +3,8 @@ import { defineStore } from "pinia";
 
 import axios from "@/api/axios.config";
 import { useResultStore } from "@/stores/result";
+import { useCategorysStore } from '@/stores/category';
+
 import moment from "moment";
 import "moment/dist/locale/zh-tw";
 moment.locales();
@@ -14,7 +16,9 @@ export const useDiscussionStore = defineStore("discussion", () => {
     await axios
       .get("/discussion")
       .then((response) => {
+        const categoryStore = useCategorysStore()
         response.data.forEach((discussion) => {
+          discussion.categoryName= categoryStore.getCategoryName(discussion.category_id)
           discussion.created_at = moment(discussion.created_at).fromNow();
         });
         Object.assign(discussions, response.data);
@@ -62,6 +66,7 @@ export const useDiscussionStore = defineStore("discussion", () => {
       category_id,
       tags,
     });
+
     await axios
       .post("/discussion", JSON.parse(json))
       .then((response) => {

@@ -5,14 +5,14 @@
                 <v-avatar color="brown">
                     <span class="text-h5">aa</span>
                 </v-avatar>
-                <div class="text-h5  mx-3 pa-6">Hi~賊賊</div>
+                <div class="text-h4  mx-3 pa-6">Hi~賊賊</div>
             </div>
-            <v-btn variant="flat" color="#B6B6B6" size="large" class="text-h5 mx-3 pa-auto">
+            <v-btn variant="flat" color="#B6B6B6" size="large" class="text-h4 mx-3 pa-auto">
                 <div>變更名稱</div>
             </v-btn>
 
         </v-sheet>
-        <v-card-text>
+        <v-card-text class="overflow-auto cardtext-width">
             <div class="ma-2 pa-2 text-h6">
                 基本資料
             </div>
@@ -50,3 +50,12 @@
         </v-card-text>
     </v-card>
 </template>
+<style scoped>
+.cardtext-width {
+    height: calc(100vh - 256px)
+}
+
+.window-item {
+    border: 1px #C8C8C8 solid
+}
+</style>

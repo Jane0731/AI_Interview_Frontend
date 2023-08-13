@@ -9,7 +9,7 @@
                     <div class="pa-4 mx-auto my-5 discussion-block">
                         <div class="d-flex flex-row align-center ma-2 pa-2">
                             <v-avatar color="brown">
-                                <span class="text-h5" >{{ discussion.poster_sex }}</span>
+                                <span class="text-h5">{{ discussion.poster_sex }}</span>
                             </v-avatar>
                             <div class="text-body-1 ml-2 mr-4">{{ discussion.poster_name }}</div>
                         </div>
@@ -44,7 +44,7 @@
                         </div>
                         <v-divider></v-divider>
 
-                        <Comment v-for="comment in comments" :comment="comment" />
+                        <Comment :comments="comments" :discussionId="discussion.id"/>
                     </div>
                     <div class="addcomment-block" v-if="isUseComment">
                         <div class="d-flex flex-row align-center my-4 pa-2">
@@ -53,23 +53,28 @@
                             </v-avatar>
                             <div class="text-h5">劉賊賊</div>
                         </div>
-                        <v-textarea class="ma-4" variant="plain" rows="2" no-resize placeholder="留言"></v-textarea>
-                        <div class="d-flex mr-4 pb-6 justify-end">
-                            <v-btn color="disabled" variant="text">
-                                <div class="text-h5" @click="isUseComment = !isUseComment">取消</div>
-                            </v-btn>
-                            <v-btn color="primary" >
-                                <div class="text-h5" @click="isUseComment = !isUseComment">送出</div>
-                            </v-btn>
-                        </div>
+                        <v-form v-model="form">
+                            <v-textarea :rules="[rules.required]" v-model="newComment" class="ma-4" variant="plain" rows="2"
+                                no-resize placeholder="留言"></v-textarea>
+                            <div class="d-flex mr-4 pb-6 justify-end">
+                                <v-btn color="disabled" variant="text">
+                                    <div class="text-h5" @click="isUseComment = !isUseComment">取消</div>
+                                </v-btn>
+                                <v-btn color="primary" :disabled="!form" :loading="loading" type="submit"
+                                    @click.prevent="addComment(discussion.id)">
+                                    <div class="text-h5">送出</div>
+                                </v-btn>
+                            </div>
+                        </v-form>
+
                     </div>
                     <div class="comment-block d-flex" v-else>
                         <v-row justify="space-between" width="100%">
                             <div class="d-flex flex-row align-center pl-10 ">
                                 <v-icon icon="mdi-account-circle"></v-icon>
 
-                                <v-text-field placeholder="留言..."  variant="plain" density="compact"  hide-details="auto" rows="3"
-                                    class="mx-2" @click="isUseComment = !isUseComment" />
+                                <v-text-field placeholder="留言..." variant="plain" density="compact" hide-details="auto"
+                                    rows="3" class="mx-2" @click="isUseComment = !isUseComment" />
 
                             </div>
                             <div class="d-flex flex-row align-center px-10  mr-10">
@@ -87,41 +92,44 @@
 </template>
   
 <script setup>
-import { ref,onMounted } from 'vue';
+import { ref, onMounted,onUpdated } from 'vue';
 import Keywords from '@/components/Keywords.vue'
 import Comment from '@/components/Comment.vue'
 import { useRoute } from 'vue-router'
 import { useDiscussionStore } from '@/stores/discussion'
+import { useCommentStore } from '@/stores/comment';
+const commentStore = useCommentStore()
+const loading = ref(false)
+const form = ref(false)
 
 const discussionStore = useDiscussionStore()
 const discussion = discussionStore.discussion
 const route = useRoute()
 const isUseComment = ref(false)
+const newComment = ref("")
+const comments = commentStore.comments
 
-const comments = [
-    {
-        "id": 1,
-        "author": {
-            "id": 1,
-            "name": "RJ"
-        },
-        "comment": "ㄚㄚㄚㄚㄚ",
-        "update_at": "2020-09-07T05:31:09.000000Z"
-
-    },
-    {
-        "id": 2,
-        "author": {
-            "id": 2,
-            "name": "Jane"
-        },
-        "comment": "ㄚㄚㄚㄚㄚ",
-        "update_at": "2020-09-07T05:31:09.000000Z"
-    },
-]
-onMounted(async() => {
-  await discussionStore.getDiscussion(route.params.id)
+onMounted(async () => {
+    await discussionStore.getDiscussion(route.params.id)
+    await commentStore.getComment(route.params.id)
+    console.log("onMounted")
 })
+onUpdated(async () => {
+    // await discussionStore.getDiscussion(route.params.id)
+    // await commentStore.getComment(route.params.id)
+    console.log("onUpdated")
+
+})
+const rules = {
+    required: value => !!value || '欄位必填',
+}
+const addComment = async (id) => {
+    if (!form.value) return
+    loading.value = true
+    await commentStore.createComment(id, newComment.value)
+    loading.value = false
+    isUseComment.value = !isUseComment.value
+}
 </script>
 <style>
 .comment-block {
@@ -139,8 +147,9 @@ onMounted(async() => {
     bottom: 0;
     border-top: 2px #DED9D9 solid
 }
-.discussion-block{
-    min-height:calc(100vh - 150px)
+
+.discussion-block {
+    min-height: calc(100vh - 150px)
 }
 </style>
 
