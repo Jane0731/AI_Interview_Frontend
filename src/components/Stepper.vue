@@ -1,19 +1,28 @@
 <template>
-    <v-stepper alt-labels>
+    <v-stepper complete v-model="stepperStore.step" >
         <v-stepper-header>
-            <v-stepper-item value="1" title="Ad unit details"></v-stepper-item>
+
+            <v-stepper-item value="1" title="模擬面試系統說明"></v-stepper-item>
 
             <v-divider></v-divider>
 
-            <v-stepper-item value="2" title="Ad sizes"></v-stepper-item>
+            <v-stepper-item value="2" title="模擬面試情境設定"></v-stepper-item>
 
             <v-divider></v-divider>
 
-            <v-stepper-item value="3" title="Ad templates"></v-stepper-item>
+            <v-stepper-item value="3" title="開始進行模擬面試"></v-stepper-item>
+            <v-divider></v-divider>
+
+            <v-stepper-item value="4" title="模擬面試結果"></v-stepper-item>
+
         </v-stepper-header>
+
     </v-stepper>
 </template>
 <script setup>
-import { VStepper } from 'vuetify/labs/VStepper';
+import { defineProps, ref } from 'vue';
+import { VStepper, VStepperHeader, VStepperItem, VStepperWindow, VStepperActions } from 'vuetify/labs/VStepper';
+import { useStepperStore } from '@/stores/stepper';
+const stepperStore=useStepperStore()
 
 </script>

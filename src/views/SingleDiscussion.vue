@@ -9,21 +9,21 @@
                     <div class="pa-4 mx-auto my-5 discussion-block">
                         <div class="d-flex flex-row align-center ma-2 pa-2">
                             <v-avatar color="brown">
-                                <span class="text-h5">{{ discussion.poster_sex }}</span>
+                                <span class="text-h5">{{ discussionStore.discussion.poster_sex }}</span>
                             </v-avatar>
-                            <div class="text-body-1 ml-2 mr-4">{{ discussion.poster_name }}</div>
+                            <div class="text-body-1 ml-2 mr-4">{{ discussionStore.discussion.poster_name }}</div>
                         </div>
                         <div class="text-h6 ma-2 pa-2">
-                            {{ discussion.title }}
+                            {{ discussionStore.discussion.title }}
                         </div>
                         <div class="d-flex flex-row align-center ma-2 pa-2">
-                            <div class="text-body-1 mr-4">{{ discussion.category }}</div>
-                            <div class="text-body-2">{{ discussion.created_at }}</div>
+                            <div class="text-body-1 mr-4">{{ discussionStore.discussion.category }}</div>
+                            <div class="text-body-2">{{ discussionStore.discussion.created_at }}</div>
                         </div>
-                        <div class="text-body-2 ma-2 pa-2">{{ discussion.content }} </div>
+                        <div class="text-body-2 ma-2 pa-2">{{ discussionStore.discussion.content }} </div>
                         <div class="ma-2 pa-2">
                             <v-chip-group selected-class="text-primary" column>
-                                <v-chip v-for="tag in discussion.tags" :key="tag">
+                                <v-chip v-for="tag in discussionStore.discussion.tags" :key="tag">
                                     {{ tag }}
                                 </v-chip>
                             </v-chip-group>
@@ -33,18 +33,24 @@
                                 <template v-slot:prepend>
                                     <v-icon color="error"></v-icon>
                                 </template>
-                                {{ discussion.favorites }}
+                                {{ discussionStore.discussion.favorites }}
                             </v-btn>
                             <v-btn prepend-icon="mdi-comment" variant="text">
                                 <template v-slot:prepend>
                                     <v-icon color="primary"></v-icon>
                                 </template>
-                                {{ discussion.comments }}
+                                {{ discussionStore.discussion.comments }}
                             </v-btn>
                         </div>
                         <v-divider></v-divider>
-
-                        <Comment :comments="comments" :discussionId="discussion.id"/>
+                        <v-sheet v-if="comments.length">
+                            <div v-for="comment in comments" class="px-4 mx-auto mt-2">
+                                <Comment :comment="comment" :discussionId="discussionStore.discussion.id" :key="comment.id"/>
+                            </div>
+                        </v-sheet>
+                        <v-sheet v-else rounded="lg" width="100%" class="px-4 mx-auto mt-2">
+                            尚無留言
+                        </v-sheet>
                     </div>
                     <div class="addcomment-block" v-if="isUseComment">
                         <div class="d-flex flex-row align-center my-4 pa-2">
@@ -58,10 +64,10 @@
                                 no-resize placeholder="留言"></v-textarea>
                             <div class="d-flex mr-4 pb-6 justify-end">
                                 <v-btn color="disabled" variant="text">
-                                    <div class="text-h5" @click="isUseComment = !isUseComment">取消</div>
+                                    <div class="text-h5" @click="changeUseCommentStatus">取消</div>
                                 </v-btn>
                                 <v-btn color="primary" :disabled="!form" :loading="loading" type="submit"
-                                    @click.prevent="addComment(discussion.id)">
+                                    @click.prevent="addComment(discussionStore.discussion.id)">
                                     <div class="text-h5">送出</div>
                                 </v-btn>
                             </div>
@@ -74,7 +80,7 @@
                                 <v-icon icon="mdi-account-circle"></v-icon>
 
                                 <v-text-field placeholder="留言..." variant="plain" density="compact" hide-details="auto"
-                                    rows="3" class="mx-2" @click="isUseComment = !isUseComment" />
+                                    rows="3" class="mx-2" @click="changeUseCommentStatus" />
 
                             </div>
                             <div class="d-flex flex-row align-center px-10  mr-10">
@@ -92,7 +98,7 @@
 </template>
   
 <script setup>
-import { ref, onMounted,onUpdated } from 'vue';
+import { ref, onMounted, onUpdated,computed } from 'vue';
 import Keywords from '@/components/Keywords.vue'
 import Comment from '@/components/Comment.vue'
 import { useRoute } from 'vue-router'
@@ -103,16 +109,16 @@ const loading = ref(false)
 const form = ref(false)
 
 const discussionStore = useDiscussionStore()
-const discussion = discussionStore.discussion
 const route = useRoute()
 const isUseComment = ref(false)
 const newComment = ref("")
 const comments = commentStore.comments
-
 onMounted(async () => {
     await discussionStore.getDiscussion(route.params.id)
     await commentStore.getComment(route.params.id)
-    console.log("onMounted")
+})
+const changeUseCommentStatus=(()=>{
+    isUseComment.value= !isUseComment.value
 })
 onUpdated(async () => {
     // await discussionStore.getDiscussion(route.params.id)
@@ -124,11 +130,13 @@ const rules = {
     required: value => !!value || '欄位必填',
 }
 const addComment = async (id) => {
+    console.log(newComment.value)
     if (!form.value) return
     loading.value = true
     await commentStore.createComment(id, newComment.value)
     loading.value = false
-    isUseComment.value = !isUseComment.value
+    changeUseCommentStatus()
+    newComment.value = ""
 }
 </script>
 <style>

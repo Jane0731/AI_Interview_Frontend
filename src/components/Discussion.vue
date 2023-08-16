@@ -83,8 +83,8 @@
     </v-sheet>
 </template>
 <script setup>
-import { defineProps, ref, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { defineProps, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useDialogStore } from '@/stores/dialog'
 import { useDiscussionStore } from '@/stores/discussion'
 

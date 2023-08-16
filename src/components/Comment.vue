@@ -1,14 +1,17 @@
 <template>
-    <v-sheet v-if="comments" v-for="comment in comments" rounded="lg" width="100%" class="px-4 mx-auto my-5">
+    <v-sheet>
         <div class="d-flex flex-row align-center ">
-            <v-sheet>
+            <div>
                 <v-avatar color="brown">
                     <span class="text-h5">aa</span>
                 </v-avatar>
-            </v-sheet>
-            <v-sheet class="ml-2 mr-4">
+            </div>
+            <div class="ml-2 mr-4">
                 <div class="text-body-1">{{ comment.poster_name }}</div>
-            </v-sheet>
+            </div>
+            <div class="text-body-2 ">
+                {{ comment.created_at }}
+            </div>
             <v-spacer></v-spacer>
 
             <v-sheet v-show="(userId == comment.user_id)">
@@ -17,7 +20,7 @@
                         <v-btn variant="text" icon="mdi-dots-vertical" v-bind="props"></v-btn>
                     </template>
                     <v-list>
-                        <v-list-item @click.stop="">
+                        <v-list-item @click.stop="commentReadonly = false">
                             <v-list-item-title>
                                 <div class="text-body-1">編輯</div>
                             </v-list-item-title>
@@ -51,29 +54,29 @@
             </v-sheet>
         </div>
         <div class="text-h6 ">
-            <v-sheet>
-                {{ comment.comment }}
-            </v-sheet>
+            <v-text-field v-model="comment.comment" :readonly="commentReadonly" :variant="commentReadonly ? 'plain' : 'underlined'" density="compact">
+                <template v-slot:append-inner v-if="!commentReadonly">
+                    <v-btn icon="mdi-close" variant="plain" @click="commentReadonly = true"></v-btn>
+                    <v-btn icon="mdi-check" variant="plain" @click="onUpdateComment"></v-btn>
+                </template>
+            </v-text-field>
+
         </div>
-        <div class="text-body-2 ">
-            {{ comment.created_at }} </div>
-    </v-sheet>
-    <v-sheet v-else>
-        暫無資料
+        <v-spacer></v-spacer>
+
     </v-sheet>
 </template>
 <script setup>
-import { defineProps ,ref} from 'vue'
+import { defineProps, ref } from 'vue'
 import { useCommentStore } from '@/stores/comment';
-const commentStroe=useCommentStore()
+const commentStroe = useCommentStore()
 const props = defineProps({
-    comments: { type: Object },
+    comment: { type: Object },
     discussionId: { type: String },
-
 })
 const deleteComment = ref(false)
 const loading = ref(false)
-
+const commentReadonly = ref(true)
 const userId = localStorage.getItem("userId")
 
 const onDeleteComment = async (id) => {
@@ -81,7 +84,11 @@ const onDeleteComment = async (id) => {
 
     deleteComment.value = false
 
-    await commentStroe.deleteComment(id,props.discussionId)
+    await commentStroe.deleteComment(id, props.discussionId)
     loading.value = false
+}
+
+const onUpdateComment = () => {
+
 }
 </script>

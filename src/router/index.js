@@ -68,6 +68,16 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/test",
+    name: "test",
+    // beforeEnter: (to) => {
+
+    //   if (to.name == "Interview" && !localStorage.getItem('token'))
+    //   return { name: "Login" };
+    // },
+    component: () => import("@/views/test.vue"),
+  },
 ];
 
 const router = createRouter({
