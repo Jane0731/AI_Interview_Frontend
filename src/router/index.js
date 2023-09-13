@@ -1,35 +1,34 @@
 // Composables
 import { createRouter, createWebHistory } from "vue-router";
-import { useUserStore } from "@/stores/user";
 const routes = [
   {
     path: "/",
     component: () => import("@/layouts/Default.vue"),
     children: [
       {
-        path: "/discussion/all",
+        path: "discussion/all",
         name: "AllDiscussions",
         component: () => import("@/views/AllDiscussions.vue"),
       },
       {
-        path: "/discussion/:id",
+        path: "discussion/:id",
         name: "Discussion",
         component: () => import("@/views/SingleDiscussion.vue"),
         props: (route) => route.params,
       },
       {
-        path: "/experience/all",
+        path: "experience/all",
         name: "AllExperiences",
         component: () => import("@/views/AllExperiences.vue"),
       },
       {
-        path: "/experience/:id",
+        path: "experience/:id",
         name: "Experience",
         component: () => import("@/views/SingleExperience.vue"),
         props: (route) => route.params,
       },
       {
-        path: "/profile",
+        path: "profile",
         name: "Profile",
         beforeEnter: (to) => {
           if (to.name == "Profile" && !localStorage.getItem('token'))
@@ -38,7 +37,7 @@ const routes = [
         component: () => import("@/views/Profile.vue"),
       },
       {
-        path: "/login",
+        path: "login",
         name: "Login",
         beforeEnter: (to) => {
           if (to.name == "Login" && localStorage.getItem('token'))
@@ -47,7 +46,7 @@ const routes = [
         component: () => import("@/views/Login.vue"),
       },
       {
-        path: "/signup",
+        path: "signup",
         name: "Signup",
         beforeEnter: (to) => {
 
@@ -57,7 +56,7 @@ const routes = [
         component: () => import("@/views/Signup.vue"),
       },
       {
-        path: "/interview",
+        path: "interview",
         name: "Interview",
         // beforeEnter: (to) => {
 
@@ -68,16 +67,7 @@ const routes = [
       },
     ],
   },
-  {
-    path: "/test",
-    name: "test",
-    // beforeEnter: (to) => {
-
-    //   if (to.name == "Interview" && !localStorage.getItem('token'))
-    //   return { name: "Login" };
-    // },
-    component: () => import("@/views/test.vue"),
-  },
+  
 ];
 
 const router = createRouter({

@@ -5,7 +5,22 @@
                 <v-spacer></v-spacer>
             </v-col>
             <v-col cols="6">
-                <Experience :experience="experience" :isSingleExperience="true"/>
+                <v-sheet rounded="t-lg" width="100%">
+
+                    <Experience :experience="experienceStore.experience" :isSingleExperience="true" />
+                    <v-divider></v-divider>
+                    <v-sheet v-if="commentStore.comments.length">
+                        <div v-for="comment in commentStore.comments" class="px-4 mx-auto mt-2">
+                            <Comment @fresh="onFresh()" :comment="comment"  :type="type"
+                                :typeId="experienceStore.experience.id" />
+                        </div>
+                    </v-sheet>
+                    <v-sheet v-else rounded="lg" width="100%" class="px-4 mx-auto mt-2">
+                        尚無留言
+                    </v-sheet>
+                    <CommentBlock :id="experienceStore.experience.id" :type="type"
+                        :isFavorite="experienceStore.experience.is_Favorite" />
+                </v-sheet>
             </v-col>
             <v-col cols="2">
                 <Keywords />
@@ -15,44 +30,25 @@
 </template>
   
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted } from 'vue';
 import Experience from '@/components/Experience.vue'
-import { useRouter, useRoute } from 'vue-router'
-import moment from 'moment'
-import 'moment/dist/locale/zh-tw'
-moment.locales();
+import { useRoute } from 'vue-router'
+import CommentBlock from '@/components/CommentBlock.vue';
 import { useExperienceStore } from '@/stores/experience'
 import { useCommentStore } from '@/stores/comment';
+import Comment from '@/components/Comment.vue'
+
 const experienceStore = useExperienceStore()
 const commentStore = useCommentStore()
-
-const experience = experienceStore.experience
+const type = ref("experience")
 const route = useRoute()
-
-const comments = commentStore.comments
-onMounted(async() => {
-  await experienceStore.getExperience(route.params.id)
-  await commentStore.getComment(route.params.id)
+onMounted(async () => {
+    await experienceStore.getExperience(route.params.id)
+    await commentStore.getComment(route.params.id, "experience")
 
 })
 </script>
 <style>
-.comment-block {
-    background-color: #FCFBFB;
-    height: 50px;
-    position: sticky;
-    bottom: 0;
-    border-top: 2px #DED9D9 solid
-}
-
-.addcomment-block {
-    background-color: #FCFBFB;
-    height: fit-content;
-    position: sticky;
-    bottom: 0;
-    border-top: 2px #DED9D9 solid
-}
-
 .discussion-block {
     min-height: calc(100vh - 150px)
 }

@@ -14,13 +14,15 @@
             </v-tabs>
             <v-window v-model="tab">
                 <v-window-item value="discussion">
-                    <div v-for="discussion in discussions" class="window-item pa-4 mx-auto my-5 rounded-lg w-75">
-                        <Discussion :discussion="discussion" :isShowDotIcon="true" />
+                    <div v-for="discussion in userStore.discussionPosts"
+                        class="window-item pa-4 mx-auto my-5 rounded-lg w-75">
+                        <Discussion :discussion="discussion" />
                     </div>
                 </v-window-item>
                 <v-window-item value="experience">
-                    <div v-for="experience in experiences" class="window-item pa-4 mx-auto my-5 rounded-lg w-75">
-                        <Experience :experience="experience" :isShowDotIcon="true" />
+                    <div v-for="experience in userStore.experiencePosts"
+                        class="window-item pa-4 mx-auto my-5 rounded-lg w-75">
+                        <Experience :experience="experience" />
                     </div>
                 </v-window-item>
             </v-window>
@@ -29,181 +31,18 @@
     </v-card>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import Discussion from '@/components/Discussion.vue'
 import Experience from '@/components/Experience.vue'
+import { useUserStore } from '@/stores/user';
+const userStore = useUserStore()
+onBeforeMount(async () => {
+    await userStore.getDiscussionPost()
+    console.log(userStore.discussionPosts)
+    await userStore.getExperiencePost()
+    console.log(userStore.experiencePosts)
 
-const discussions = [
-    {
-        "id": 1,
-        "title": "面試都穿啥",
-        "content": "把拉把拉Dfdgfdgdfgdfg",
-        "created_at": "2023-07-23T15:05:11.000000Z",
-        "updated_at": "2023-07-23T15:05:11.000000Z",
-        "tags": [
-            "面試穿搭",
-            "柯P"
-        ],
-        "user": {
-            "id": 1,
-            "name": "jane",
-            "sex": null
-        },
-        "category": {
-            "id": 1,
-            "name": "軟體工程"
-        }
-    },
-    {
-        "id": 2,
-        "title": "面試都穿啥2",
-        "content": "把拉把拉Dfdgfdgdfgdfg2",
-        "created_at": "2023-07-23T15:05:11.000000Z",
-        "updated_at": "2023-07-23T15:05:11.000000Z",
-        "tags": [
-            "面試穿搭",
-            "薪水"
-        ],
-        "user": {
-            "id": 2,
-            "name": "RJ",
-            "sex": null
-        },
-        "category": {
-            "id": 2,
-            "name": "金融"
-        }
-    },
-    {
-        "id": 3,
-        "title": "面試都穿啥",
-        "content": "把拉把拉Dfdgfdgdfgdfg",
-        "created_at": "2023-07-24T13:18:05.000000Z",
-        "updated_at": "2023-07-24T13:18:05.000000Z",
-        "tags": [],
-        "user": {
-            "id": 2,
-            "name": "RJ",
-            "sex": null
-        },
-        "category": {
-            "id": 1,
-            "name": "軟體工程"
-        }
-    },
-    {
-        "id": 4,
-        "title": "面試都穿啥2",
-        "content": "把拉把拉Dfdgfdgdfgdfg2",
-        "created_at": "2023-07-24T13:18:05.000000Z",
-        "updated_at": "2023-07-24T13:18:05.000000Z",
-        "tags": [],
-        "user": {
-            "id": 1,
-            "name": "jane",
-            "sex": null
-        },
-        "category": {
-            "id": 2,
-            "name": "金融"
-        }
-    },
-    {
-        "id": 5,
-        "title": "hello",
-        "content": "afxfhcjhk dtyuvrevd gh  dty.",
-        "created_at": "2023-07-24T15:58:12.000000Z",
-        "updated_at": "2023-07-24T15:58:12.000000Z",
-        "tags": [],
-        "user": {
-            "id": 1,
-            "name": "jane",
-            "sex": null
-        },
-        "category": {
-            "id": 1,
-            "name": "軟體工程"
-        }
-    },
-    {
-        "id": 6,
-        "title": "hello",
-        "content": "afxfhcjhk dtyuvrevd gh  dty.",
-        "created_at": "2023-07-24T15:59:25.000000Z",
-        "updated_at": "2023-07-24T15:59:25.000000Z",
-        "tags": [
-            "薪水",
-            "年資"
-        ],
-        "user": {
-            "id": 1,
-            "name": "jane",
-            "sex": null
-        },
-        "category": {
-            "id": 1,
-            "name": "軟體工程"
-        }
-    },
-    {
-        "id": 7,
-        "title": "hello",
-        "content": "afxfhcjhk dtyuvrevd gh  dty.",
-        "created_at": "2023-07-24T16:03:31.000000Z",
-        "updated_at": "2023-07-24T16:03:31.000000Z",
-        "tags": [
-            "薪水",
-            "年資"
-        ],
-        "user": {
-            "id": 1,
-            "name": "jane",
-            "sex": null
-        },
-        "category": {
-            "id": 1,
-            "name": "軟體工程"
-        }
-    }
-]
-const experiences = [
-    {
-        "id": 1,
-        "company": "鼎新",
-        "position": "開發工程師",
-        "interview_date": "2023/06/30",
-        "interview_sharing": "巴拉巴拉xxxxx巴拉巴拉xxxxx巴拉巴拉xxxxx巴拉巴拉xxxxx巴拉巴拉xxxxx巴拉巴拉xxxxx",
-        "interview_result": "已錄取",
-        "interview_difficulty": 1,
-        "interview_question": ["為何選擇我們公司", "希望待遇?"],
-        "created_at": "2023-07-24T13:18:05.000000Z",
-        "updated_at": "2023-07-24T13:18:05.000000Z",
-    },
-    {
-        "id": 2,
-        "company": "鼎新",
-        "position": "開發工程師",
-        "interview_date": "2023/06/30",
-        "interview_sharing": "巴拉巴拉xxxxx",
-        "interview_result": "已錄取",
-        "interview_difficulty": "簡單",
-        "interview_question": ["為何選擇我們公司", "希望待遇?"],
-        "created_at": "2023-07-24T13:18:05.000000Z",
-        "updated_at": "2023-07-24T13:18:05.000000Z",
-    },
-    {
-        "id": 3,
-        "company": "鼎新",
-        "position": "開發工程師",
-        "interview_date": "2023/06/30",
-        "interview_sharing": "巴拉巴拉xxxxx",
-        "interview_result": "已錄取",
-        "interview_difficulty": "簡單",
-        "interview_question": ["為何選擇我們公司", "希望待遇?"],
-        "created_at": "2023-07-24T13:18:05.000000Z",
-        "updated_at": "2023-07-24T13:18:05.000000Z",
-    },
-]
+})
 const tab = ref("discussion")
 </script>
 <style scoped>

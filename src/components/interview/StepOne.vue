@@ -8,7 +8,6 @@
         <template v-slot:card-text>
             <div class="d-flex my-3 align-center justify-space-between">
                 <InterviewStepOneCardVue v-for="n in 3"></InterviewStepOneCardVue>
-
             </div>
             <div class="d-flex justify-center mb-6">
                 <v-btn @click="goStepTwo()" color="primary" class="text-center mt-5 " size="x-large" width="60%">

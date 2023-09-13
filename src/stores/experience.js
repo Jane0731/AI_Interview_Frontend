@@ -86,6 +86,7 @@ export const useExperienceStore = defineStore("experience", () => {
       .delete("/experience/" + id)
       .then((response) => {
         const resultStore = useResultStore();
+        experiences.length=0
         resultStore.success("刪除成功");
         getAllExperiences();
 

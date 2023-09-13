@@ -66,7 +66,7 @@ export const useDiscussionStore = defineStore("discussion", () => {
       category_id,
       tags,
     });
-
+    console.log(tags)
     await axios
       .post("/discussion", JSON.parse(json))
       .then((response) => {
@@ -85,6 +85,7 @@ export const useDiscussionStore = defineStore("discussion", () => {
       .delete("/discussion/" + id)
       .then((response) => {
         const resultStore = useResultStore();
+        discussions.length=0
         resultStore.success("刪除成功");
         getAllDiscussions();
 

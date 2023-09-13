@@ -3,7 +3,7 @@
         <div class="d-flex flex-row align-center ma-2 pa-2">
             <v-sheet class="ma-2">
                 <v-avatar color="brown">
-                    <span class="text-h5"></span>
+                    <span class="text-h5">{{ experience.poster_name }}</span>
                 </v-avatar>
             </v-sheet>
             <v-sheet class="ml-2 mr-4">
@@ -13,8 +13,8 @@
                 <div class="text-body-2">{{ experience.created_at }}</div>
             </v-sheet>
             <v-spacer></v-spacer>
-            <v-sheet v-show="(userId == experience.user_id)">
-                <v-menu location="end">
+            <v-sheet v-show="(userId == experience.user_id)" class="menu">
+                <v-menu location="end" v-model="menuVisible">
                     <template v-slot:activator="{ props }">
                         <v-btn variant="text" icon="mdi-dots-vertical" v-bind="props"></v-btn>
                     </template>
@@ -110,7 +110,7 @@
                     {{ question.answer || "無資料" }}
                 </div>
             </div>
-            <div v-else >
+            <div v-else>
                 <div class="text-body-2">
                     <v-chip label class="mr-3">Q</v-chip>
                     {{ experience.questions[0].question }}
@@ -125,21 +125,17 @@
 
         <div class="d-flex flex-row align-center py-2 px-2 justify-center">
             <v-sheet>
-                <v-btn prepend-icon="mdi-heart" variant="text">
-                    <template v-slot:prepend>
-                        <v-icon color="error"></v-icon>
-                    </template>
-                    100
-                </v-btn>
+                <v-btn variant="text" icon="mdi-comment" color="primary"></v-btn>
+                {{ experience.comments_count }}
             </v-sheet>
             <v-sheet>
-                <v-btn prepend-icon="mdi-comment" variant="text">
-                    <template v-slot:prepend>
-                        <v-icon color="primary"></v-icon>
-                    </template>
-                    100
-                </v-btn>
+                <v-btn variant="plain" icon="mdi-heart" :ripple="false"
+                    :color="experience.is_Favorite ? 'deep-orange-accent-4' : 'grey-lighten-4'"
+                    @click.stop="clickFavoriteEvent(experience.is_Favorite, 'experience', experience.id)"></v-btn>
+
+                {{ experience.user_favorites_count }}
             </v-sheet>
+
             <v-spacer />
             <v-sheet @click="onExperienceClick(experience.id)" v-if="isSingleExperience ? false : true">
                 <v-btn size="large" variant="tonal" class="ma-2">
@@ -150,24 +146,35 @@
     </v-sheet>
 </template>
 <script setup>
-import { defineProps, ref } from 'vue'
+import { defineProps, ref,inject,onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useExperienceStore } from '@/stores/experience'
 import { useDialogStore } from '@/stores/dialog'
+import { useFavoriteStore } from '@/stores/favorite'
 
 import ExperienceDialog from './ExperienceDialog.vue';
+const menuVisible = ref(false)
+
 const experienceStore = useExperienceStore()
 const dialogStore = useDialogStore()
+const favoriteStroe = useFavoriteStore()
 
 const router = useRouter()
 const props = defineProps({
     experience: { type: Object },
     isSingleExperience: { type: Boolean, default: false }
 })
+const reload=inject("reload")
 const deleteExperience = ref(false)
 const userId = localStorage.getItem("userId")
 const loading = ref(false)
 
+onMounted(() => {
+    document.addEventListener('click', (e) => {
+        if (e.target.className != "menu")
+            menuVisible.value = false
+    })
+})
 const onExperienceClick = (id) => {
     router.push({
         name: 'Experience',
@@ -185,6 +192,16 @@ const onDeleteExperience = async (id) => {
 const openUpdateExperienceDialog = () => {
     dialogStore.changeDialogStatus()
     dialogStore.setDialogContent("編輯面試心得", "修改")
+}
+const clickFavoriteEvent = async (isFavorite, type, id) => {
+    if (!isFavorite) {
+        await favoriteStroe.addFavorites(type, id, "all")
+        reload()
+    }
+    else {
+        await favoriteStroe.deleteFavorites(type, id, "all")
+        reload()
+    }
 }
 </script>
 <style scoped>

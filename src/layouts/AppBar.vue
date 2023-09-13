@@ -18,7 +18,7 @@
         <template v-slot:activator="{ props }">
           <v-btn icon="mdi-dots-vertical" v-bind="props">
             <v-avatar color="brown">
-              <div class="text-h5">aa</div>
+              <div class="text-h5">{{ name}}</div>
             </v-avatar>
           </v-btn>
         </template>
@@ -44,18 +44,17 @@
 </template>
 <script setup>
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user';
 import { useAuthStore } from '@/stores/auth'
-import { onActivated,ref	 } from 'vue';
-
+import { onActivated, ref, inject } from 'vue';
+import { useUserStore } from '@/stores/user';
+const userStore = useUserStore()
+const name=userStore.user.name
 const authStore = useAuthStore()
 const router = useRouter()
-// const userStore = useUserStore()
-//     const token=localStorage.getItem("token")
-//     console.log(token,token==true,"test")
-const token=ref(localStorage.getItem("token"))
-onActivated	(()=>{
-  token.value=localStorage.getItem("token")
+const reload = inject("reload")
+const token = ref(localStorage.getItem("token"))
+onActivated(() => {
+  token.value = localStorage.getItem("token")
 })
 const onDiscussionsClick = () => {
   router.push({
@@ -77,15 +76,19 @@ const onProfileClick = (id) => {
     name: 'Profile',
   })
 }
-const logout = async() => {
+const logout = async () => {
+
   await authStore.logout()
+  reload()
   router.push({
     name: 'Login',
   })
+
 }
-const login= () => {
+const login = () => {
   router.push({
     name: 'Login',
   })
+
 }
 </script>

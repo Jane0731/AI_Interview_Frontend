@@ -10,54 +10,33 @@ moment.locales();
 
 export const useCommentStore = defineStore("comment", () => {
     const comments = reactive([]);
-    const clearComment=()=>{
-        Object.assign(comments, [""]);
-    }
-    const getComment = async (id) => {
+
+    const getComment = async (id, type) => {
         await axios
-            .get("/discussion/" + id + "/comment")
+            .get("/" + type + "/" + id + "/comment")
             .then((response) => {
                 response.data.forEach((comment) => {
-                    console.log("test")
                     comment.created_at = moment(comment.created_at).fromNow();
-                  });
+                });
+                comments.length=0
+
                 Object.assign(comments, response.data);
+
             })
             .catch((error) => {
                 console.error(error);
             });
     };
-    const updateComment = async (title, content, category_id, tags, discussion_id) => {
-        // const json = JSON.stringify({
-        //     title,
-        //     content,
-        //     category_id,
-        //     tags,
-        // });
-        // await axios
-        //     .patch("/discussion/" + discussion_id, JSON.parse(json))
-        //     .then((response) => {
-        //         const resultStore = useResultStore();
-        //         resultStore.success("編輯成功");
-        //         getAllDiscussions();
-        //     })
-        //     .catch((error) => {
-        //         const resultStore = useResultStore();
-        //         resultStore.error("編輯失敗");
-        //         console.log(error);
-        //     });
-    };
-    const createComment = async (id,comment) => {
+    const updateComment = async (id, typeId, type, comment) => {
         const json = JSON.stringify({
             comment
         });
-        console.log(id,comment)
         await axios
-            .post("/discussion/" + id + "/comment", JSON.parse(json))
+            .patch("/comment/" + id, JSON.parse(json))
             .then((response) => {
                 const resultStore = useResultStore();
-                resultStore.success("新增成功");
-                getComment(id);
+                resultStore.success("編輯成功");
+                getComment(typeId, type)
             })
             .catch((error) => {
                 const resultStore = useResultStore();
@@ -65,13 +44,30 @@ export const useCommentStore = defineStore("comment", () => {
                 console.log(error);
             });
     };
-    const deleteComment = async (id,discussionId) => {
+    const createComment = async (id, comment, type) => {
+        const json = JSON.stringify({
+            comment
+        });
+        await axios
+            .post("/" + type + "/" + id + "/comment", JSON.parse(json))
+            .then((response) => {
+                const resultStore = useResultStore();
+                resultStore.success("新增成功");
+                getComment(id, type);
+            })
+            .catch((error) => {
+                const resultStore = useResultStore();
+                resultStore.error("新增失敗");
+                console.log(error);
+            });
+    };
+    const deleteComment = async (id, typeId, type) => {
         await axios
             .delete("/comment/" + id)
             .then((response) => {
                 const resultStore = useResultStore();
                 resultStore.success("刪除成功");
-                getComment(discussionId)
+                getComment(typeId, type)
             })
             .catch((error) => {
                 const resultStore = useResultStore();
@@ -82,7 +78,6 @@ export const useCommentStore = defineStore("comment", () => {
 
     return {
         comments,
-        clearComment,
         getComment,
         createComment,
         updateComment,

@@ -26,7 +26,7 @@
                     <div class="d-flex justify-center mb-6">
                         <v-btn @click="goStepThree()" color="primary" class="text-center mt-5 " size="x-large" width="60%">
                             <div class="text-h5">
-                                開始模擬面試
+                                開始設備測試
                             </div>
                         </v-btn>
                     </div>
@@ -39,7 +39,10 @@
 <script setup>
 import InterviewWindow from '@/components/InterviewWindow.vue';
 import { useStepperStore } from '@/stores/stepper';
+
 const stepperStore = useStepperStore()
 
-const goStepThree = () => stepperStore.addStep()
+const goStepThree = () => {
+    stepperStore.addStep()
+}
 </script>

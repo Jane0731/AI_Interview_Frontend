@@ -39,13 +39,14 @@
     </v-card>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref,inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useResultStore } from '@/stores/result';
 
 const authStore = useAuthStore()
 const resultStore = useResultStore()
+const reload=inject("reload")
 
 const router = useRouter()
 const form = ref(false)
@@ -58,7 +59,10 @@ const onSubmit = async () => {
     loading.value=true
     await authStore.login(email.value, password.value)
     loading.value=false
-    if (authStore.isAuthorized) router.push("/profile")
+    if (authStore.isAuthorized){
+        router.push("/profile")
+        reload()
+    } 
 }
 
 const rules = {

@@ -54,12 +54,18 @@
             </v-sheet>
         </div>
         <div class="text-h6 ">
-            <v-text-field v-model="comment.comment" :readonly="commentReadonly" :variant="commentReadonly ? 'plain' : 'underlined'" density="compact">
-                <template v-slot:append-inner v-if="!commentReadonly">
-                    <v-btn icon="mdi-close" variant="plain" @click="commentReadonly = true"></v-btn>
-                    <v-btn icon="mdi-check" variant="plain" @click="onUpdateComment"></v-btn>
-                </template>
-            </v-text-field>
+            <div v-if="commentReadonly">
+                <v-text-field v-model="comment.comment" readonly variant='plain' density="compact">
+                </v-text-field>
+            </div>
+            <div v-else>
+                <v-text-field v-model="oldComment" variant='plain' density="compact">
+                    <template v-slot:append-inner >
+                        <v-btn icon="mdi-close" variant="plain" @click="onCancelUpdate"></v-btn>
+                        <v-btn icon="mdi-check" variant="plain" @click="onUpdateComment(comment.id)"></v-btn>
+                    </template>
+                </v-text-field>
+            </div>
 
         </div>
         <v-spacer></v-spacer>
@@ -67,13 +73,17 @@
     </v-sheet>
 </template>
 <script setup>
-import { defineProps, ref } from 'vue'
+import { defineProps, ref,defineEmits } from 'vue'
 import { useCommentStore } from '@/stores/comment';
+const emit = defineEmits(['fresh'])
+
 const commentStroe = useCommentStore()
 const props = defineProps({
     comment: { type: Object },
-    discussionId: { type: String },
+    typeId: { type: String },
+    type: { type: String }
 })
+const oldComment = ref(props.comment.comment)
 const deleteComment = ref(false)
 const loading = ref(false)
 const commentReadonly = ref(true)
@@ -84,11 +94,20 @@ const onDeleteComment = async (id) => {
 
     deleteComment.value = false
 
-    await commentStroe.deleteComment(id, props.discussionId)
+    await commentStroe.deleteComment(id, props.typeId, props.type)
     loading.value = false
+    emit('fresh')
+
 }
 
-const onUpdateComment = () => {
+const onUpdateComment = async(id) => {
+    await commentStroe.updateComment(id, props.typeId, props.type,oldComment.value)
+    commentReadonly.value = true
+
+}
+const onCancelUpdate = () => {
+    commentReadonly.value = true
+    oldComment.value = props.comment.comment
 
 }
 </script>

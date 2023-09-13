@@ -9,7 +9,7 @@
         </div>
         <TabWindow v-model="tabsName" :values="tabValues">
           <template v-slot:view>
-            <div v-for="experience in experiences" class="pa-4 mx-auto mb-5">
+            <div v-for="experience in experienceStore.experiences" class="pa-4 mx-auto mb-5">
               <Experience :experience="experience" />
             </div>
           </template>
@@ -42,7 +42,6 @@ const tabsName = ref("experienceTab")
 const dialogStore = useDialogStore()
 const experienceStore=useExperienceStore()
 
-const experiences = experienceStore.experiences
 
 
 onMounted(async() => {

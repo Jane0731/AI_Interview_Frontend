@@ -29,65 +29,30 @@
                             </v-chip-group>
                         </div>
                         <div class="d-flex flex-row align-center ma-2 pa-2">
-                            <v-btn prepend-icon="mdi-heart" variant="text">
-                                <template v-slot:prepend>
-                                    <v-icon color="error"></v-icon>
-                                </template>
-                                {{ discussionStore.discussion.favorites }}
-                            </v-btn>
-                            <v-btn prepend-icon="mdi-comment" variant="text">
-                                <template v-slot:prepend>
-                                    <v-icon color="primary"></v-icon>
-                                </template>
-                                {{ discussionStore.discussion.comments }}
-                            </v-btn>
+                            <v-sheet>
+                                <v-btn variant="text" icon="mdi-comment" color="primary"></v-btn>
+                                {{ discussionStore.discussion.comments_count }}
+                            </v-sheet>
+                            <v-sheet>
+                                <v-btn variant="plain" icon="mdi-heart" :ripple="false"
+                                    :color="discussionStore.discussion.is_Favorite ? 'deep-orange-accent-4' : 'grey-lighten-4'"
+                                    @click.stop="clickFavoriteEvent(discussionStore.discussion.is_Favorite, 'discussion', discussionStore.discussion.id)"></v-btn>
+
+                                {{ discussionStore.discussion.user_favorites_count }}
+                            </v-sheet>
                         </div>
                         <v-divider></v-divider>
                         <v-sheet v-if="comments.length">
                             <div v-for="comment in comments" class="px-4 mx-auto mt-2">
-                                <Comment :comment="comment" :discussionId="discussionStore.discussion.id" :key="comment.id"/>
+                                <Comment :type="type" :comment="comment" :typeId="discussionStore.discussion.id" 
+                                   />
                             </div>
                         </v-sheet>
                         <v-sheet v-else rounded="lg" width="100%" class="px-4 mx-auto mt-2">
                             尚無留言
                         </v-sheet>
                     </div>
-                    <div class="addcomment-block" v-if="isUseComment">
-                        <div class="d-flex flex-row align-center my-4 pa-2">
-                            <v-avatar color="brown" class="mr-4">
-                                <span class="text-h5">aa</span>
-                            </v-avatar>
-                            <div class="text-h5">劉賊賊</div>
-                        </div>
-                        <v-form v-model="form">
-                            <v-textarea :rules="[rules.required]" v-model="newComment" class="ma-4" variant="plain" rows="2"
-                                no-resize placeholder="留言"></v-textarea>
-                            <div class="d-flex mr-4 pb-6 justify-end">
-                                <v-btn color="disabled" variant="text">
-                                    <div class="text-h5" @click="changeUseCommentStatus">取消</div>
-                                </v-btn>
-                                <v-btn color="primary" :disabled="!form" :loading="loading" type="submit"
-                                    @click.prevent="addComment(discussionStore.discussion.id)">
-                                    <div class="text-h5">送出</div>
-                                </v-btn>
-                            </div>
-                        </v-form>
-
-                    </div>
-                    <div class="comment-block d-flex" v-else>
-                        <v-row justify="space-between" width="100%">
-                            <div class="d-flex flex-row align-center pl-10 ">
-                                <v-icon icon="mdi-account-circle"></v-icon>
-
-                                <v-text-field placeholder="留言..." variant="plain" density="compact" hide-details="auto"
-                                    rows="3" class="mx-2" @click="changeUseCommentStatus" />
-
-                            </div>
-                            <div class="d-flex flex-row align-center px-10  mr-10">
-                                <v-icon color="error">mdi-heart</v-icon>
-                            </div>
-                        </v-row>
-                    </div>
+                    <CommentBlock :id="discussionStore.discussion.id" :type="type" :isFavorite="discussionStore.discussion.is_Favorite"/>
                 </v-sheet>
             </v-col>
             <v-col cols="2">
@@ -98,64 +63,40 @@
 </template>
   
 <script setup>
-import { ref, onMounted, onUpdated,computed } from 'vue';
+import { onMounted, ref } from 'vue';
 import Keywords from '@/components/Keywords.vue'
 import Comment from '@/components/Comment.vue'
-import { useRoute } from 'vue-router'
+import CommentBlock from '@/components/CommentBlock.vue';
 import { useDiscussionStore } from '@/stores/discussion'
 import { useCommentStore } from '@/stores/comment';
-const commentStore = useCommentStore()
-const loading = ref(false)
-const form = ref(false)
+import { useRoute } from 'vue-router'
+import { useFavoriteStore } from '@/stores/favorite'
+import { storeToRefs } from 'pinia';
 
+const commentStore = useCommentStore()
+const { comments } = storeToRefs(commentStore);
 const discussionStore = useDiscussionStore()
 const route = useRoute()
-const isUseComment = ref(false)
-const newComment = ref("")
-const comments = commentStore.comments
+const type = ref("discussion")
+const favoriteStroe = useFavoriteStore()
+
 onMounted(async () => {
     await discussionStore.getDiscussion(route.params.id)
-    await commentStore.getComment(route.params.id)
+    await commentStore.getComment(route.params.id, "discussion")
 })
-const changeUseCommentStatus=(()=>{
-    isUseComment.value= !isUseComment.value
-})
-onUpdated(async () => {
-    // await discussionStore.getDiscussion(route.params.id)
-    // await commentStore.getComment(route.params.id)
-    console.log("onUpdated")
+const onFresh = async() => {
+  renderKey.value += 1;
+  await discussionStore.getAllDiscussions()
 
-})
-const rules = {
-    required: value => !!value || '欄位必填',
-}
-const addComment = async (id) => {
-    console.log(newComment.value)
-    if (!form.value) return
-    loading.value = true
-    await commentStore.createComment(id, newComment.value)
-    loading.value = false
-    changeUseCommentStatus()
-    newComment.value = ""
+};
+const clickFavoriteEvent = async (isFavorite, type, id) => {
+    if (!isFavorite)
+        await favoriteStroe.addFavorites(type, id, "single")
+    else
+        await favoriteStroe.deleteFavorites(type, id, "single")
 }
 </script>
-<style>
-.comment-block {
-    background-color: #FCFBFB;
-    height: 50px;
-    position: sticky;
-    bottom: 0;
-    border-top: 2px #DED9D9 solid
-}
-
-.addcomment-block {
-    background-color: #FCFBFB;
-    height: fit-content;
-    position: sticky;
-    bottom: 0;
-    border-top: 2px #DED9D9 solid
-}
-
+<style scoped>
 .discussion-block {
     min-height: calc(100vh - 150px)
 }

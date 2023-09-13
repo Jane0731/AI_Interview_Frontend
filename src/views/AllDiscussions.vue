@@ -18,8 +18,8 @@
         <Tabs v-model="tabsName" :values="tabValues" />
         <TabWindow v-model="tabsName" :values="tabValues">
           <template v-slot:view>
-            <div v-for="discussion in discussions" class="pa-4 mx-auto my-5">
-              <Discussion :discussion="discussion" />
+            <div v-for="discussion in discussionStore.discussions" class="pa-4 mx-auto my-5">
+              <Discussion :discussion="discussion" @fresh="onFresh()" :key="renderKey"/>
             </div>
           </template>
         </TabWindow>
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted,inject } from 'vue'
 import Discussion from '@/components/Discussion.vue'
 import Keywords from '@/components/Keywords.vue'
 import Classification from '@/components/Classification.vue'
@@ -51,18 +51,19 @@ import DiscussionDialog from '@/components/DiscussionDialog.vue'
 
 const discussionStore = useDiscussionStore()
 const dialogStore = useDialogStore()
-
-const discussions = discussionStore.discussions
-
 const tabValues = [{ id: "hot", description: "熱門討論" }, { id: "new", description: "最新討論" }]
 const tabsName = ref("discussionTab")
+const renderKey = ref(0);
 
+const onFresh = async() => {
+  renderKey.value += 1;
+  await discussionStore.getAllDiscussions()
 
+};
 
 onMounted(async () => {
   await discussionStore.getAllDiscussions()
 })
-
 
 
 const openAddDiscussionDialog = () => {

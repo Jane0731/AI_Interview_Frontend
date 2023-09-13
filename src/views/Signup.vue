@@ -7,23 +7,23 @@
             <v-form v-model="form" @submit.prevent="onSubmit" class="">
 
                 <v-text-field density="compact" v-model="email" prepend-inner-icon="mdi-email-outline" type="email"
-                    color="primary" variant="underlined" :readonly="loading"
-                    :rules="[rules.required, rules.email]"></v-text-field>
+                    color="primary" variant="underlined" :readonly="loading" :rules="[rules.required, rules.email]"
+                    hint="輸入電子郵件"></v-text-field>
 
-                <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
+                <v-text-field density="compact" hint="輸入密碼" prepend-inner-icon="mdi-lock-outline"
                     :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" v-model="password" color="primary"
                     variant="underlined" :readonly="loading" :rules="[rules.required, rules.password]"
                     @click:append-inner="showPassword = !showPassword"
                     :type="showPassword ? 'text' : 'password'"></v-text-field>
 
-                <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline"
-                    :append-inner-icon="showCConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'" v-model="confirmPassword"
+                <v-text-field hint="再次輸入密碼" density="compact" prepend-inner-icon="mdi-lock-outline"
+                    :append-inner-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'" v-model="confirmPassword"
                     color="primary" variant="underlined" :readonly="loading"
                     :rules="[rules.required, rules.password, rules.comparePassword]"
-                    @click:append-inner="showCConfirmPassword = !showCConfirmPassword"
-                    :type="showCConfirmPassword ? 'text' : 'password'"></v-text-field>
+                    @click:append-inner="showConfirmPassword = !showConfirmPassword"
+                    :type="showConfirmPassword ? 'text' : 'password'"></v-text-field>
 
-                <v-text-field density="compact" prepend-inner-icon="mdi-badge-account-outline" v-model="name"
+                <v-text-field hint="輸入暱稱" density="compact" prepend-inner-icon="mdi-badge-account-outline" v-model="name"
                     color="primary" variant="underlined" :readonly="loading"
                     :rules="[rules.required, rules.name]"></v-text-field>
 
@@ -68,14 +68,14 @@ const confirmPassword = ref(null)
 const name = ref(null)
 const sex = ref(null)
 const showPassword = ref(false)
-const showCConfirmPassword = ref(false)
+const showConfirmPassword = ref(false)
 const userStore = useUserStore()
 const resultStore = useResultStore()
 
 const onSubmit = async () => {
     if (!form.value) return
     loading.value = true
-    if(sex.value=='O') sex.value=null
+    if (sex.value == 'O') sex.value = null
     await userStore.register(name.value, sex.value, email.value, password.value)
     loading.value = false
     if (userStore.isSuccessRegist) router.push("/login")
