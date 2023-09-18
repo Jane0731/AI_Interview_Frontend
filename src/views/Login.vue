@@ -15,7 +15,7 @@
 
             <v-text-field density="compact" prepend-inner-icon="mdi-lock-outline" class="mb-2"
                 :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" v-model="password" color="primary"
-                variant="underlined" :readonly="loading" :rules="[rules.required]"
+                variant="underlined" :readonly="loading" :rules="[rules.required,rules.password]"
                 @click:append-inner="showPassword = !showPassword"
                 :type="showPassword ? 'text' : 'password'"></v-text-field>
             <v-card class="mb-4" :color="resultStore.result.type" variant="tonal" v-if="resultStore.result.message">
@@ -39,14 +39,14 @@
     </v-card>
 </template>
 <script setup>
-import { ref,inject } from 'vue'
+import { ref, inject, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useResultStore } from '@/stores/result';
 
 const authStore = useAuthStore()
 const resultStore = useResultStore()
-const reload=inject("reload")
+const reload = inject("reload")
 
 const router = useRouter()
 const form = ref(false)
@@ -56,13 +56,13 @@ const password = ref(null)
 const showPassword = ref(false)
 const onSubmit = async () => {
     if (!form.value) return
-    loading.value=true
+    loading.value = true
     await authStore.login(email.value, password.value)
-    loading.value=false
-    if (authStore.isAuthorized){
+    loading.value = false
+    if (authStore.isAuthorized) {
         router.push("/profile")
         reload()
-    } 
+    }
 }
 
 const rules = {
@@ -79,6 +79,8 @@ const rules = {
 }
 
 const onSignup = () => {
+    resultStore.clear()
+
     router.push({
         name: 'Signup',
     })

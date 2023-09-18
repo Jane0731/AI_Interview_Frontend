@@ -54,7 +54,7 @@
     </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user';
 import { useResultStore } from '@/stores/result';
@@ -76,9 +76,9 @@ const onSubmit = async () => {
     if (!form.value) return
     loading.value = true
     if (sex.value == 'O') sex.value = null
-    await userStore.register(name.value, sex.value, email.value, password.value)
     loading.value = false
-    if (userStore.isSuccessRegist) router.push("/login")
+    if (await userStore.register(name.value, sex.value, email.value, password.value))
+        router.push("/login")
 }
 
 const rules = {
@@ -101,6 +101,7 @@ const rules = {
 }
 
 const onLogin = () => {
+    resultStore.clear()
     router.push({
         name: 'Login',
     })

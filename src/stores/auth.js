@@ -20,6 +20,8 @@ export const useAuthStore = defineStore("auth", () => {
         isAuthorized.value = true
         localStorage.setItem("token", response.data.access_token);
         localStorage.setItem("userId", response.data.user_id);
+        localStorage.setItem("name", response.data.user_id);
+
 
         await userStore.setToken(response.data.access_token)
       })
@@ -34,7 +36,6 @@ export const useAuthStore = defineStore("auth", () => {
       .then(async (response) => {
         const userStroe = useUserStore()
         localStorage.removeItem("token")
-        console.log("logout")
         await userStroe.setToken("")
       })
       .catch((error) => {

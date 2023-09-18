@@ -1,26 +1,26 @@
-import { ref,reactive } from "vue";
+import { ref, reactive } from "vue";
 import { defineStore } from "pinia";
 import axios from "@/api/axios.config";
 import { useResultStore } from "./result";
+import { useAuthStore } from "./auth";
 
 export const useUserStore = defineStore("user", () => {
   const userId = ref(null);
   const name = ref("");
-  const token = ref("")
-  const isSuccessRegist = ref(false)
-  const user=reactive({})
-  const discussionPosts=reactive([])
-  const experiencePosts=reactive([])
+  const token = ref("");
+  const user = reactive({});
+  const discussionPosts = reactive([]);
+  const experiencePosts = reactive([]);
 
   const setToken = async (accessToken) => {
-    token.value = accessToken
-  }
+    token.value = accessToken;
+  };
   const getToken = () => {
-    return token.value
-  }
+    return token.value;
+  };
   const setUserId = (id) => {
-    userId.value = id
-  }
+    userId.value = id;
+  };
   const getUserData = async () => {
     await axios
       .get("/auth/profile")
@@ -31,7 +31,7 @@ export const useUserStore = defineStore("user", () => {
         console.log(error);
       });
   };
-  const getDiscussionPost=async()=>{
+  const getDiscussionPost = async () => {
     await axios
       .get("/auth/discussion")
       .then((response) => {
@@ -40,8 +40,8 @@ export const useUserStore = defineStore("user", () => {
       .catch((error) => {
         console.log(error);
       });
-  }
-  const getExperiencePost=async()=>{
+  };
+  const getExperiencePost = async () => {
     await axios
       .get("/auth/experience")
       .then((response) => {
@@ -50,30 +50,78 @@ export const useUserStore = defineStore("user", () => {
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
   const register = async (name, sex, email, password) => {
-    const json = JSON.stringify({
-      name,
-      sex,
-      email,
-      password,
-    });
-    await axios
-      .post("/auth/register", JSON.parse(json))
-      .then((response) => {
-        const resultStore = useResultStore()
-        resultStore.clear()
-        console.log("test user")
-        isSuccessRegist.value = true
-      })
-      .catch((error) => {
-        const resultStore = useResultStore()
-        for (let errorMessage in error.response.data.errors) {
-          resultStore.error(error.response.data.errors[errorMessage][0])
-          break
-        }
+    return new Promise(async (resolve, reject) => {
+      const json = JSON.stringify({
+        name,
+        sex,
+        email,
+        password,
       });
-  }
+      await axios
+        .post("/auth/register", JSON.parse(json))
+        .then((response) => {
+          const resultStore = useResultStore();
+          resultStore.clear();
+          resolve(true);
+        })
+        .catch((error) => {
+          const resultStore = useResultStore();
+          for (let errorMessage in error.response.data.errors) {
+            resultStore.error(error.response.data.errors[errorMessage][0]);
+            break;
+          }
+          reject(false);
 
-  return { userId,getDiscussionPost,getExperiencePost,discussionPosts,experiencePosts, name, setToken,getUserData, token, getToken, isSuccessRegist, register, setUserId,user };
+        });
+    });
+  };
+  const restPassword = async (
+    password,
+    new_password,
+    new_password_confirmation
+  ) => {
+    return new Promise(async (resolve, reject) => {
+      const json = JSON.stringify({
+        password,
+        new_password,
+        new_password_confirmation,
+      });
+      await axios
+        .post("/auth/reset-password", JSON.parse(json))
+        .then((response) => {
+          const resultStore = useResultStore();
+          resultStore.clear();
+          const authStroe = useAuthStore();
+          authStroe.logout();
+          resolve(true);
+        })
+        .catch((error) => {
+          const resultStore = useResultStore();
+          for (let errorMessage in error.response.data.errors) {
+            resultStore.error(error.response.data.errors[errorMessage][0]);
+            break;
+          }
+          reject(false);
+        });
+    });
+  };
+
+  return {
+    userId,
+    getDiscussionPost,
+    getExperiencePost,
+    discussionPosts,
+    experiencePosts,
+    name,
+    setToken,
+    getUserData,
+    token,
+    getToken,
+    register,
+    setUserId,
+    user,
+    restPassword,
+  };
 });

@@ -42,7 +42,7 @@
                 </v-btn>
             </div>
             <v-dialog v-model="showDialog" width="30%">
-                <v-sheet rounded="lg" class="text-center ">
+                <v-sheet rounded="lg">
                     <v-row justify="end" no-gutters class="flex-row align-center">
                         <v-col>
                             <v-spacer />
@@ -61,7 +61,8 @@
                             <v-text-field density="compact" label="舊密碼"
                                 :append-inner-icon="showOldPassword ? 'mdi-eye' : 'mdi-eye-off'" v-model="oldPassword"
                                 color="primary" variant="outlined" :readonly="loading"
-                                :rules="[rules.required, rules.password]" @click:append-inner="showOldPassword = !showOldPassword"
+                                :rules="[rules.required, rules.password]"
+                                @click:append-inner="showOldPassword = !showOldPassword"
                                 :type="showOldPassword ? 'text' : 'password'">
                             </v-text-field>
                         </div>
@@ -82,11 +83,19 @@
                                 @click:append-inner="showConfirmPassword = !showConfirmPassword"
                                 :type="showConfirmPassword ? 'text' : 'password'"></v-text-field>
                         </div>
+                        <v-card class="text-h6 ma-4" :color="resultStore.result.type" variant="tonal"
+                            v-if="resultStore.result.message">
+                            <v-card-text>
+                                {{ resultStore.result.message }}
+                            </v-card-text>
+                        </v-card>
+                        <div class="text-h6 ma-4 text-center">
+                            <v-btn :disabled="!form" color="primary" @click.prevent="onPasswordSubmit" type="submit"
+                                class="mb-2 ">
+                                <div class="text-h6 ">送出</div>
+                            </v-btn>
+                        </div>
 
-                        <v-btn :disabled="!form" color="primary" @click.prevent="onPasswordSubmit" type="submit"
-                            class="mb-2">
-                            <div class="text-h6">送出</div>
-                        </v-btn>
                     </v-form>
                 </v-sheet>
             </v-dialog>
@@ -95,9 +104,13 @@
 </template>
 <script setup>
 import { onMounted, computed } from 'vue';
-
+import { useResultStore } from '@/stores/result';
+import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user';
 import { ref } from 'vue';
+const resultStore = useResultStore()
+const router = useRouter()
+
 const userStore = useUserStore()
 const showDialog = ref(false)
 onMounted(async () => {
@@ -128,11 +141,11 @@ const rules = {
         return value.length <= 20 || '最多輸入20個字元'
     }
 }
-const closeDialog=()=>{
-    showDialog.value=!showDialog.value
-    oldPassword.value=null
-    password.value=null
-    confirmPassword.value=null
+const closeDialog = () => {
+    showDialog.value = !showDialog.value
+    oldPassword.value = null
+    password.value = null
+    confirmPassword.value = null
 
 }
 const openUpdateProfile = () => {
@@ -151,12 +164,16 @@ const changeBirth = computed(() => {
     return userStore.user?.birthday ? userStore.user?.birthday : '尚無資料'
 })
 const form = ref(false)
+
 const onPasswordSubmit = async () => {
     if (!form.value) return
-    console.log(oldPassword.value)
-    console.log(password.value)
-    console.log(confirmPassword.value)
+    if(await userStore.restPassword(oldPassword.value, password.value, confirmPassword.value)){
+        closeDialog()
+        alert("密碼更新成功，請重新登入")
+        router.push("/Login");
 
+    }
+        
 }
 </script>
 
