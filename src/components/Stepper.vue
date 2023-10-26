@@ -1,12 +1,12 @@
 <template>
-    <v-stepper complete v-model="stepperStore.step">
+    <v-stepper complete  v-model="stepperStore.step">
         <v-stepper-header>
 
             <v-stepper-item value="1" title="模擬面試系統說明"></v-stepper-item>
 
             <v-divider></v-divider>
 
-            <v-stepper-item value="2" title="模擬面試情境設定"></v-stepper-item>
+            <v-stepper-item value="2" title="模擬面試職缺選擇"></v-stepper-item>
             <v-divider></v-divider>
 
             <v-stepper-item value="3" title="設備測試"></v-stepper-item>

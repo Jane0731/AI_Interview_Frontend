@@ -69,7 +69,7 @@ const rules = {
     required: value => !!value || '欄位必填',
     password: value => {
         const pattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
-        return pattern.test(value) || '密碼需八個字元以上，至少包含一個字母和一個數字'
+        return pattern.test(value) || '密碼需八個字元以上,至少包含一個字母和一個數字'
     },
 
     email: value => {

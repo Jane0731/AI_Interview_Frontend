@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-row justify="center">
-            <v-col cols="9">
+            <v-col cols="10">
                 <div>
                     <Stepper ></Stepper>
                     <StepOne v-if="stepperStore.step==0"/>

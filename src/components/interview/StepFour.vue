@@ -5,7 +5,7 @@
         </template>
         <template v-slot:card-text>
             <v-sheet width="100%" height="300" class="my-3 text-h3 d-flex align-center justify-center">
-                <InterviewSpeechQuestion ref="childComponentRef"/>
+                <InterviewSpeechQuestion ref="childComponentRef" />
             </v-sheet>
             <div class="d-flex justify-center mb-6">
                 <v-btn @click="endInterview ? goStepFive() : nextQuestion()" color="primary" class="text-center mt-5 "
@@ -15,28 +15,40 @@
                     </div>
                 </v-btn>
             </div>
-
         </template>
     </InterviewWindow>
 </template>
 <script setup>
+
 import InterviewWindow from '@/components/InterviewWindow.vue';
 import InterviewSpeechQuestion from '@/components/interview/InterviewSpeechQuestion.vue';
-import { useStepperStore } from '@/stores/stepper';
-import { computed ,ref} from 'vue';
+import { useInterviewStore } from '@/stores/interview';
+import { computed, ref } from 'vue';
 import { useQuestionStore } from '@/stores/questions';
+
 const childComponentRef = ref(null);
 
-
-const stepperStore = useStepperStore()
+const interviewStore = useInterviewStore
 const questionStore = useQuestionStore()
-const nextQuestion = () => {
+const nextQuestion = async () => {
+
+    childComponentRef.value.onStopRecord(questionStore.getQuestion.id)
+
     questionStore.addProgress()
-    childComponentRef.value.greet();
+
+    childComponentRef.value.listenForSpeechEvents()
+    childComponentRef.value.setQuestion(questionStore.getQuestion.question);
+
+    childComponentRef.value.greet(questionStore.getQuestion.question);
+
 }
 
 const endInterview = computed(() => {
     return questionStore.progress == questionStore.total
 })
-const goStepFive = () => stepperStore.addStep()
+const goStepFive = async () => {
+    childComponentRef.value.onStopRecord(questionStore.getQuestion.id)
+    questionStore.addProgress()
+
+}
 </script>

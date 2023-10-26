@@ -7,8 +7,6 @@
         </v-sheet>
         <v-card-text>
             <slot name="card-text"></slot>
-
-            
         </v-card-text>
 
 

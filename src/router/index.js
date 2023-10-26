@@ -6,6 +6,11 @@ const routes = [
     component: () => import("@/layouts/Default.vue"),
     children: [
       {
+        path: "",
+        name: "Index",
+        component: () => import("@/views/Index.vue"),
+      },
+      {
         path: "discussion/all",
         name: "AllDiscussions",
         component: () => import("@/views/AllDiscussions.vue"),
@@ -65,6 +70,7 @@ const routes = [
         // },
         component: () => import("@/views/Interview.vue"),
       },
+      
     ],
   },
   

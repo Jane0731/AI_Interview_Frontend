@@ -127,7 +127,7 @@ const rules = {
     required: value => !!value || '欄位必填',
     password: value => {
         const pattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
-        return pattern.test(value) || '密碼需八個字元以上，至少包含一個字母和一個數字'
+        return pattern.test(value) || '密碼需八個字元以上,至少包含一個字母和一個數字'
     },
 
     email: value => {
@@ -155,13 +155,13 @@ const changeSex = computed(() => {
     return userStore.user?.sex == 'F' ? '女' : userStore.user?.sex == 'M' ? '男' : '其他'
 })
 const changeName = computed(() => {
-    return userStore.user?.name ? userStore.user?.name : '尚無資料'
+    return userStore.user?.name ? userStore.user?.name : '無提供資料'
 })
 const changeMail = computed(() => {
-    return userStore.user?.email ? userStore.user?.email : '尚無資料'
+    return userStore.user?.email ? userStore.user?.email : '無提供資料'
 })
 const changeBirth = computed(() => {
-    return userStore.user?.birthday ? userStore.user?.birthday : '尚無資料'
+    return userStore.user?.birthday ? userStore.user?.birthday : '無提供資料'
 })
 const form = ref(false)
 
@@ -169,7 +169,7 @@ const onPasswordSubmit = async () => {
     if (!form.value) return
     if(await userStore.restPassword(oldPassword.value, password.value, confirmPassword.value)){
         closeDialog()
-        alert("密碼更新成功，請重新登入")
+        alert("密碼更新成功,請重新登入")
         router.push("/Login");
 
     }

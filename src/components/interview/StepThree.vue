@@ -4,7 +4,7 @@
             <div class="text-h4">設備測試</div>
         </template>
         <template v-slot:card-text>
-            <v-row justify="center">
+            <v-row justify="space-around" align="center">
                 <v-col cols="6">
                     <div class="text-h6">音量調整</div>
 
@@ -19,8 +19,8 @@
                     </v-slider>
                 </v-col>
                 <v-col cols="2">
-                   <v-btn @click="greet()">
-                     開始測試
+                   <v-btn variant="outlined" @click="greet()" prepend-icon="mdi-gesture-tap" size="x-large">
+                     點我測試
                    </v-btn>
                 </v-col>
             </v-row>
