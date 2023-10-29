@@ -8,7 +8,7 @@
         <template v-slot:card-text>
             <v-row justify="space-around">
                 <v-col cols="8" class="ma-2 pa-4 text-body-1">
-                    
+
                     <div class="d-flex flex-row align-center">
                         <div class="ma-2 pa-2 font-weight-bold">職務類別</div>
                         <v-select class="ma-2 pa-2 " v-model="jobType" :items="interviewStore.jobType"
@@ -21,7 +21,7 @@
                         <v-select placeholder="請選擇職缺" class="ma-2 pa-2 " :items="jobData" :itemProps="itemProps"
                             v-model="position" variant="underlined"></v-select>
                     </div>
-                    
+
                     <v-divider></v-divider>
                     <div class="d-flex flex-row flex-wrap align-center">
                         <div class="ma-2 pa-2 font-weight-bold">職缺介紹</div>
@@ -59,18 +59,16 @@
                         <div v-else class="ma-2 pa-2 ">無提供資料</div>
                     </div>
                     <v-divider></v-divider>
-                    <v-alert type="error" title="請選擇職缺" v-if="isShowAlert"
-                        text="請選擇職缺後，才可進行面試下一步"
+                    <v-alert type="error" title="請選擇職缺" v-if="isShowAlert" text="請選擇職缺後，才可進行面試下一步"
                         variant="tonal"></v-alert>
                     <div class="d-flex justify-center mb-6">
-                        <v-btn @click="goStepThree() " color="primary" class="text-center mt-5 "
-                            size="x-large" width="60%">
+                        <v-btn @click="goStepThree()" color="primary" class="text-center mt-5 " size="x-large" width="60%">
                             <div class="text-h5">
                                 開始設備測試
                             </div>
                         </v-btn>
                     </div>
-                    
+
                 </v-col>
             </v-row>
 
@@ -96,26 +94,23 @@ const jobSkill = ref([])
 const jobMajor = ref([])
 const jobTool = ref([])
 const jobType = ref('')
-
 const jobData = ref([])
 const isShowAlert = ref(false)
 const showAlert = () => {
-    isShowAlert.value=true
-    console.log("123")
+    isShowAlert.value = true
     setTimeout(() => {
         isShowAlert.value = false
     }, 3000)
 }
 const goStepThree = async () => {
-    if(!isSuccesss.value){
+    if (!isSuccesss.value) {
         showAlert()
         return
     }
-    console.log("456")
     await interviewStore.savePosition({
         position: {
             type: interviewStore.selectJobType,
-            position: position.value,
+            position: position.value.position,
             id: jobId.value,
             desc: jobDetail.value,
             skill: jobSkill.value,
@@ -123,7 +118,6 @@ const goStepThree = async () => {
             tool: jobTool.value,
             company: jobComapny.value
         }
-
     })
     stepperStore.addStep()
 }
@@ -135,21 +129,31 @@ const setJobData = (value) => {
 const itemProps = (item) => {
 
     return {
-        title: item[5],
-        subtitle: item[3],
+        title: item.position,
+        subtitle: item.company,
         value: {
-            detail: item[2],
-            skill: item[6],
-            major: item[4],
-            tool: item[7],
-            id: item[0],
-            company: item[5]
+            detail: item.desc,
+            skill: item.skill,
+            major: item.major,
+            tool: item.tools,
+            id: item.id,
+            company: item.company,
+            position: item.position
         },
     }
 }
 
 watch(jobType, (newVal, oldVal) => {
     setJobData(newVal)
+    position.value = {
+        detail: '',
+        skill: [],
+        major: [],
+        tool: [],
+        id: '',
+        company: '',
+        position: ''}
+   
 })
 watch(position, (newVal) => {
     jobId.value = newVal.id
@@ -163,5 +167,7 @@ watch(position, (newVal) => {
 onMounted(async () => {
     await interviewStore.getPostition()
     jobType.value = interviewStore.jobType[0]
+    interviewStore.selectJobType = jobType.value
+    jobData.value = interviewStore.jobArray
 })
 </script>

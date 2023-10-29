@@ -13,13 +13,12 @@ import { useStepperStore } from '@/stores/stepper';
 import RecordRTC from "recordrtc"
 import { reactive } from 'vue';
 import Translator from '@/lib/translator'
-import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
 const question = ref('')
 const setQuestion = (data) => question.value = data
 const data = reactive({
   key: '',
-  // key: 'ec7f5e2757ce425d90a64da8722970b4',
+  // key: 'dd2f92fabdfc44b3a8e62281302e2b4f',
   region: 'eastus',
   fromLanguage: 'zh-TW',
   toLanguages: 'zh-TW'
@@ -30,7 +29,6 @@ const endTime = ref(null)
 
 const blobData = ref('')
 const recorder = ref(null)
-const times = ref(1)
 const speechStore = useSpeechStore()
 const interviewStore = useInterviewStore()
 const questionStore = useQuestionStore()
@@ -46,10 +44,11 @@ const oldOffset = ref('')
 
 // }
 // )
-const loading = ref(false)
 const synth = window.speechSynthesis
 const greetingSpeech = new window.SpeechSynthesisUtterance()
 const greet = (question, id) => {
+  questionStore.startloading()
+
   greetingSpeech.pitch = speechStore.pitch
   greetingSpeech.volume = speechStore.volume
   greetingSpeech.rate = speechStore.rate
@@ -62,8 +61,8 @@ onMounted(() => {
 })
 const listenForSpeechEvents = () => {
 
-  loading.value = true;
   greetingSpeech.onend = () => {
+
     play()
   }
 
@@ -83,6 +82,8 @@ const play = async () => {
   onStartRecord()
 }
 const onStartRecord = async () => {
+  questionStore.endloading()
+
   recorder.value = RecordRTC(stream.value, { type: "video" })
   startTime.value = performance.now()
   await recorder.value.startRecording()
@@ -102,11 +103,9 @@ const onStopRecord = async (id) => {
         blobData.value = audioBase64.split(',').pop()
         // onTranslateStop()
         let wordData = answer.value.join()
-        console.log("test")
         await interviewStore.analyzeInterview(id, {
           // answer: wordData,
           answer: "測試",
-
           speaking_speed: wordData.length / recordingDuration,
           video: blobData.value
         })
@@ -115,29 +114,28 @@ const onStopRecord = async (id) => {
         console.log(questionStore.progress, questionStore.total)
         if ((questionStore.progress - 1) == questionStore.total) {
           const stepperStore = useStepperStore()
-          console.log("213")
           stepperStore.addStep()
         }
       }
     })
   })
 }
-// const onTranslateStart = () => {
-//   translator.start({
-//     data
-//   })
-//   loading.value = false
-// }
-// const onTranslateStop = () => {
-//   translator.stop()
+const onTranslateStart = () => {
+  // translator.start({
+  //   data
+  // })
+}
+const onTranslateStop = () => {
+  // translator.stop()
 
-// }
+}
 
 
 defineExpose({
   greet,
   onStopRecord,
   setQuestion,
-  listenForSpeechEvents
+  listenForSpeechEvents,
+
 });
 </script>

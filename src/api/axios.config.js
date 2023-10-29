@@ -4,8 +4,8 @@ import { useResultStore } from "@/stores/result";
 
 const axios = (baseURL) => {
   const instance = Axios.create({
-    baseURL: "http://localhost:8000/api",
-    // baseURL: "http://192.168.0.11:8000/api",
+    baseURL: "https://interviewai.nutc.edu.tw/api",
+    // baseURL: "http://localhost:8000/api",
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",

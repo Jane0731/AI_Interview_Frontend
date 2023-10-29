@@ -23,6 +23,8 @@
 import InterviewStepOneCardVue from '@/components/InterviewStepOneCard.vue';
 import InterviewWindow from '@/components/InterviewWindow.vue';
 import { useStepperStore } from '@/stores/stepper';
+
+
 const stepperStore = useStepperStore()
 const items = [{
     title: "AI技術支持",

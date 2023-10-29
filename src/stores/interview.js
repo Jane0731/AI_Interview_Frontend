@@ -11,11 +11,33 @@ export const useInterviewStore = defineStore("interview", () => {
     const answers = ref([])
     const jobs = ref([])
     const errorMessage = ref('')
-    const isLoading = ref(true)
     const selectJobType = ref('')
-    const getRecordMotions = computed(() => record.value.motions)
-    const getRecordQuestions = computed(() => record.value.interview_questions)
-    const getRecordPosition = computed(() => JSON.parse(record.value.position))
+    const isLoading = ref(true)
+    const getRecordQuestions = computed(() => {
+        const data = record.value.interview_questions
+        const translationMap = {
+            'hand_on_hip': '手揮動放低於超過偵測畫面',
+            'hand_above_head': '手揮動高度超過頭頂',
+            'hand_on_head': '手頭揮動高度在頭',
+            'hand_on_neck': '手揮動高度在脖子',
+            'hand_below_chest': '手揮動於胸部以下的位置',
+            'hand_on_chest': '手揮動高度於胸部附',
+            'hand_crossed_chest': '手交叉於胸前'
+        };
+        let translatedData = {};
+        data.forEach((item) => {
+            translatedData = {}
+            Object.keys(item.motion).forEach((key) => {
+                translatedData[translationMap[key] || key] = item.motion[key];
+            });
+            item.motion = translatedData
+
+        })
+
+        console.log(data);
+        return record.value.interview_questions
+    })
+    const getRecordPosition = computed(() => record.value.position)
     const getRecordDate = computed(() => {
         let date = new Date(record.value.created_at)
 
@@ -31,25 +53,21 @@ export const useInterviewStore = defineStore("interview", () => {
 
     )
     const jobType = computed(() => {
-        return jobs.value.map((key) => Object.keys(key)[0])
+        return Object.keys(jobs.value)
     })
     const jobArray = computed(() => {
-        const res = jobs.value.find((key) => Object.keys(key)[0] === selectJobType.value)
-        const data = Object.values(res[selectJobType.value])
-
-        const flattened = [];
-        for (const subArray of data) {
-            flattened.push(Object.values(subArray))
-        }
-        return flattened;
+        const res = jobs.value[selectJobType.value]
+        return res;
     })
     const getRecord = async () => {
         // 取得 Python 解析的面試紀錄 API
         await axios
             .get("/interview-record/" + interviewId.value)
             .then(async (response) => {
+                // const questionStore = useQuestionStore()
+
+                // questionStore.addProgress()
                 isLoading.value = false
-                console.log(response.data)
                 record.value = response.data
 
             })
@@ -84,7 +102,6 @@ export const useInterviewStore = defineStore("interview", () => {
                 .post("/interview-record", position)
                 .then((response) => {
                     const questionStore = useQuestionStore()
-                    isLoading.value = false
                     questionStore.setQuestions(response.data.questions)
                     interviewId.value = response.data.id
                 })
@@ -115,15 +132,14 @@ export const useInterviewStore = defineStore("interview", () => {
         getPostition,
         savePosition,
         analyzeInterview,
-        getRecordPosition,
-        getRecordMotions,
+        isLoading,
         getRecordQuestions,
         selectJobType,
         jobType,
         jobArray,
         answers,
-        isLoading,
         errorMessage,
-        getRecordDate
+        getRecordDate,
+        getRecordPosition
     };
 });

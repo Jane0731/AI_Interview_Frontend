@@ -7,7 +7,7 @@
             <v-sheet width="100%" height="300" class="my-3 text-h3 d-flex align-center justify-center">
                 <InterviewSpeechQuestion ref="childComponentRef" />
             </v-sheet>
-            <div class="d-flex justify-center mb-6">
+            <div class="d-flex justify-center mb-6" v-if="questionStore.isLoading">
                 <v-btn @click="endInterview ? goStepFive() : nextQuestion()" color="primary" class="text-center mt-5 "
                     size="x-large" width="60%">
                     <div class="text-h5">
