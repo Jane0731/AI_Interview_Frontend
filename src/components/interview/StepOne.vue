@@ -29,15 +29,15 @@ const stepperStore = useStepperStore()
 const items = [{
     title: "AI技術支持",
     subtitle: "我們的面試模擬是由最先進的人工智慧技術進行辨識，確保了高度的正確性。",
-    imgSrc: "src/assets/ai.jpg"
+    imgSrc: "public//ai.jpg"
 }, {
     title: "即時反饋",
     subtitle: "您將立即獲得針對您的模擬面試表現的個性化反饋，幫助即刻改善。",
-    imgSrc: "src/assets/feedback.jpg"
+    imgSrc: "public/feedback.jpg"
 }, {
     title: "適用於任何族群",
     subtitle: "無論您是剛開始尋找工作還是想提升現有工作的競爭力，我們提供各種行業和職位的模擬，以滿足不同需求。",
-    imgSrc: "src/assets/group.jpg"
+    imgSrc: "public/group.jpg"
 }]
 const goStepTwo = () => stepperStore.addStep()
 </script>
