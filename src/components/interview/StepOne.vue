@@ -12,7 +12,7 @@
             <div class="d-flex justify-center mb-6">
                 <v-btn @click="goStepTwo()" color="primary" class="text-center mt-5 " size="x-large" width="60%">
                     <div class="text-h5">
-                        開始面試情境設定
+                        模擬面試職缺選擇
                     </div>
                 </v-btn>
             </div>
@@ -29,15 +29,15 @@ const stepperStore = useStepperStore()
 const items = [{
     title: "AI技術支持",
     subtitle: "我們的面試模擬是由最先進的人工智慧技術進行辨識，確保了高度的正確性。",
-    imgSrc: "public//ai.jpg"
+    imgSrc: "ai.jpg"
 }, {
     title: "即時反饋",
     subtitle: "您將立即獲得針對您的模擬面試表現的個性化反饋，幫助即刻改善。",
-    imgSrc: "public/feedback.jpg"
+    imgSrc: "feedback.jpg"
 }, {
     title: "適用於任何族群",
     subtitle: "無論您是剛開始尋找工作還是想提升現有工作的競爭力，我們提供各種行業和職位的模擬，以滿足不同需求。",
-    imgSrc: "public/group.jpg"
+    imgSrc: "group.jpg"
 }]
 const goStepTwo = () => stepperStore.addStep()
 </script>
