@@ -19,8 +19,26 @@
             <div class="ma-2 pa-2 text-h6">
                 面試職缺:{{ interviewStore.getRecordPosition.company }}-{{ interviewStore.getRecordPosition.position }}
             </div>
+            <!-- <div class="ma-2 pa-2 text-h6">
+                整體分析
+            </div>
+            <div>
+                <v-sheet color="white" elevation="4" height="100" rounded shaped width="163">
+
+                    <Pie :barData="{
+                        labels: Object.keys(recordQuestion.motion),
+                        datasets: [{
+                            label: '出現次數',
+                            backgroundColor: '#f87979',
+                            data: Object.values(recordQuestion.motion),
+                            borderWidth: 1
+                        }]
+                    }" />
+                </v-sheet>
+
+            </div> -->
             <div class="ma-2 pa-2 text-h6">
-                面試分析
+                個別分析
             </div>
             <div class="ma-2 pa-2 text-h6">
                 <v-expansion-panels>
@@ -93,6 +111,7 @@ import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
 import InterviewWindow from '@/components/InterviewWindow.vue';
 import { onMounted } from 'vue';
 import Bar from '../Bar.vue';
+import Pie from '../Pie.vue';
 
 const interviewStore = useInterviewStore()
 onMounted(async () => {

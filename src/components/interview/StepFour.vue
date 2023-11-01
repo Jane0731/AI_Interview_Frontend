@@ -7,9 +7,9 @@
             <v-sheet width="100%" height="300" class="my-3 text-h3 d-flex align-center justify-center">
                 <InterviewSpeechQuestion ref="childComponentRef" />
             </v-sheet>
-            <div class="d-flex justify-center mb-6" >
-                <v-btn :loading="!questionStore.isLoading" @click="endInterview ? goStepFive() : nextQuestion()" color="primary" class="text-center mt-5 "
-                    size="x-large" width="60%">
+            <div class="d-flex justify-center mb-6">
+                <v-btn :disabled="!questionStore.isLoading" @click="endInterview ? goStepFive() : nextQuestion()"
+                    color="primary" class="text-center mt-5 " size="x-large" width="60%">
                     <div class="text-h5">
                         {{ endInterview ? "結束面試" : "下一題" }}
                     </div>
@@ -25,8 +25,10 @@ import InterviewSpeechQuestion from '@/components/interview/InterviewSpeechQuest
 import { useInterviewStore } from '@/stores/interview';
 import { computed, ref } from 'vue';
 import { useQuestionStore } from '@/stores/questions';
+import { useStepperStore } from '@/stores/stepper';
 
 const childComponentRef = ref(null);
+const stepperStore = useStepperStore()
 
 const interviewStore = useInterviewStore
 const questionStore = useQuestionStore()
@@ -49,6 +51,8 @@ const endInterview = computed(() => {
 const goStepFive = async () => {
     childComponentRef.value.onStopRecord(questionStore.getQuestion.id)
     questionStore.addProgress()
-
+    if ((questionStore.progress - 1) == questionStore.total) {
+        stepperStore.addStep()
+    }
 }
 </script>

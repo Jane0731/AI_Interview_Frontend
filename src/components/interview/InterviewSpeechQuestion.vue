@@ -1,24 +1,31 @@
 <template>
   <!-- <div>{{ question }}</div> -->
-  <video :srcObject="stream" width="500" autoplay></video>
+  <div v-if="!questionStore.isLoading">
+    <fade-loader loading="true" color="grey" size="400px"></fade-loader>
+  </div>
+  <div v-else>
+    <video :srcObject="stream" width="500" autoplay></video>
+
+  </div>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeMount } from 'vue';
+import FadeLoader from 'vue-spinner/src/FadeLoader.vue'
+
+import { ref, onMounted, reactive } from 'vue';
 import { useSpeechStore } from '@/stores/speech';
 import { useInterviewStore } from '@/stores/interview';
 import { useQuestionStore } from '@/stores/questions';
 
-import { useStepperStore } from '@/stores/stepper';
+import { AILabsYatingASR } from "@ailabs-yating/asr-client-sdk-javascript"
 
 import RecordRTC from "recordrtc"
-import { reactive } from 'vue';
 import Translator from '@/lib/translator'
 
 const question = ref('')
 const setQuestion = (data) => question.value = data
 const data = reactive({
-  key: '',
-  // key: 'dd2f92fabdfc44b3a8e62281302e2b4f',
+  // key: '',
+  key: 'dd2f92fabdfc44b3a8e62281302e2b4f',
   region: 'eastus',
   fromLanguage: 'zh-TW',
   toLanguages: 'zh-TW'
@@ -33,17 +40,17 @@ const speechStore = useSpeechStore()
 const interviewStore = useInterviewStore()
 const questionStore = useQuestionStore()
 const oldOffset = ref('')
-// const translator = new Translator((captions) => {
-//   if (oldOffset.value == captions.translations.offset) {
-//     answer.value[answer.value.length - 1] = captions.translations.languages.zh;
-//   }
-//   else {
-//     answer.value.push(captions.translations.languages.zh)
-//     oldOffset.value = captions.translations.offset
-//   }
+const translator = new Translator((captions) => {
+  if (oldOffset.value == captions.translations.offset) {
+    answer.value[answer.value.length - 1] = captions.translations.languages.zh;
+  }
+  else {
+    answer.value.push(captions.translations.languages.zh)
+    oldOffset.value = captions.translations.offset
+  }
 
-// }
-// )
+}
+)
 const synth = window.speechSynthesis
 const greetingSpeech = new window.SpeechSynthesisUtterance()
 const greet = (question, id) => {
@@ -55,7 +62,21 @@ const greet = (question, id) => {
   greetingSpeech.text = question
   synth.speak(greetingSpeech)
 }
+// const connect = async () => {
+//   const asrSDK = new AILabsYatingASR(async () => {
+//     const { data } = await axios.post('https://tts.api.yating.tw/token', { f9c775a605468e54ce4441877ced76773fefec88 })
+//     return data.token
+//   })
+//   asrSDK.on("sentence", (event) => {
+//     console.log(`ASR SENTENCE: ${JSON.stringify(event)}`)
+//     // const history = [...asrHistory.current]
+//     // history[history.length - 1] = event.asr_sentence
+//     // setAsrResult(history)
+//   })
+
+// }
 onMounted(() => {
+  // connect()
   listenForSpeechEvents()
   greet(questionStore.questions[0].question)
 })
@@ -71,8 +92,8 @@ const stream = ref(null)
 const constraints = {
   audio: false,
   video: {
-    width: { min: 1024, ideal: 1280, max: 1920 },
-    height: { min: 576, ideal: 720, max: 1080 },
+    width: {ideal: 640 },
+    height: { ideal: 360 },
     facingMode: 'environment',
   },
 }
@@ -87,7 +108,7 @@ const onStartRecord = async () => {
   recorder.value = RecordRTC(stream.value, { type: "video" })
   startTime.value = performance.now()
   await recorder.value.startRecording()
-  // onTranslateStart()
+  onTranslateStart()
 }
 const onStopRecord = async (id) => {
   await recorder.value.stopRecording(() => {
@@ -101,32 +122,28 @@ const onStopRecord = async (id) => {
       reader.onloadend = async () => {
         let audioBase64 = reader.result;
         blobData.value = audioBase64.split(',').pop()
-        // onTranslateStop()
+        onTranslateStop()
         let wordData = answer.value.join()
         await interviewStore.analyzeInterview(id, {
-          // answer: wordData,
-          answer: "測試",
+          answer: wordData,
+          // answer: "測試",
           speaking_speed: wordData.length / recordingDuration,
           video: blobData.value
         })
         answer.value = []
         blobData.value = ''
-        console.log(questionStore.progress, questionStore.total)
-        if ((questionStore.progress - 1) == questionStore.total) {
-          const stepperStore = useStepperStore()
-          stepperStore.addStep()
-        }
+
       }
     })
   })
 }
 const onTranslateStart = () => {
-  // translator.start({
-  //   data
-  // })
+  translator.start({
+    data
+  })
 }
 const onTranslateStop = () => {
-  // translator.stop()
+  translator.stop()
 
 }
 

@@ -25,16 +25,29 @@ export const useInterviewStore = defineStore("interview", () => {
             'hand_crossed_chest': '手交叉於胸前'
         };
         let translatedData = {};
+        let motiontimesData = {
+            'hand_on_hip': 0,
+            'hand_above_head': 0,
+            'hand_on_head': 0,
+            'hand_on_neck': 0,
+            'hand_below_chest': 0,
+            'hand_on_chest': 0,
+            'hand_crossed_chest': 0
+        };
+
         data.forEach((item) => {
             translatedData = {}
             Object.keys(item.motion).forEach((key) => {
                 translatedData[translationMap[key] || key] = item.motion[key];
+                console.log(key)
+                motiontimesData[translationMap[key] || key]= motiontimesData[translationMap[key] || key] + item.motion[key]
             });
+            console.log(motiontimesData)
             item.motion = translatedData
 
         })
+        console.log(motiontimesData)
 
-        console.log(data);
         return record.value.interview_questions
     })
     const getRecordPosition = computed(() => record.value.position)
@@ -64,9 +77,7 @@ export const useInterviewStore = defineStore("interview", () => {
         await axios
             .get("/interview-record/" + interviewId.value)
             .then(async (response) => {
-                // const questionStore = useQuestionStore()
 
-                // questionStore.addProgress()
                 isLoading.value = false
                 record.value = response.data
 
