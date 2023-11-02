@@ -7,14 +7,49 @@ import { computed } from "vue";
 
 export const useInterviewStore = defineStore("interview", () => {
     const interviewId = ref('')
-    const record = ref({});
+    let record = {};
     const answers = ref([])
     const jobs = ref([])
     const errorMessage = ref('')
     const selectJobType = ref('')
     const isLoading = ref(true)
+    const getAllMotionsLabel = computed(() => {
+        const data = record.interview_questions[0].motion
+        const translationMap = {
+            'hand_on_hip': '手揮動放低於超過偵測畫面',
+            'hand_above_head': '手揮動高度超過頭頂',
+            'hand_on_head': '手頭揮動高度在頭',
+            'hand_on_neck': '手揮動高度在脖子',
+            'hand_below_chest': '手揮動於胸部以下的位置',
+            'hand_on_chest': '手揮動高度於胸部附',
+            'hand_crossed_chest': '手交叉於胸前'
+        };
+        const translatedA = Object.keys(data).map((key) => translationMap[key]);
+
+        return translatedA
+    })
+    const getAllMotionsFrequency = computed(() => {
+        const data = record.interview_questions
+        const newData = {
+            'hand_on_hip': 0,
+            'hand_above_head': 0,
+            'hand_on_head': 0,
+            'hand_on_neck': 0,
+            'hand_below_chest': 0,
+            'hand_on_chest': 0,
+            'hand_crossed_chest': 0
+        }
+
+        data.map((item) => {
+            for (const key in item.motion) {
+                newData[key] = newData[key] + item.motion[key];
+            }
+        })
+
+        return Object.values(newData)
+    })
     const getRecordQuestions = computed(() => {
-        const data = record.value.interview_questions
+        const data = record.interview_questions
         const translationMap = {
             'hand_on_hip': '手揮動放低於超過偵測畫面',
             'hand_above_head': '手揮動高度超過頭頂',
@@ -39,20 +74,16 @@ export const useInterviewStore = defineStore("interview", () => {
             translatedData = {}
             Object.keys(item.motion).forEach((key) => {
                 translatedData[translationMap[key] || key] = item.motion[key];
-                console.log(key)
-                motiontimesData[translationMap[key] || key]= motiontimesData[translationMap[key] || key] + item.motion[key]
+                motiontimesData[translationMap[key] || key] = motiontimesData[translationMap[key] || key] + item.motion[key]
             });
-            console.log(motiontimesData)
             item.motion = translatedData
 
         })
-        console.log(motiontimesData)
-
-        return record.value.interview_questions
+        return data
     })
-    const getRecordPosition = computed(() => record.value.position)
+    const getRecordPosition = computed(() => record.position)
     const getRecordDate = computed(() => {
-        let date = new Date(record.value.created_at)
+        let date = new Date(record.created_at)
 
         // 获取年、月、日、小时、分钟和秒
         let year = date.getFullYear();
@@ -79,7 +110,7 @@ export const useInterviewStore = defineStore("interview", () => {
             .then(async (response) => {
 
                 isLoading.value = false
-                record.value = response.data
+                record = response.data
 
             })
             .catch((error) => {
@@ -143,6 +174,8 @@ export const useInterviewStore = defineStore("interview", () => {
         getPostition,
         savePosition,
         analyzeInterview,
+        getAllMotionsLabel,
+        getAllMotionsFrequency,
         isLoading,
         getRecordQuestions,
         selectJobType,

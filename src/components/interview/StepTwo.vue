@@ -8,7 +8,9 @@
         <template v-slot:card-text>
             <v-row justify="space-around">
                 <v-col cols="8" class="ma-2 pa-4 text-body-1">
-
+                    <div class="d-flex flex-row align-center justify-center">
+                        <div class="ma-2 pa-2 font-weight-bold ">本系統的職缺皆為從104人力銀行所抓取的資料</div>
+                    </div>
                     <div class="d-flex flex-row align-center">
                         <div class="ma-2 pa-2 font-weight-bold">職務類別</div>
                         <v-select class="ma-2 pa-2 " v-model="jobType" :items="interviewStore.jobType"

@@ -4,6 +4,9 @@
             <div class="text-h4">模擬面試結果</div>
         </template>
         <template v-slot:card-text>
+            <div class="ma-2 pa-2 text-h6 text-center">
+                正在分析面試結果，請稍後...
+            </div>
             <clip-loader loading="true" color="grey" size="40px"></clip-loader>
         </template>
     </InterviewWindow>
@@ -19,24 +22,32 @@
             <div class="ma-2 pa-2 text-h6">
                 面試職缺:{{ interviewStore.getRecordPosition.company }}-{{ interviewStore.getRecordPosition.position }}
             </div>
-            <!-- <div class="ma-2 pa-2 text-h6">
+            <div class="ma-2 pa-2 text-h6">
                 整體分析
             </div>
-            <div>
-                <v-sheet color="white" elevation="4" height="100" rounded shaped width="163">
-
+            <div class="text-center rounded">
+                <!-- <v-sheet class="d-flex align-center justify-center flex-wrap text-center mx-auto px-4" elevation="4"
+                    height="250" rounded max-width="800" width="100%"> -->
                     <Pie :barData="{
-                        labels: Object.keys(recordQuestion.motion),
+                        labels: interviewStore.getAllMotionsLabel,
                         datasets: [{
                             label: '出現次數',
-                            backgroundColor: '#f87979',
-                            data: Object.values(recordQuestion.motion),
+                            backgroundColor: [
+                                '#96CDCD',
+                                '#FFE4C4',
+                                '#FFF5EE',
+                                '#E6E6FA',
+                                '#90EE90',
+                                '#EE7942',
+                                '#8B8682'
+                            ],
+                            data: interviewStore.getAllMotionsFrequency,
                             borderWidth: 1
                         }]
                     }" />
-                </v-sheet>
+                    <!-- </v-sheet> -->
 
-            </div> -->
+            </div>
             <div class="ma-2 pa-2 text-h6">
                 個別分析
             </div>

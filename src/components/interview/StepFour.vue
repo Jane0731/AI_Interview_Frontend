@@ -11,7 +11,7 @@
                 <v-btn :disabled="!questionStore.isLoading" @click="endInterview ? goStepFive() : nextQuestion()"
                     color="primary" class="text-center mt-5 " size="x-large" width="60%">
                     <div class="text-h5">
-                        {{ endInterview ? "結束面試" : "下一題" }}
+                        {{ !questionStore.isLoading?'正在念題目，唸完後將開始面試':endInterview ? "結束面試" : "下一題" }}
                     </div>
                 </v-btn>
             </div>
@@ -22,7 +22,6 @@
 
 import InterviewWindow from '@/components/InterviewWindow.vue';
 import InterviewSpeechQuestion from '@/components/interview/InterviewSpeechQuestion.vue';
-import { useInterviewStore } from '@/stores/interview';
 import { computed, ref } from 'vue';
 import { useQuestionStore } from '@/stores/questions';
 import { useStepperStore } from '@/stores/stepper';
@@ -30,7 +29,6 @@ import { useStepperStore } from '@/stores/stepper';
 const childComponentRef = ref(null);
 const stepperStore = useStepperStore()
 
-const interviewStore = useInterviewStore
 const questionStore = useQuestionStore()
 const nextQuestion = async () => {
 
