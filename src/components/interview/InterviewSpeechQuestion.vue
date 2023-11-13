@@ -4,6 +4,7 @@
     <fade-loader loading="true" color="grey" size="400px"></fade-loader>
   </div>
   <div v-else>
+    <div class="text-subtitle-1 text-right">目前答題所剩時間</div>
     <video :srcObject="stream" width="500" autoplay></video>
 
   </div>

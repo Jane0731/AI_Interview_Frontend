@@ -38,10 +38,7 @@ import { useUserStore } from '@/stores/user';
 const userStore = useUserStore()
 onBeforeMount(async () => {
     await userStore.getDiscussionPost()
-    console.log(userStore.discussionPosts)
     await userStore.getExperiencePost()
-    console.log(userStore.experiencePosts)
-
 })
 const tab = ref("discussion")
 </script>

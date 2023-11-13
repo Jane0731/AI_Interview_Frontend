@@ -14,7 +14,7 @@
 
             <div class="d-flex flex-row text-h6 ma-4">
                 <div class="ma-2">姓名</div>
-                <v-text-field class="mx-8" density="compact" v-model="changeName" variant="outlined"></v-text-field>
+                <v-text-field class="mx-8" density="compact" v-model="name" variant="outlined"></v-text-field>
             </div>
             <div class="d-flex flex-row text-h6 ma-4">
                 <div class="ma-2">密碼</div>
@@ -115,12 +115,13 @@ const userStore = useUserStore()
 const showDialog = ref(false)
 onMounted(async () => {
     await userStore.getUserData()
+    name.value = userStore.user?.name
 })
 const oldPassword = ref(null)
 const password = ref(null)
 const confirmPassword = ref(null)
 const showOldPassword = ref(false)
-
+const name=ref(userStore.user?.name)
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 const rules = {
@@ -148,8 +149,8 @@ const closeDialog = () => {
     confirmPassword.value = null
 
 }
-const openUpdateProfile = () => {
-    console.log(changeName.value)
+const openUpdateProfile = async() => {
+    await userStore.updateProfile(name.value)
 }
 const changeSex = computed(() => {
     return userStore.user?.sex == 'F' ? '女' : userStore.user?.sex == 'M' ? '男' : '其他'

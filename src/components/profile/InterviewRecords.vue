@@ -24,12 +24,19 @@
             <div>
                 <v-pagination v-model="page" :length="4" rounded="circle"></v-pagination>
             </div>
-
         </v-card-text>
     </v-card>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { ref,onMounted } from 'vue';
+import { useUserStore } from '@/stores/user';
+const userStore = useUserStore()
+const interviewRecord=ref([])
+onMounted(async () => {
+    await userStore.getInterviewRecord()
+    interviewRecord.value=userStore.interviewRecord
+    console.log(interviewRecord.value)
+})
 const page = ref(1)
 const items = [
     {

@@ -11,6 +11,7 @@ export const useUserStore = defineStore("user", () => {
   const user = reactive({});
   const discussionPosts = reactive([]);
   const experiencePosts = reactive([]);
+  const interviewRecord = reactive([]);
 
   const setToken = async (accessToken) => {
     token.value = accessToken;
@@ -50,6 +51,36 @@ export const useUserStore = defineStore("user", () => {
       .catch((error) => {
         console.log(error);
       });
+  };
+  const getInterviewRecord = async () => {
+    await axios
+      .get("/interview-record")
+      .then((response) => {
+        Object.assign(interviewRecord, response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const updateProfile = async (
+    name
+  ) => {
+    return new Promise(async (resolve, reject) => {
+      const json = JSON.stringify({
+        name,
+      });
+      await axios
+        .patch("/auth/profile", JSON.parse(json))
+        .then((response) => {
+          const resultStore = useResultStore();
+          resultStore.clear();
+          console.log(response)
+          resolve(true);
+        })
+        .catch((error) => {
+          reject(false);
+        });
+    });
   };
   const register = async (name, sex, email, password) => {
     return new Promise(async (resolve, reject) => {
@@ -123,5 +154,8 @@ export const useUserStore = defineStore("user", () => {
     setUserId,
     user,
     restPassword,
+    updateProfile,
+    getInterviewRecord,
+    interviewRecord
   };
 });
