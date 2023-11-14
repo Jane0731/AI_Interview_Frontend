@@ -56,6 +56,65 @@ export const useUserStore = defineStore("user", () => {
     await axios
       .get("/interview-record")
       .then((response) => {
+        response.data.forEach((element) => {
+          let date = new Date(element.created_at)
+          let year = date.getFullYear();
+          let month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需要加1，并且补零
+          let day = String(date.getDate()).padStart(2, '0');
+          let hours = String(date.getHours()).padStart(2, '0');
+          let minutes = String(date.getMinutes()).padStart(2, '0');
+          let seconds = String(date.getSeconds()).padStart(2, '0');
+          element.created_at = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+          
+          const data = element.interview_questions
+          const translationMap = {
+            'hand_on_hip': '手揮動放低於超過偵測畫面',
+            'hand_above_head': '手揮動高度超過頭頂',
+            'hand_on_head': '手頭揮動高度在頭',
+            'hand_on_neck': '手揮動高度在脖子',
+            'hand_below_chest': '手揮動於胸部以下的位置',
+            'hand_on_chest': '手揮動高度於胸部附',
+            'hand_crossed_chest': '手交叉於胸前'
+          };
+          const newData = {
+            'hand_on_hip': 0,
+            'hand_above_head': 0,
+            'hand_on_head': 0,
+            'hand_on_neck': 0,
+            'hand_below_chest': 0,
+            'hand_on_chest': 0,
+            'hand_crossed_chest': 0
+          }
+          data.map((item) => {
+            for (const key in item.motion) {
+              newData[key] = newData[key] + item.motion[key];
+            }
+          })
+          const dataLabel = element.interview_questions[0].motion
+          const translatedA = Object.keys(dataLabel).map((key) => translationMap[key]);
+          element.dataLabel = translatedA
+          element.allData = Object.values(newData)
+          let translatedData = {};
+          let motiontimesData = {
+            'hand_on_hip': 0,
+            'hand_above_head': 0,
+            'hand_on_head': 0,
+            'hand_on_neck': 0,
+            'hand_below_chest': 0,
+            'hand_on_chest': 0,
+            'hand_crossed_chest': 0
+          };
+
+          data.forEach((item) => {
+            translatedData = {}
+            Object.keys(item.motion).forEach((key) => {
+              translatedData[translationMap[key] || key] = item.motion[key];
+              motiontimesData[translationMap[key] || key] = motiontimesData[translationMap[key] || key] + item.motion[key]
+            });
+            item.motion = translatedData
+          })
+          element.interview_questions = data
+        })
         Object.assign(interviewRecord, response.data);
       })
       .catch((error) => {
