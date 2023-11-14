@@ -114,7 +114,6 @@ const router = useRouter()
 const userStore = useUserStore()
 const showDialog = ref(false)
 onMounted(async () => {
-    await userStore.getUserData()
     name.value = userStore.user?.name
 })
 const oldPassword = ref(null)

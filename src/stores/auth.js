@@ -17,19 +17,19 @@ export const useAuthStore = defineStore("auth", () => {
         const userStore = useUserStore()
         const resultStore = useResultStore()
         resultStore.clear()
-        isAuthorized.value = true
         localStorage.setItem("token", response.data.access_token);
-        localStorage.setItem("userId", response.data.user_id);
-        localStorage.setItem("name", response.data.user_id);
-
-
         await userStore.setToken(response.data.access_token)
+        isAuthorized.value = true
       })
       .catch((error) => {
         const resultStore = useResultStore()
-        resultStore.error(error.response.data.message)
+        console.log(error)
+        // resultStore.error(error.response.data.message)
       });
   };
+  const setAuthorize=(value)=>{
+    isAuthorized.value = value
+  }
   const logout = async () => {
     await axios
       .get("/auth/logout")
@@ -40,9 +40,10 @@ export const useAuthStore = defineStore("auth", () => {
       })
       .catch((error) => {
         const resultStore = useResultStore()
-        resultStore.error(error.response.data.message)
+        console.log(error)
+        // resultStore.error(error.response.data.message)
       });
   };
 
-  return { login, logout, isAuthorized };
+  return { login, logout, isAuthorized ,setAuthorize};
 });

@@ -1,5 +1,7 @@
 // Composables
 import { createRouter, createWebHistory } from "vue-router";
+import { useUserStore } from "@/stores/user";
+import { useAuthStore } from "@/stores/auth";
 const routes = [
   {
     path: "/",
@@ -35,50 +37,54 @@ const routes = [
       {
         path: "profile",
         name: "Profile",
-        beforeEnter: (to) => {
-          if (to.name == "Profile" && !localStorage.getItem('token'))
-            return { name: "Login" };
-        },
         component: () => import("@/views/Profile.vue"),
       },
       {
         path: "login",
         name: "Login",
-        beforeEnter: (to) => {
-          if (to.name == "Login" && localStorage.getItem('token'))
-            return { name: "Profile" };
-        },
         component: () => import("@/views/Login.vue"),
       },
       {
         path: "signup",
         name: "Signup",
-        beforeEnter: (to) => {
-
-          if (to.name == "Signup" && localStorage.getItem('token'))
-            return { name: "Profile" };
-        },
         component: () => import("@/views/Signup.vue"),
       },
       {
         path: "interview",
         name: "Interview",
-        // beforeEnter: (to) => {
 
-        //   if (to.name == "Interview" && !localStorage.getItem('token'))
-        //   return { name: "Login" };
-        // },
         component: () => import("@/views/Interview.vue"),
       },
-      
+
     ],
   },
-  
+
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+router.beforeEach(async (to, from) => {
+  const user = useUserStore()
+  const auth = useAuthStore()
+  await user.restore()
 
+  switch (to.name) {
+    case 'Profile':
+      if (!auth.isAuthorized)
+        return { name: "Login" };
+      break;
+    case 'Login':
+      if (auth.isAuthorized)
+        return { name: "Profile" };
+    case 'Signup':
+      if (auth.isAuthorized)
+        return { name: "Profile" };
+
+    default:
+      break;
+  }
+
+})
 export default router;

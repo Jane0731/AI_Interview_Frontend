@@ -14,11 +14,11 @@
     <v-btn variant="text" icon="mdi-bell"></v-btn>
 
     <div class="mx-5">
-      <v-menu v-if="token">
+      <v-menu v-if="authStore.isAuthorized">
         <template v-slot:activator="{ props }">
           <v-btn icon="mdi-dots-vertical" v-bind="props">
             <v-avatar color="brown">
-              <div class="text-h5">{{ name}}</div>
+              <div class="text-h5">{{ userStore?.user?.name}}</div>
             </v-avatar>
           </v-btn>
         </template>
@@ -47,15 +47,12 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { onActivated, ref, inject } from 'vue';
 import { useUserStore } from '@/stores/user';
+import { onMounted } from 'vue';
 const userStore = useUserStore()
-const name=userStore.user.name
 const authStore = useAuthStore()
 const router = useRouter()
 const reload = inject("reload")
-const token = ref(localStorage.getItem("token"))
-onActivated(() => {
-  token.value = localStorage.getItem("token")
-})
+
 const onDiscussionsClick = () => {
   router.push({
     name: 'AllDiscussions',

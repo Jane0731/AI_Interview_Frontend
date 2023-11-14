@@ -22,16 +22,24 @@ export const useUserStore = defineStore("user", () => {
   const setUserId = (id) => {
     userId.value = id;
   };
-  const getUserData = async () => {
+  const restore = async () => {
+    
     await axios
       .get("/auth/profile")
       .then((response) => {
+        const auth=useAuthStore()
         Object.assign(user, response.data);
+        auth.setAuthorize(true)
+
       })
       .catch((error) => {
         console.log(error);
+        const auth=useAuthStore()
+
+        auth.setAuthorize(false)
+
       });
-  };
+  }
   const getDiscussionPost = async () => {
     await axios
       .get("/auth/discussion")
@@ -65,7 +73,7 @@ export const useUserStore = defineStore("user", () => {
           let minutes = String(date.getMinutes()).padStart(2, '0');
           let seconds = String(date.getSeconds()).padStart(2, '0');
           element.created_at = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-          
+
           const data = element.interview_questions
           const translationMap = {
             'hand_on_hip': '手揮動放低於超過偵測畫面',
@@ -206,7 +214,7 @@ export const useUserStore = defineStore("user", () => {
     experiencePosts,
     name,
     setToken,
-    getUserData,
+    restore,
     token,
     getToken,
     register,
