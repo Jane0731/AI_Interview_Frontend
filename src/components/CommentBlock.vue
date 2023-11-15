@@ -2,9 +2,9 @@
     <div class="addcomment-block" v-if="isUseComment">
         <div class="d-flex flex-row align-center my-4 pa-2">
             <v-avatar color="brown" class="mr-4">
-                <span class="text-h5">aa</span>
+                <span class="text-h5">{{ userStore.user.name }}</span>
             </v-avatar>
-            <div class="text-h5">劉賊賊</div>
+            <div class="text-h5">{{ userStore.user.name }}</div>
         </div>
         <v-form v-model="form">
             <v-textarea :rules="[rules.required]" v-model="newComment" class="ma-4" variant="plain" rows="2" no-resize
@@ -41,6 +41,8 @@ import { defineProps, ref, inject } from 'vue';
 import { useFavoriteStore } from '@/stores/favorite'
 
 import { useCommentStore } from '@/stores/comment';
+import { useUserStore } from '@/stores/user';
+const userStore=useUserStore()
 const favoriteStroe = useFavoriteStore()
 const reload = inject("reload")
 

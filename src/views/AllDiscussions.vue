@@ -9,7 +9,7 @@
       <v-col cols="7">
         <div class="d-flex flex-row align-center my-4">
           <v-avatar color="brown" class="mr-4">
-            <span class="text-h5">aa</span>
+            <span class="text-h5">{{ userStore.user.name }}</span>
           </v-avatar>
           <v-responsive max-width="800" @click="openAddDiscussionDialog()">
             <v-text-field label="在想些什麼呢" variant="solo" single-line density="compact" hide-details="auto" readonly="" />
@@ -23,7 +23,7 @@
             </div>
           </template>
         </TabWindow>
-        <DiscussionDialog :user="{ name: '劉賊賊', id: 1 }" />
+        <DiscussionDialog :user="{ name: userStore.user.name, id: userStore.user.id }" />
 
       </v-col>
       <v-col cols="2">
@@ -42,13 +42,14 @@ import Keywords from '@/components/Keywords.vue'
 import Classification from '@/components/Classification.vue'
 import { useDiscussionStore } from '@/stores/discussion'
 import { useDialogStore } from '@/stores/dialog'
+import { useUserStore } from '@/stores/user'
 
 import Alert from '@/components/Alert.vue'
 
 import Tabs from '@/components/Tabs.vue'
 import TabWindow from '@/components/TabWindow.vue'
 import DiscussionDialog from '@/components/DiscussionDialog.vue'
-
+const userStore=useUserStore()
 const discussionStore = useDiscussionStore()
 const dialogStore = useDialogStore()
 const tabValues = [{ id: "hot", description: "熱門討論" }, { id: "new", description: "最新討論" }]

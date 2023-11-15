@@ -19,7 +19,7 @@
                     <div class="d-flex align-center my-4 justify-space-between">
                         <v-sheet class="d-flex flex-row align-center">
                             <v-avatar color="brown" class="mr-4">
-                                <div class="text-h5">aa</div>
+                                <div class="text-h5">{{ user.name }}</div>
                             </v-avatar>
                             <div class="text-h5">{{ user.name }}</div>
                         </v-sheet>
@@ -72,8 +72,8 @@ const props = defineProps({
     user: { type: Object },
     discussion: { type: Object, default: "" }
 })
-onMounted(() => {
-    categoryStore.getCategorys()
+onMounted(async() => {
+    await categoryStore.getCategorys()
 })
 const discussionStore = useDiscussionStore()
 const categoryStore = useCategorysStore()
