@@ -6,7 +6,7 @@ export const useVoiceStore = defineStore("voice", () => {
     
     const getToken= async () => {
         await axios
-          .get("/AI-voice/token")
+          .post("/AI-voice/token")
           .then((response) => {
             console.log(response)
           })
