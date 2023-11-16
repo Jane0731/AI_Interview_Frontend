@@ -20,12 +20,19 @@
     </InterviewWindow>
 </template>
 <script setup>
+
 import InterviewStepOneCardVue from '@/components/InterviewStepOneCard.vue';
 import InterviewWindow from '@/components/InterviewWindow.vue';
 import { useStepperStore } from '@/stores/stepper';
+import { onMounted } from 'vue';
+import { useVoiceStore } from '@/stores/voice';
 
-
+onMounted(async() => {
+    await voiceStore.getToken()
+})
 const stepperStore = useStepperStore()
+const voiceStore = useVoiceStore()
+
 const items = [{
     title: "AI技術支持",
     subtitle: "我們的面試模擬是由最先進的人工智慧技術進行辨識，確保了高度的正確性。",
