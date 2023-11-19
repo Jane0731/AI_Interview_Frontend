@@ -51,6 +51,16 @@ const openAddExperienceDialog = () => {
   dialogStore.changeDialogStatus()
   dialogStore.setDialogContent("分享面試心得", "發布", 1)
 }
+const clickFavoriteEvent = async (isFavorite, type, id) => {
+    if (!isFavorite) {
+        await favoriteStroe.addFavorites(type, id, "all")
+        reload()
+    }
+    else {
+        await favoriteStroe.deleteFavorites(type, id, "all")
+        reload()
+    }
+}
 </script>
 <style scoped>
 .suspend-button {
