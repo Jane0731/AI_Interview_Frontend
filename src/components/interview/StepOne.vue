@@ -24,14 +24,8 @@
 import InterviewStepOneCardVue from '@/components/InterviewStepOneCard.vue';
 import InterviewWindow from '@/components/InterviewWindow.vue';
 import { useStepperStore } from '@/stores/stepper';
-import { onMounted } from 'vue';
-import { useVoiceStore } from '@/stores/voice';
 
-onMounted(async() => {
-    await voiceStore.getToken()
-})
 const stepperStore = useStepperStore()
-const voiceStore = useVoiceStore()
 
 const items = [{
     title: "AI技術支持",

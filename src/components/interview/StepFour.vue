@@ -11,7 +11,7 @@
                 <v-btn :disabled="!questionStore.isLoading" @click="endInterview ? goStepFive() : nextQuestion()"
                     color="primary" class="text-center mt-5 " size="x-large" width="60%">
                     <div class="text-h5">
-                        {{ !questionStore.isLoading?'正在念題目，唸完後將開始面試':endInterview ? "結束面試" : "下一題" }}
+                        {{ endInterview ? "結束面試" : "下一題" }}
                     </div>
                 </v-btn>
             </div>
@@ -36,7 +36,7 @@ const nextQuestion = async () => {
 
     questionStore.addProgress()
 
-    childComponentRef.value.listenForSpeechEvents()
+    // childComponentRef.value.listenForSpeechEvents()
     childComponentRef.value.setQuestion(questionStore.getQuestion.question);
 
     childComponentRef.value.greet(questionStore.getQuestion.question);

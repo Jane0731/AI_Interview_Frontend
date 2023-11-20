@@ -11,13 +11,12 @@
 </template>
 <script setup>
 import FadeLoader from 'vue-spinner/src/FadeLoader.vue'
+import { textToSpeech } from '@/util/textToSpeech'
 
 import { ref, onMounted, reactive } from 'vue';
 import { useSpeechStore } from '@/stores/speech';
 import { useInterviewStore } from '@/stores/interview';
 import { useQuestionStore } from '@/stores/questions';
-
-import { AILabsYatingASR } from "@ailabs-yating/asr-client-sdk-javascript"
 
 import RecordRTC from "recordrtc"
 import Translator from '@/lib/translator'
@@ -52,43 +51,25 @@ const translator = new Translator((captions) => {
 
 }
 )
-const synth = window.speechSynthesis
 const greetingSpeech = new window.SpeechSynthesisUtterance()
-const greet = (question, id) => {
+const greet = async(question) => {
   questionStore.startloading()
-
-  greetingSpeech.pitch = speechStore.pitch
-  greetingSpeech.volume = speechStore.volume
-  greetingSpeech.rate = speechStore.rate
-  greetingSpeech.text = question
-  synth.speak(greetingSpeech)
+  await textToSpeech(question)
+  play()
+  console.log("123")
 }
-// const connect = async () => {
-//   const asrSDK = new AILabsYatingASR(async () => {
-//     const { data } = await axios.post('https://tts.api.yating.tw/token', { f9c775a605468e54ce4441877ced76773fefec88 })
-//     return data.token
-//   })
-//   asrSDK.on("sentence", (event) => {
-//     console.log(`ASR SENTENCE: ${JSON.stringify(event)}`)
-//     // const history = [...asrHistory.current]
-//     // history[history.length - 1] = event.asr_sentence
-//     // setAsrResult(history)
-//   })
 
-// }
 onMounted(() => {
-  // connect()
-  listenForSpeechEvents()
   greet(questionStore.questions[0].question)
 })
-const listenForSpeechEvents = () => {
+// const listenForSpeechEvents = () => {
 
-  greetingSpeech.onend = () => {
+//   greetingSpeech.onend = () => {
 
-    play()
-  }
+//     play()
+//   }
 
-}
+// }
 const stream = ref(null)
 const constraints = {
   audio: false,
@@ -99,11 +80,14 @@ const constraints = {
   },
 }
 const play = async () => {
+
   const frontCamStream = await navigator.mediaDevices.getUserMedia(constraints)
   stream.value = frontCamStream
   onStartRecord()
 }
 const onStartRecord = async () => {
+  console.log("456")
+
   questionStore.endloading()
 
   recorder.value = RecordRTC(stream.value, { type: "video" })
@@ -153,7 +137,7 @@ defineExpose({
   greet,
   onStopRecord,
   setQuestion,
-  listenForSpeechEvents,
+  // listenForSpeechEvents,
 
 });
 </script>

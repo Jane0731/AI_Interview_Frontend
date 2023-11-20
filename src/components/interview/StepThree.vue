@@ -4,61 +4,53 @@
             <div class="text-h4">設備測試</div>
         </template>
         <template v-slot:card-text>
+
             <v-row justify="space-around" align="center">
                 <v-col cols="6">
-                    <div class="text-h6">音量調整</div>
+                    <video :srcObject="stream" width="500" autoplay></video>
 
-                    <v-slider :step="0.1" max="1" min="0.1" v-model="volume" thumb-label="always" prepend-icon="mdi-volume-high">
-                    </v-slider>
-                    <div class="text-h6">聲調調整</div>
-
-                    <v-slider :step="0.1" max="2" min="0" v-model="pitch" thumb-label="always" prepend-icon="mdi-volume-high">
-                    </v-slider>
-                    <div class="text-h6">速度調整</div>
-                    <v-slider :step="0.1" max="2" min="0.1" v-model="rate" thumb-label="always" prepend-icon="mdi-volume-high">
-                    </v-slider>
                 </v-col>
-                <v-col cols="2">
-                   <v-btn variant="outlined" @click="greet()" prepend-icon="mdi-gesture-tap" size="x-large">
-                     點我測試
-                   </v-btn>
-                </v-col>
+                <v-btn @click="soundTest">
+                    聲音測試
+                </v-btn>
             </v-row>
             <div class="d-flex justify-center mb-6">
-                    <v-btn @click="goStepFour" color="primary" class="text-center mt-5 "
-                        size="x-large" width="60%">
-                        <div class="text-h5">
-                            開始進行模擬面試
-                        </div>
-                    </v-btn>
-                </div>
+                <v-btn @click="goStepFour" color="primary" class="text-center mt-5 " size="x-large" width="60%">
+                    <div class="text-h5">
+                        開始進行模擬面試
+                    </div>
+                </v-btn>
+            </div>
         </template>
     </InterviewWindow>
 </template>
 <script setup>
 import InterviewWindow from '@/components/InterviewWindow.vue';
 import { useStepperStore } from '@/stores/stepper';
-import { ref } from 'vue';
-import { useSpeechStore } from '@/stores/speech';
+import { ref, onMounted } from 'vue'
+import { textToSpeech } from '@/util/textToSpeech'
+
 const stepperStore = useStepperStore()
-const speechStore = useSpeechStore()
 
-const volume = ref(0.5)
-const pitch = ref(0)
-const rate = ref(0.1)
-
-const goStepFour = () =>{
-    synth.cancel()
+const goStepFour = () => {
     stepperStore.addStep()
-    speechStore.setSetting(volume.value,rate.value,pitch.value)
-} 
-const synth = window.speechSynthesis
-const greetingSpeech = new window.SpeechSynthesisUtterance()
-const greet = () => {
-    greetingSpeech.text = "一日之計在於晨"
-    greetingSpeech.pitch=pitch.value
-    greetingSpeech.volume=volume.value
-    greetingSpeech.rate=rate.value
-    synth.speak(greetingSpeech)
 }
+
+const soundTest = async () => {
+    await textToSpeech('請面試者確認設備正常運作')
+}
+const stream = ref(null)
+
+const constraints = {
+    audio: false,
+    video: {
+        width: { ideal: 640 },
+        height: { ideal: 360 },
+        facingMode: 'environment',
+    },
+}
+onMounted(async () => {
+    const frontCamStream = await navigator.mediaDevices.getUserMedia(constraints)
+    stream.value = frontCamStream
+})
 </script>
