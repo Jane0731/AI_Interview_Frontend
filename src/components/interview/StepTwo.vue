@@ -64,7 +64,7 @@
                     <v-alert type="error" title="請選擇職缺" v-if="isShowAlert" text="請選擇職缺後，才可進行面試下一步"
                         variant="tonal"></v-alert>
                     <div class="d-flex justify-center mb-6">
-                        <v-btn @click="goStepThree()" color="primary" class="text-center mt-5 " size="x-large" width="60%">
+                        <v-btn @click="goStepThree()" color="primary" class="text-center mt-5 " size="x-large" width="60%" >
                             <div class="text-h5">
                                 開始設備測試
                             </div>
@@ -85,7 +85,7 @@ import { useInterviewStore } from '@/stores/interview';
 import { watch } from 'vue';
 import { computed } from 'vue';
 
-const isSuccesss = computed(() => position.value && jobType.value)
+const isSuccesss = computed(() => position.value.position && jobType.value)
 const stepperStore = useStepperStore()
 const interviewStore = useInterviewStore()
 const position = ref('')
@@ -105,6 +105,7 @@ const showAlert = () => {
     }, 3000)
 }
 const goStepThree = async () => {
+    console.log(position.value.position , jobType.value)
     if (!isSuccesss.value) {
         showAlert()
         return
