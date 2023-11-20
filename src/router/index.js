@@ -2,6 +2,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import { useAuthStore } from "@/stores/auth";
+import { useStepperStore } from "@/stores/stepper";
+
 const routes = [
   {
     path: "/",
@@ -68,6 +70,8 @@ const router = createRouter({
 router.beforeEach(async (to, from) => {
   const user = useUserStore()
   const auth = useAuthStore()
+  const stepper=useStepperStore()
+  stepper.setStep(0)
   await user.restore()
 
   switch (to.name) {
