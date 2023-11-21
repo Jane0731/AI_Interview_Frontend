@@ -110,7 +110,7 @@
             <v-col cols="12" md="6">
                 <div class="d-flex justify-space-between align-end">
                     <div class="d-inline-block text-h5 font-weight-black">熱門討論</div>
-                    <a @click="" class="d-inline-block text-subtitle-1 text-black text-decoration-none"
+                    <a @click="toDiscussuion" class="d-inline-block text-subtitle-1 text-black text-decoration-none"
                         style="cursor: pointer;">
                         看更多 >
                     </a>
@@ -134,7 +134,7 @@
             <v-col cols="12" md="6">
                 <div class="d-flex justify-space-between align-end">
                     <div class="d-inline-block text-h5 font-weight-black">最新討論</div>
-                    <a @click="" class="d-inline-block text-subtitle-1 text-black text-decoration-none"
+                    <a @click="toDiscussuion" class="d-inline-block text-subtitle-1 text-black text-decoration-none"
                         style="cursor: pointer;">
                         看更多 >
                     </a>
@@ -174,7 +174,10 @@ import { onMounted } from 'vue';
 const experienceStore = useExperienceStore()
 const router = useRouter()
 const toExperience = () => {
-    router.push("experience/all")
+    router.push({name: 'AllExperiences'})
+}
+const toDiscussuion = () => {
+    router.push({name: 'AllDiscussions'})
 }
 const onExperienceClick = (id) => {
     router.push({
