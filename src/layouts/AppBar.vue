@@ -1,6 +1,8 @@
 <template>
   <v-app-bar color="primary" scroll-behavior="elevate">
-    <v-app-bar-title class="text-h5 ">面試去好卡</v-app-bar-title>
+    <v-app-bar-title class="text-h5 ">
+      <v-img src="logo.png" @click="onHomeClick"></v-img>
+    </v-app-bar-title>
     <!-- <v-responsive max-width="600">
       <v-text-field label="搜尋" variant="solo" single-line density="compact" hide-details="auto"
         prepend-inner-icon="mdi-magnify">
@@ -61,6 +63,11 @@ const onDiscussionsClick = () => {
 const onExperiencesClick = () => {
   router.push({
     name: 'AllExperiences',
+  })
+}
+const onHomeClick = () => {
+  router.push({
+    name: 'Home',
   })
 }
 const onInterviewClick = () => {
