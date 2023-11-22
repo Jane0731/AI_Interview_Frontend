@@ -37,7 +37,7 @@ const countdownInterview = () => {
     if (seconds.value === 0) {
       clearInterval(interval)
       // 这里调用其他函数
-      seconds.value = 20
+      console.log(questionStore.progress)
       if (questionStore.progress == questionStore.total) {
         goStepFive()
       }
@@ -72,7 +72,7 @@ const formatSeconds = (seconds) => {
 const time = computed(() => {
   return formatSeconds(seconds.value)
 })
-const seconds = ref(120)
+const seconds = ref(20)
 const answer = ref([]);
 const startTime = ref(null)
 const endTime = ref(null)
@@ -96,9 +96,7 @@ const translator = new Translator((captions) => {
 const greet = async (question) => {
   questionStore.startloading()
   await textToSpeech(question)
-  setTimeout(() => {
-    play()
-  }, 5000)
+  play()
 }
 
 onMounted(() => {
@@ -150,6 +148,7 @@ const onStopRecord = async (id) => {
         })
         answer.value = []
         blobData.value = ''
+        seconds.value = 20
 
       }
     })
