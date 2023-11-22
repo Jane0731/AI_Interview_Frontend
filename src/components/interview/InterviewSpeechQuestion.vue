@@ -4,7 +4,7 @@
     <fade-loader loading="true" color="grey" size="400px"></fade-loader>
   </div>
   <div v-else>
-    <div class="text-subtitle-1 text-right">目前答題所剩時間</div>
+    <div class="text-subtitle-1 text-right">目前答題所剩時間：{{ time }}</div>
     <video :srcObject="stream" width="500" autoplay></video>
 
   </div>
@@ -20,6 +20,7 @@ import { useQuestionStore } from '@/stores/questions';
 
 import RecordRTC from "recordrtc"
 import Translator from '@/lib/translator'
+import { computed } from 'vue';
 
 const question = ref('')
 const setQuestion = (data) => question.value = data
@@ -30,13 +31,54 @@ const data = reactive({
   fromLanguage: 'zh-TW',
   toLanguages: 'zh-TW'
 })
+const countdownInterview = () => {
+  const interval = setInterval(() => {
+    seconds.value--
+    if (seconds.value === 0) {
+      clearInterval(interval)
+      // 这里调用其他函数
+      seconds.value = 20
+      if (questionStore.progress == questionStore.total) {
+        goStepFive()
+      }
+      else {
+        nextQuestion()
+      }
+
+    }
+  }, 1000);
+
+}
+const nextQuestion = async () => {
+  onStopRecord(questionStore.getQuestion.id)
+  questionStore.addProgress()
+  setQuestion(questionStore.getQuestion.question);
+  greet(questionStore.getQuestion.question);
+
+}
+const goStepFive = async () => {
+  onStopRecord(questionStore.getQuestion.id)
+  questionStore.addProgress()
+  if ((questionStore.progress - 1) == questionStore.total) {
+    stepperStore.addStep()
+  }
+}
+const formatSeconds = (seconds) => {
+  const minutes = Math.floor(seconds / 60);
+  seconds = seconds % 60;
+  const paddedSeconds = seconds < 10 ? '0' + seconds : seconds;
+  return `${minutes}:${paddedSeconds}`;
+}
+const time = computed(() => {
+  return formatSeconds(seconds.value)
+})
+const seconds = ref(120)
 const answer = ref([]);
 const startTime = ref(null)
 const endTime = ref(null)
 
 const blobData = ref('')
 const recorder = ref(null)
-const speechStore = useSpeechStore()
 const interviewStore = useInterviewStore()
 const questionStore = useQuestionStore()
 const oldOffset = ref('')
@@ -51,30 +93,23 @@ const translator = new Translator((captions) => {
 
 }
 )
-const greetingSpeech = new window.SpeechSynthesisUtterance()
-const greet = async(question) => {
+const greet = async (question) => {
   questionStore.startloading()
   await textToSpeech(question)
-  play()
-  console.log("123")
+  setTimeout(() => {
+    play()
+  }, 5000)
 }
 
 onMounted(() => {
   greet(questionStore.questions[0].question)
 })
-// const listenForSpeechEvents = () => {
 
-//   greetingSpeech.onend = () => {
-
-//     play()
-//   }
-
-// }
 const stream = ref(null)
 const constraints = {
   audio: false,
   video: {
-    width: {ideal: 640 },
+    width: { ideal: 640 },
     height: { ideal: 360 },
     facingMode: 'environment',
   },
@@ -86,10 +121,8 @@ const play = async () => {
   onStartRecord()
 }
 const onStartRecord = async () => {
-  console.log("456")
-
   questionStore.endloading()
-
+  countdownInterview()
   recorder.value = RecordRTC(stream.value, { type: "video" })
   startTime.value = performance.now()
   await recorder.value.startRecording()
