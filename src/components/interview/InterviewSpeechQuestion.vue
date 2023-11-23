@@ -36,8 +36,8 @@ const countdownInterview = () => {
     seconds.value--
     if (seconds.value === 0) {
       clearInterval(interval)
+
       // 这里调用其他函数
-      console.log(questionStore.progress)
       if (questionStore.progress == questionStore.total) {
         goStepFive()
       }
@@ -59,9 +59,8 @@ const nextQuestion = async () => {
 const goStepFive = async () => {
   onStopRecord(questionStore.getQuestion.id)
   questionStore.addProgress()
-  if ((questionStore.progress - 1) == questionStore.total) {
-    stepperStore.addStep()
-  }
+  stepperStore.addStep()
+
 }
 const formatSeconds = (seconds) => {
   const minutes = Math.floor(seconds / 60);
@@ -119,6 +118,8 @@ const play = async () => {
   onStartRecord()
 }
 const onStartRecord = async () => {
+  seconds.value = 20
+
   questionStore.endloading()
   countdownInterview()
   recorder.value = RecordRTC(stream.value, { type: "video" })
@@ -148,7 +149,6 @@ const onStopRecord = async (id) => {
         })
         answer.value = []
         blobData.value = ''
-        seconds.value = 20
 
       }
     })
