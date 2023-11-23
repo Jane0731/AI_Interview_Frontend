@@ -105,7 +105,7 @@
 
 
     </div>
-    <div class="px-10 my-16">
+    <div class="px-10 py-16 bg-white">
         <v-row class="mx-auto">
             <v-col cols="12" md="6">
                 <div class="d-flex justify-space-between align-end">
@@ -157,7 +157,7 @@
             </v-col>
         </v-row>
     </div>
-    <div class="px-10 mt-16 bg-primary">
+    <div class="px-10 pt-16 pb-2 bg-primary">
         <div class="d-flex justify-center">
             <v-btn variant="text" icon="mdi-history" color="white"></v-btn>
             <v-btn variant="text" icon="mdi-heart" color="white"></v-btn>
