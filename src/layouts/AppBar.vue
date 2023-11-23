@@ -1,14 +1,13 @@
 <template>
   <v-app-bar color="primary" scroll-behavior="elevate">
-    <v-app-bar-title class="text-h5 ">
-      <v-img src="logo.png" @click="onHomeClick"></v-img>
+    <v-app-bar-title>
+      <v-img src="logo.png" width="140" height="110" @click="onHomeClick"></v-img>
     </v-app-bar-title>
     <!-- <v-responsive max-width="600">
       <v-text-field label="搜尋" variant="solo" single-line density="compact" hide-details="auto"
         prepend-inner-icon="mdi-magnify">
       </v-text-field>
     </v-responsive> -->
-    <v-spacer></v-spacer>
     <v-btn variant="text" class="text-h6 mx-4" @click="onDiscussionsClick">討論版</v-btn>
     <v-btn variant="text" class="text-h6 mx-4" @click="onExperiencesClick">面試分享</v-btn>
     <v-btn variant="text" class="text-h6 mx-4" @click="onInterviewClick">模擬面試</v-btn>
