@@ -43,7 +43,7 @@ const isWillEnd = ref(false)
 const countdownInterview = () => {
   interval = setInterval(() => {
     seconds.value--
-    if (seconds.value <= 5) {
+    if (seconds.value <= 30) {
       isWillEnd.value = true
     }
     if (seconds.value === 0) {

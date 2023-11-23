@@ -11,7 +11,6 @@ const axios = (baseURL) => {
       "Access-Control-Allow-Origin": "*",
       Accept: "application/json",
     },
-    timeout: 5000,
   });
   instance.interceptors.request.use(
     (request) => {
