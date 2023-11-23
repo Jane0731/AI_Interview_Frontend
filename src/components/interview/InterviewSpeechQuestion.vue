@@ -4,10 +4,15 @@
     <fade-loader loading="true" color="grey" size="400px"></fade-loader>
   </div>
   <div v-else>
-    <v-btn prepend-icon="mdi-alert-circle" :color='isWillEnd?"primary":"red-accent-4"' disabled variant="flat" >
-      <div class="text-subtitle-1 text-right">目前答題所剩時間：{{ time }}</div>
-    </v-btn>
-    <video :srcObject="stream" width="500" autoplay></video>
+    <div class="d-flex justify-center py-4">
+      <v-btn class="align-center" prepend-icon="mdi-alert-circle" :color='isWillEnd ? "red-accent-4" : "primary"' disabled
+        variant="flat">
+        <div class="text-subtitle-1">目前答題所剩時間：{{ time }}</div>
+      </v-btn>
+    </div>
+    <div>
+      <video :srcObject="stream" width="500" autoplay></video>
+    </div>
 
   </div>
 </template>
@@ -34,12 +39,12 @@ const data = reactive({
   toLanguages: 'zh-TW'
 })
 let interval = null
-const isWillEnd=ref(false)
+const isWillEnd = ref(false)
 const countdownInterview = () => {
   interval = setInterval(() => {
     seconds.value--
-    if(seconds.value<=5){
-      isWillEnd.value=true
+    if (seconds.value <= 5) {
+      isWillEnd.value = true
     }
     if (seconds.value === 0) {
       clearInterval(interval)
@@ -80,7 +85,7 @@ const formatSeconds = (seconds) => {
 const time = computed(() => {
   return formatSeconds(seconds.value)
 })
-const seconds = ref(20)
+const seconds = ref(120)
 const answer = ref([]);
 const startTime = ref(null)
 const endTime = ref(null)
@@ -103,7 +108,7 @@ const translator = new Translator((captions) => {
 )
 const greet = async (question) => {
   questionStore.startloading()
-  isWillEnd.value=false
+  isWillEnd.value = false
   clearInterval(interval)
   interval = setInterval(() => {
     // ...
@@ -132,7 +137,7 @@ const play = async () => {
   onStartRecord()
 }
 const onStartRecord = async () => {
-  seconds.value = 20
+  seconds.value = 120
 
   questionStore.endloading()
   countdownInterview()
