@@ -32,11 +32,13 @@ const data = reactive({
   toLanguages: 'zh-TW'
 })
 const countdownInterview = () => {
-  const interval = setInterval(() => {
+  let interval = setInterval(() => {
     seconds.value--
     if (seconds.value === 0) {
       clearInterval(interval)
-
+      interval = setInterval(() => {
+        // ...
+      }, 1000)
       // 这里调用其他函数
       if (questionStore.progress == questionStore.total) {
         goStepFive()
