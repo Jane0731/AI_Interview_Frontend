@@ -4,7 +4,9 @@
     <fade-loader loading="true" color="grey" size="400px"></fade-loader>
   </div>
   <div v-else>
-    <div class="text-subtitle-1 text-right">目前答題所剩時間：{{ time }}</div>
+    <v-btn prepend-icon="mdi-alert-circle" :color='isWillEnd?"primary":"red-accent-4"' disabled variant="flat" >
+      <div class="text-subtitle-1 text-right">目前答題所剩時間：{{ time }}</div>
+    </v-btn>
     <video :srcObject="stream" width="500" autoplay></video>
 
   </div>
@@ -31,9 +33,14 @@ const data = reactive({
   fromLanguage: 'zh-TW',
   toLanguages: 'zh-TW'
 })
+let interval = null
+const isWillEnd=ref(false)
 const countdownInterview = () => {
-  let interval = setInterval(() => {
+  interval = setInterval(() => {
     seconds.value--
+    if(seconds.value<=5){
+      isWillEnd.value=true
+    }
     if (seconds.value === 0) {
       clearInterval(interval)
       interval = setInterval(() => {
@@ -96,6 +103,11 @@ const translator = new Translator((captions) => {
 )
 const greet = async (question) => {
   questionStore.startloading()
+  isWillEnd.value=false
+  clearInterval(interval)
+  interval = setInterval(() => {
+    // ...
+  }, 1000)
   await textToSpeech(question)
   play()
 }
