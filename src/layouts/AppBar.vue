@@ -1,7 +1,7 @@
 <template>
   <v-app-bar color="primary" scroll-behavior="elevate">
     <v-app-bar-title>
-      <v-img src="logo.png" width="140" height="110" @click="onHomeClick"></v-img>
+      <v-img src="/logo.png" width="140" height="110" @click="onHomeClick" style="cursor: pointer;"></v-img>
     </v-app-bar-title>
     <!-- <v-responsive max-width="600">
       <v-text-field label="搜尋" variant="solo" single-line density="compact" hide-details="auto"
