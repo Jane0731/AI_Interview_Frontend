@@ -40,9 +40,19 @@
     </v-row>
 
     <v-btn icon="mdi-plus" size="x-large" class="suspend-button" color="grey-lighten-3"
-      @click="openAddExperienceDialog()"> </v-btn>
+      @click="authStore.isAuthorized ? openAddExperienceDialog() : isShowDialog = true"> </v-btn>
     <ExperienceDialog />
-
+    <v-dialog v-model="isShowDialog" width="50%">
+          <v-card>
+            <v-card-text class="text-h5">
+              請先登入才可發布面試分享
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" @click="isShowDialog=false">關閉</v-btn>
+              <v-btn color="primary" @click="login">前往登入</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
   </v-container>
 </template>
 
@@ -56,13 +66,17 @@ import ExperienceDialog from '@/components/ExperienceDialog.vue'
 import { useExperienceStore } from '@/stores/experience'
 import Alert from '@/components/Alert.vue'
 import axios from "@/api/axios.config";
+import { useRouter, useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
 const tab = ref("hot")
 const cityOptions=ref([])
 const tabValues = [{ id: "hot", description: "熱門分享" }, { id: "new", description: "最新分享" }]
 const isLoading = ref(true)
 const dialogStore = useDialogStore()
 const experienceStore = useExperienceStore()
-
+const isShowDialog = ref(false)
+const authStore = useAuthStore()
 
 onMounted(async () => {
 
@@ -85,15 +99,15 @@ const openAddExperienceDialog = () => {
   dialogStore.changeDialogStatus()
   dialogStore.setDialogContent("分享面試心得", "發布", 1)
 }
-const clickFavoriteEvent = async (isFavorite, type, id) => {
-  if (!isFavorite) {
-    await favoriteStroe.addFavorites(type, id, "all")
-    reload()
-  }
-  else {
-    await favoriteStroe.deleteFavorites(type, id, "all")
-    reload()
-  }
+const currentRoute = useRoute();
+const router = useRouter()
+const login = () => {
+  router.push({
+    name: 'Login',
+    query: {
+      redirect: currentRoute.fullPath
+    }
+  })
 }
 </script>
 <style scoped>
