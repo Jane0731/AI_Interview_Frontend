@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialogStore.loginDialogStatus" width="auto">
+    <v-dialog v-model="dialogStore.loginDialogStatus" width="50%" >
         <v-card>
             <v-card-text class="text-h5">
                 {{ content }}
