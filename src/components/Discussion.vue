@@ -71,10 +71,13 @@
             <v-sheet>
                 <v-btn variant="plain" icon="mdi-heart" :ripple="false"
                     :color="discussion.is_Favorite ? 'deep-orange-accent-4' : 'grey-lighten-4'"
-                    @click.stop="clickFavoriteEvent(discussion.is_Favorite, 'discussion', discussion.id)"></v-btn>
+                    @click.stop="authStore.isAuthorized ?clickFavoriteEvent(discussion.is_Favorite, 'discussion', discussion.id):openLoginDialog()"></v-btn>
 
                 {{ discussion.user_favorites_count }}
+
             </v-sheet>
+            <LoginDialog content="請先登入才可點讚討論" />
+
         </div>
     </v-sheet>
 </template>
@@ -85,11 +88,13 @@ import { useDialogStore } from '@/stores/dialog'
 import { useDiscussionStore } from '@/stores/discussion'
 import { useFavoriteStore } from '@/stores/favorite'
 import DiscussionDialog from '@/components/DiscussionDialog.vue'
+import LoginDialog from '@/components/LoginDialog.vue'
+import { useAuthStore } from '@/stores/auth'
 
-const menuVisible = ref(false)
 const loading = ref(false)
 const favoriteStroe = useFavoriteStore()
 const dialogStore = useDialogStore()
+const authStore=useAuthStore()
 const discussionStore = useDiscussionStore()
 const userId = localStorage.getItem("userId")
 const router = useRouter()
@@ -97,14 +102,11 @@ const props = defineProps({
     discussion: { type: Object },
 })
 const emit = defineEmits(['fresh'])
-
 const deleteDiscussion = ref(false)
-// onMounted(() => {
-//     document.addEventListener('click', (e) => {
-//         if (e.target.className != "menu")
-//             menuVisible.value = false
-//     })
-// })
+const openLoginDialog = () => {
+  dialogStore.changeLoginDialogStatus()
+}
+
 
 const onDiscussionClick = (id) => {
 

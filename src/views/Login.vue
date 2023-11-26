@@ -40,7 +40,7 @@
 </template>
 <script setup>
 import { ref, inject, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useResultStore } from '@/stores/result';
 
@@ -49,6 +49,8 @@ const resultStore = useResultStore()
 const reload = inject("reload")
 
 const router = useRouter()
+const route=useRoute()
+const redirect = useRoute().query.redirect;
 const form = ref(false)
 const loading = ref(false)
 const email = ref(null)
@@ -60,11 +62,14 @@ const onSubmit = async () => {
     await authStore.login(email.value, password.value)
     loading.value = false
     if (authStore.isAuthorized) {
-        router.push("/profile")
-        reload()
+        if(redirect==''){
+            router.push("/profile")
+        }
+        else{
+            router.push(redirect)
+        }
     }
 }
-
 const rules = {
     required: value => !!value || '欄位必填',
     password: value => {

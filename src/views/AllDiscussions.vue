@@ -20,22 +20,16 @@
           <v-avatar color="brown" class="mr-4">
             <span class="text-h5">{{ userStore.user.name }}</span>
           </v-avatar>
-          <v-responsive max-width="800" @click="openAddDiscussionDialog()">
+          <v-responsive max-width="800" @click="authStore.isAuthorized ? openAddDiscussionDialog() : openLoginDialog()">
             <v-text-field label="在想些什麼呢" variant="solo" single-line density="compact" hide-details="auto" readonly="" />
           </v-responsive>
         </div>
+
         <v-tabs v-model="tab">
           <v-tab v-for="value in tabValues" :value="value.id">
             {{ value.description }}
           </v-tab>
         </v-tabs>
-        <!-- <TabWindow v-model="tabsName" :values="tabValues">
-          <template v-slot:view>
-            <div v-for="discussion in discussionStore.discussions" class="pa-4 mx-auto my-5">
-              <Discussion :discussion="discussion" @fresh="onFresh()" :key="renderKey" />
-            </div>
-          </template>
-        </TabWindow> -->
         <v-window v-model="tab">
           <v-window-item value="hot">
             <div v-for="discussion in discussionStore.popularDiscussions" class="pa-4 mx-auto my-5">
@@ -49,10 +43,11 @@
           </v-window-item>
         </v-window>
         <DiscussionDialog :user="{ name: userStore.user.name, id: userStore.user.id }" />
+        <LoginDialog content="請先登入才可發布討論" />
 
       </v-col>
       <v-col cols="2">
-        <Alert />
+
 
         <Keywords />
       </v-col>
@@ -61,20 +56,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted, inject } from 'vue'
+import { ref, onMounted } from 'vue'
 import Discussion from '@/components/Discussion.vue'
 import Keywords from '@/components/Keywords.vue'
 import Classification from '@/components/Classification.vue'
 import { useDiscussionStore } from '@/stores/discussion'
 import { useDialogStore } from '@/stores/dialog'
 import { useUserStore } from '@/stores/user'
-
-import Alert from '@/components/Alert.vue'
+import { useAuthStore } from '@/stores/auth'
 import FadeLoader from 'vue-spinner/src/FadeLoader.vue'
+import LoginDialog from '@/components/LoginDialog.vue'
 
-import Tabs from '@/components/Tabs.vue'
-import TabWindow from '@/components/TabWindow.vue'
 import DiscussionDialog from '@/components/DiscussionDialog.vue'
+const authStore = useAuthStore()
 const userStore = useUserStore()
 const discussionStore = useDiscussionStore()
 const dialogStore = useDialogStore()
@@ -82,13 +76,11 @@ const tabValues = [{ id: "hot", description: "熱門討論" }, { id: "new", desc
 const renderKey = ref(0);
 const tab = ref("hot")
 const isLoading = ref(true)
-
 const onFresh = async () => {
   renderKey.value += 1;
   await discussionStore.getAllDiscussions()
 
 };
-
 onMounted(async () => {
   await discussionStore.getAllDiscussions()
   isLoading.value = false
@@ -97,5 +89,8 @@ onMounted(async () => {
 const openAddDiscussionDialog = () => {
   dialogStore.changeDialogStatus()
   dialogStore.setDialogContent("新增討論", "發布", 1)
+}
+const openLoginDialog = () => {
+  dialogStore.changeLoginDialogStatus()
 }
 </script>
