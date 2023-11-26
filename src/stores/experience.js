@@ -16,9 +16,14 @@ export const useExperienceStore = defineStore("experience", () => {
   const popularExperiences=computed(()=>{
     return experiences.popular
   })
-  const getAllExperiences = async () => {
+  const getAllExperiences = async (city) => {
+    let url = "/experience";
+
+    if (city) {
+      url += '?city=' + encodeURIComponent(city)
+    }
     await axios
-      .get("/experience")
+      .get(url)
       .then((response) => {
         response.data.new.forEach((experience) => {
           experience.created_at = moment(experience.created_at).fromNow();
