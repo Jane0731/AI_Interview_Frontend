@@ -10,7 +10,7 @@
     </v-container>
     <div v-if="!isLoading">
         <v-img class="pa-6 pa-sm-16" height="450" src="/banner.png" cover>
-            <div class="d-flex flex-column justify-sm-center h-100 text-h5 w-75 mx-auto align-self-cente font-weight-black">
+            <div class="d-flex flex-column justify-sm-center h-100 text-h5 w-75 mx-auto">
                 <div>你可以不必一個人辛苦奮戰</div>
                 <div>使用我們的系統</div>
                 <div>你將迎來屬於自己的勝利時刻</div>
@@ -28,20 +28,20 @@
                 讓好人才與好公司相遇
             </div>
             <div class="d-flex justify-center mt-6">
-                <v-card class="mx-6" v-for="introduce in introduces">
-                    <v-img class="align-end text-white" height="200" :src="introduce.img" cover />
-                    <v-card-title class="pt-4 text-left">
-                        {{ introduce.title }}
-                    </v-card-title>
-
-                    <v-card-text class="text-left" v-html="introduce.content">
-
-
-                    </v-card-text>
-                </v-card>
+                <v-row style="max-width: 1170px;">
+                    <v-col v-for="introduce in introduces">
+                        <v-card class="h-100">
+                            <v-img class="text-white" height="200" :src="introduce.img" cover />
+                            <v-card-title class="pt-4 text-left">
+                                {{ introduce.title }}
+                            </v-card-title>
+                            <v-card-text class="text-left" v-html="introduce.content" />
+                        </v-card>
+                    </v-col>
+                </v-row>
             </div>
         </div>
-        <div class="px-10 my-16">
+        <div class="mx-auto my-16" style="max-width: 1170px;">
             <div class="text-h5 font-weight-black w-auto text-center my-6" style="position: relative;">
                 面試分享
                 <a @click="toExperience" class="text-subtitle-1 text-black text-decoration-none"
@@ -50,12 +50,12 @@
                 </a>
             </div>
 
-            <v-row class="mx-auto justify-center" style="max-width: 990px;">
+            <v-row class="mx-auto justify-center">
                 <v-col cols="12" sm="6" md="4" v-for="experience in experienceStore.newExperiences.slice(0, 6)">
                     <v-card class="pa-4 h-100">
                         <div class="d-flex">
                             <v-avatar color="surface-variant">{{ experience.poster_name }}</v-avatar>
-                            <div class="d-flex flex-wrap ml-2 font-weight-black align-center">
+                            <div class="d-flex flex-column ml-2 font-weight-black">
                                 <div class="d-inline-block ml-2 font-weight-black">
                                     {{ experience.company }}
                                 </div>
@@ -107,8 +107,8 @@
 
         </div>
         <div class="px-10 py-16 bg-white">
-            <v-row class="mx-auto">
-                <v-col cols="12" md="6">
+            <v-row class="mx-auto" style="max-width: 1170px;">
+                <v-col cols="12" md="6" class="px-6">
                     <div class="d-flex justify-space-between align-end">
                         <div class="d-inline-block text-h5 font-weight-black">熱門討論</div>
                         <a @click="toDiscussuion" class="d-inline-block text-subtitle-1 text-black text-decoration-none"
@@ -117,26 +117,31 @@
                         </a>
                     </div>
                     <hr />
-                    <div v-for="discussion in discussionStore.popularDiscussions.slice(0, 4)"
-                        class="ma-2 d-flex flex-column">
-                        <div class="text-h5 mt-2">
-                            {{ discussion.title }}
-                        </div>
-                        <div class="d-flex justify-space-between align-end">
-                            <div class="d-flex my-1">
-                                <v-chip v-for="tag in discussion.tags.slice(0, 3)" :key="tag"
-                                    class="bg-primary text-color-white mr-1">
-                                    {{ tag }}
-                                </v-chip>
+                    <div v-for="discussion in discussionStore.popularDiscussions.slice(0, 4)" class="ma-2">
+                        <div class="d-flex justify-space-between">
+                            <div class="d-flex flex-column">
+                                <div class="text-h5 mt-2">
+                                    {{ discussion.title }}
+                                </div>
                             </div>
-                            <div>
-                                {{ discussion.created_at }}
+                            <div class="d-flex align-self-center">
+                                <div class="d-flex justify-space-between align-end">
+                                    <div class="d-flex my-1">
+                                        <v-chip v-for="tag in discussion.tags.slice(0, 3)" :key="tag"
+                                            class="bg-primary mr-1">
+                                            {{ tag }}
+                                        </v-chip>
+                                    </div>
+                                </div>
+                                <div class="align-self-center text-right" style="width: 65px;">
+                                    {{ discussion.created_at }}
+                                </div>
                             </div>
                         </div>
                         <hr />
                     </div>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="6" class="px-6">
                     <div class="d-flex justify-space-between align-end">
                         <div class="d-inline-block text-h5 font-weight-black">最新討論</div>
                         <a @click="toDiscussuion" class="d-inline-block text-subtitle-1 text-black text-decoration-none"
@@ -145,19 +150,25 @@
                         </a>
                     </div>
                     <hr />
-                    <div v-for="discussion in discussionStore.newDiscussions.slice(0, 4)" class="ma-2 d-flex flex-column">
-                        <div class="text-h5 mt-2">
-                            {{ discussion.title }}
-                        </div>
-                        <div class="d-flex justify-space-between align-end">
-                            <div class="d-flex my-1">
-                                <v-chip v-for="tag in discussion.tags.slice(0, 3)" :key="tag"
-                                    class="bg-primary text-color-white mr-1">
-                                    {{ tag }}
-                                </v-chip>
+                    <div v-for="discussion in discussionStore.newDiscussions.slice(0, 4)" class="ma-2">
+                        <div class="d-flex justify-space-between">
+                            <div class="d-flex flex-column">
+                                <div class="text-h5 mt-2">
+                                    {{ discussion.title }}
+                                </div>
                             </div>
-                            <div>
-                                {{ discussion.created_at }}
+                            <div class="d-flex align-self-center">
+                                <div class="d-flex justify-space-between align-end">
+                                    <div class="d-flex my-1">
+                                        <v-chip v-for="tag in discussion.tags.slice(0, 3)" :key="tag"
+                                            class="bg-primary mr-1">
+                                            {{ tag }}
+                                        </v-chip>
+                                    </div>
+                                </div>
+                                <div class="align-self-center text-right" style="width: 65px;">
+                                    {{ discussion.created_at }}
+                                </div>
                             </div>
                         </div>
                         <hr />
@@ -190,7 +201,7 @@ const experienceStore = useExperienceStore()
 const router = useRouter()
 const introduces = [
     { title: '面試提問模組', img: 'index_1.jpg', content: '隨機抽取不同類型的面試問題，順練臨場反應能力' },
-    { title: '面試評估模組', img: 'index_2.jpg', content: '<ul> <li>肢體辨識：分析肢體語言</li>  <li>次語言辨識：分析說話速度</li>  <li>成果評估：統計分析並視覺化呈現結果</li></ul>' },
+    { title: '面試評估模組', img: 'index_2.jpg', content: '肢體辨識：分析肢體語言<br/>次語言辨識：分析說話速度<br/>成果評估：統計分析並視覺化呈現結果' },
     { title: '面試經驗分享社群', img: 'index_3.jpg', content: '記錄並分享面試過程，讓使用者互相學習' }
 
 ]
