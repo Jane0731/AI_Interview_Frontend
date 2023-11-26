@@ -9,16 +9,57 @@
         </v-row>
     </v-container>
     <div v-if="!isLoading">
-        <v-img class="pa-6 pa-sm-16" height="450" src="/banner.png" cover>
-            <div class="d-flex flex-column justify-sm-center h-100 text-h5 w-75 mx-auto">
-                <div>你可以不必一個人辛苦奮戰</div>
-                <div>使用我們的系統</div>
-                <div>你將迎來屬於自己的勝利時刻</div>
-                <div>我們將為你匹配最合適的模擬面試</div>
-                <div>讓你在迎接真正面試之前</div>
-                <div>提升你的應試技巧與自信心</div>
+        <v-img class="bg-grey-lighten-5" height="100vh" width="100vw" src="/banner.png" cover>
+            <div class="d-flex flex-column align-start justify-center h-100 mx-auto text-h4" style="max-width: 1300px;">
+                <div class="px-6 py-10" style="background-color: #ffffff30;">
+                    <div>使用我們的系統，</div>
+                    <div>你可以不必一個人辛苦奮戰。</div>
+                    <div>我們將為您匹配最合適的模擬面試，</div>
+                    <div>讓你在迎接真正面試之前，</div>
+                    <div>提升你的應試技巧與自信心！</div>
+                </div>
+
             </div>
         </v-img>
+
+        <div class="px-10 my-16 text-center">
+            <div class="d-flex justify-center mt-6">
+                <v-row style="max-width: 1170px;">
+                    <v-col>
+                        <div class="py-6 px-10 bg-indigo rounded-xl">
+                            <div class="d-flex flex-column justify-center mx-auto">
+                                <div class="text-left text-h4 my-3">註冊人數</div>
+                                <div class="text-right text-h4 my-3">100</div>
+                            </div>
+                        </div>
+                    </v-col>
+                    <v-col>
+                        <div class="py-6 px-10 bg-teal rounded-xl">
+                            <div class="d-flex flex-column justify-center mx-auto">
+                                <div class="text-left text-h4 my-3">討論貼文</div>
+                                <div class="text-right text-h4 my-3">100</div>
+                            </div>
+                        </div>
+                    </v-col>
+                    <v-col>
+                        <div class="py-6 px-10 bg-red rounded-xl">
+                            <div class="d-flex flex-column justify-center mx-auto">
+                                <div class="text-left text-h4 my-3">面試分享</div>
+                                <div class="text-right text-h4 my-3">100</div>
+                            </div>
+                        </div>
+                    </v-col>
+                    <v-col>
+                        <div class="py-6 px-10 bg-deep-orange rounded-xl">
+                            <div class="d-flex flex-column justify-center mx-auto">
+                                <div class="text-left text-h4 my-3">模擬面試</div>
+                                <div class="text-right text-h4 my-3">100</div>
+                            </div>
+                        </div>
+                    </v-col>
+                </v-row>
+            </div>
+        </div>
 
         <div class="px-10 my-16 text-center">
             <div class="font-weight-black text-teal-darken-1">
@@ -42,7 +83,7 @@
             </div>
         </div>
         <div class="mx-auto my-16" style="max-width: 1170px;">
-            <div class="text-h5 font-weight-black w-auto text-center my-6" style="position: relative;">
+            <div class="text-h4 font-weight-black w-auto text-center my-6" style="position: relative;">
                 面試分享
                 <a @click="toExperience" class="text-subtitle-1 text-black text-decoration-none"
                     style="position: absolute;right: 0;bottom: 0;cursor: pointer;">
@@ -224,3 +265,8 @@ onMounted(async () => {
     isLoading.value = false
 })
 </script>
+<style>
+main {
+    padding: 0 !important;
+}
+</style>
