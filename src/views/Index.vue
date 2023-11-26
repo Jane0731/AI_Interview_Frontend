@@ -10,8 +10,13 @@
     </v-container>
     <div v-if="!isLoading">
         <v-img class="pa-6 pa-sm-16" height="450" src="/banner.png" cover>
-            <div class="d-inline-block text-h5 font-weight-black h-100 w-auto mx-2 mx-sm-10 mx-lg-16 pa-2 pa-sm-8 pa-lg-16">
-                你可以不必一個人辛苦奮戰,使用我們的系統你將迎來屬於自己的勝利時刻。我們將為你匹配最合適的模擬面試,讓你在迎接真正面試之前,提升你的應試技巧與自信心。
+            <div class="d-flex flex-column justify-sm-center h-100 text-h5 w-75 mx-auto align-self-cente font-weight-black">
+                <div>你可以不必一個人辛苦奮戰</div>
+                <div>使用我們的系統</div>
+                <div>你將迎來屬於自己的勝利時刻</div>
+                <div>我們將為你匹配最合適的模擬面試</div>
+                <div>讓你在迎接真正面試之前</div>
+                <div>提升你的應試技巧與自信心</div>
             </div>
         </v-img>
 
