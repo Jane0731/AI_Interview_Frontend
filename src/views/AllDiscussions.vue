@@ -13,7 +13,7 @@
     <v-row justify="space-between">
 
       <v-col cols="2">
-        <Classification />
+        <Classification @refresh="refresh"/>
       </v-col>
       <v-col cols="7">
         <div class="d-flex flex-row align-center my-4">
@@ -59,7 +59,7 @@
       <v-col cols="2">
 
 
-        <Keywords />
+        <Keywords @refresh="refresh"/>
       </v-col>
     </v-row>
   </v-container>
@@ -92,6 +92,9 @@ const onFresh = async () => {
   await discussionStore.getAllDiscussions()
 
 };
+const refresh=async(search)=>{
+  await discussionStore.getAllDiscussions(search)
+}
 onMounted(async () => {
   await discussionStore.getAllDiscussions()
   isLoading.value = false

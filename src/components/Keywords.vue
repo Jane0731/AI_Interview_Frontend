@@ -1,23 +1,30 @@
 <template>
     <v-responsive max-width="600">
-          <v-text-field label="搜尋" variant="solo" single-line density="compact" hide-details="auto"
-            prepend-inner-icon="mdi-magnify">
-          </v-text-field>
-        </v-responsive>
+        <v-text-field v-model="search" label="搜尋" variant="solo" single-line density="compact"
+            hide-details="auto" prepend-inner-icon="mdi-magnify">
+        </v-text-field>
+    </v-responsive>
     <v-sheet rounded="lg" width="100%" class="key-width my-4  mx-auto">
         <div class="text-h5 text-center mb-3">熱門關鍵字</div>
         <v-sheet v-for="keyword in keywords" :key="keyword.id">
-            <v-btn prepend-icon="mdi-pound" variant="text">
+            <v-btn @click="setSearch(keyword.name)" prepend-icon="mdi-pound" variant="text">
                 {{ keyword.name }}
             </v-btn>
         </v-sheet>
     </v-sheet>
 </template>
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, defineEmits, onMounted, watch } from 'vue'
 import axios from "@/api/axios.config";
-
+const search = ref('')
 const keywords = ref([])
+const setSearch = (value) => {
+    search.value = value
+}
+const emit = defineEmits(['refresh'])
+watch(search, (newValue) => {
+    emit('refresh', newValue)
+})
 onMounted(async () => {
 
     await axios

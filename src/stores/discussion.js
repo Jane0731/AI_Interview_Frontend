@@ -1,9 +1,9 @@
-import { reactive,computed } from "vue";
+import { reactive, computed,ref } from "vue";
 import { defineStore } from "pinia";
 
 import axios from "@/api/axios.config";
 import { useResultStore } from "@/stores/result";
-import { useCategorysStore } from '@/stores/category';
+import { useCategorysStore } from "@/stores/category";
 
 import moment from "moment";
 import "moment/dist/locale/zh-tw";
@@ -12,23 +12,44 @@ moment.locales();
 export const useDiscussionStore = defineStore("discussion", () => {
   const discussions = reactive([]);
   const discussion = reactive({});
-  const newDiscussions=computed(()=>{
-    return discussions.new
-  })
-  const popularDiscussions=computed(()=>{
-    return discussions.popular
-  })
-  const getAllDiscussions = async () => {
+  const newDiscussions = computed(() => {
+    return discussions.new;
+  });
+  const popularDiscussions = computed(() => {
+    return discussions.popular;
+  });
+  const category = ref("");
+  const setCategory=(value)=>{
+    category.value=value
+  }
+  const getAllDiscussions = async (search) => {
+    let url = "/discussion";
+
+    if (search) {
+      url += '?search=' + encodeURIComponent(search)
+    }
+  
+    if (category.value) {
+      if (url.includes('?')) {
+        url += '&category=' + encodeURIComponent(category.value)  
+      } else {
+        url += '?category=' + encodeURIComponent(category.value)   
+      }
+    }  
     await axios
-      .get("/discussion")
+      .get(url)
       .then((response) => {
-        const categoryStore = useCategorysStore()
+        const categoryStore = useCategorysStore();
         response.data.popular.forEach((discussion) => {
-          discussion.categoryName= categoryStore.getCategoryName(discussion.category_id)
+          discussion.categoryName = categoryStore.getCategoryName(
+            discussion.category_id
+          );
           discussion.created_at = moment(discussion.created_at).fromNow();
         });
         response.data.new.forEach((discussion) => {
-          discussion.categoryName= categoryStore.getCategoryName(discussion.category_id)
+          discussion.categoryName = categoryStore.getCategoryName(
+            discussion.category_id
+          );
           discussion.created_at = moment(discussion.created_at).fromNow();
         });
         Object.assign(discussions, response.data);
@@ -41,7 +62,6 @@ export const useDiscussionStore = defineStore("discussion", () => {
     await axios
       .get("/discussion/" + id)
       .then((response) => {
-
         response.data.created_at = moment(response.data.created_at).fromNow();
         Object.assign(discussion, response.data);
       })
@@ -49,7 +69,13 @@ export const useDiscussionStore = defineStore("discussion", () => {
         console.error(error);
       });
   };
-  const updateDiscussion = async(title, content, category_id, tags,discussion_id) => {
+  const updateDiscussion = async (
+    title,
+    content,
+    category_id,
+    tags,
+    discussion_id
+  ) => {
     const json = JSON.stringify({
       title,
       content,
@@ -57,7 +83,7 @@ export const useDiscussionStore = defineStore("discussion", () => {
       tags,
     });
     await axios
-      .patch("/discussion/"+discussion_id, JSON.parse(json))
+      .patch("/discussion/" + discussion_id, JSON.parse(json))
       .then((response) => {
         const resultStore = useResultStore();
         resultStore.success("編輯成功");
@@ -69,14 +95,14 @@ export const useDiscussionStore = defineStore("discussion", () => {
         console.log(error);
       });
   };
-  const createDiscussion =  async(title, content, category_id, tags) => {
+  const createDiscussion = async (title, content, category_id, tags) => {
     const json = JSON.stringify({
       title,
       content,
       category_id,
       tags,
     });
-    console.log(tags)
+    console.log(tags);
     await axios
       .post("/discussion", JSON.parse(json))
       .then((response) => {
@@ -95,10 +121,9 @@ export const useDiscussionStore = defineStore("discussion", () => {
       .delete("/discussion/" + id)
       .then((response) => {
         const resultStore = useResultStore();
-        discussions.length=0
+        discussions.length = 0;
         resultStore.success("刪除成功");
         getAllDiscussions();
-
       })
       .catch((error) => {
         const resultStore = useResultStore();
@@ -112,6 +137,7 @@ export const useDiscussionStore = defineStore("discussion", () => {
     discussion,
     newDiscussions,
     popularDiscussions,
+    setCategory,
     getAllDiscussions,
     getDiscussion,
     createDiscussion,
