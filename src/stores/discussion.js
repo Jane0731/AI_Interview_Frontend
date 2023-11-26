@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { reactive,computed } from "vue";
 import { defineStore } from "pinia";
 
 import axios from "@/api/axios.config";
@@ -12,12 +12,22 @@ moment.locales();
 export const useDiscussionStore = defineStore("discussion", () => {
   const discussions = reactive([]);
   const discussion = reactive({});
+  const newDiscussions=computed(()=>{
+    return discussions.new
+  })
+  const popularDiscussions=computed(()=>{
+    return discussions.popular
+  })
   const getAllDiscussions = async () => {
     await axios
       .get("/discussion")
       .then((response) => {
         const categoryStore = useCategorysStore()
-        response.data.forEach((discussion) => {
+        response.data.popular.forEach((discussion) => {
+          discussion.categoryName= categoryStore.getCategoryName(discussion.category_id)
+          discussion.created_at = moment(discussion.created_at).fromNow();
+        });
+        response.data.new.forEach((discussion) => {
           discussion.categoryName= categoryStore.getCategoryName(discussion.category_id)
           discussion.created_at = moment(discussion.created_at).fromNow();
         });
@@ -100,6 +110,8 @@ export const useDiscussionStore = defineStore("discussion", () => {
   return {
     discussions,
     discussion,
+    newDiscussions,
+    popularDiscussions,
     getAllDiscussions,
     getDiscussion,
     createDiscussion,

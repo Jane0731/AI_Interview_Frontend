@@ -1,4 +1,13 @@
 <template>
+  <v-container fluid v-if="isLoading" style="height: 100%;">
+    <v-row align="center" justify="center" style="height: 100%;">
+      <v-col cols="auto">
+        <div>
+          <fade-loader loading="true" color="grey"></fade-loader>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
   <v-container>
 
     <v-row justify="space-between">
@@ -15,14 +24,30 @@
             <v-text-field label="在想些什麼呢" variant="solo" single-line density="compact" hide-details="auto" readonly="" />
           </v-responsive>
         </div>
-        <Tabs v-model="tabsName" :values="tabValues" />
-        <TabWindow v-model="tabsName" :values="tabValues">
+        <v-tabs v-model="tab">
+          <v-tab v-for="value in tabValues" :value="value.id">
+            {{ value.description }}
+          </v-tab>
+        </v-tabs>
+        <!-- <TabWindow v-model="tabsName" :values="tabValues">
           <template v-slot:view>
             <div v-for="discussion in discussionStore.discussions" class="pa-4 mx-auto my-5">
-              <Discussion :discussion="discussion" @fresh="onFresh()" :key="renderKey"/>
+              <Discussion :discussion="discussion" @fresh="onFresh()" :key="renderKey" />
             </div>
           </template>
-        </TabWindow>
+        </TabWindow> -->
+        <v-window v-model="tab">
+          <v-window-item value="hot">
+            <div v-for="discussion in discussionStore.popularDiscussions" class="pa-4 mx-auto my-5">
+              <Discussion :discussion="discussion" @fresh="onFresh()" :key="renderKey" />
+            </div>
+          </v-window-item>
+          <v-window-item value="new">
+            <div v-for="discussion in discussionStore.newDiscussions" class="pa-4 mx-auto my-5">
+              <Discussion :discussion="discussion" @fresh="onFresh()" :key="renderKey" />
+            </div>
+          </v-window-item>
+        </v-window>
         <DiscussionDialog :user="{ name: userStore.user.name, id: userStore.user.id }" />
 
       </v-col>
@@ -36,7 +61,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted,inject } from 'vue'
+import { ref, onMounted, inject } from 'vue'
 import Discussion from '@/components/Discussion.vue'
 import Keywords from '@/components/Keywords.vue'
 import Classification from '@/components/Classification.vue'
@@ -45,18 +70,20 @@ import { useDialogStore } from '@/stores/dialog'
 import { useUserStore } from '@/stores/user'
 
 import Alert from '@/components/Alert.vue'
+import FadeLoader from 'vue-spinner/src/FadeLoader.vue'
 
 import Tabs from '@/components/Tabs.vue'
 import TabWindow from '@/components/TabWindow.vue'
 import DiscussionDialog from '@/components/DiscussionDialog.vue'
-const userStore=useUserStore()
+const userStore = useUserStore()
 const discussionStore = useDiscussionStore()
 const dialogStore = useDialogStore()
 const tabValues = [{ id: "hot", description: "熱門討論" }, { id: "new", description: "最新討論" }]
-const tabsName = ref("discussionTab")
 const renderKey = ref(0);
+const tab = ref("hot")
+const isLoading = ref(true)
 
-const onFresh = async() => {
+const onFresh = async () => {
   renderKey.value += 1;
   await discussionStore.getAllDiscussions()
 
@@ -64,8 +91,8 @@ const onFresh = async() => {
 
 onMounted(async () => {
   await discussionStore.getAllDiscussions()
+  isLoading.value = false
 })
-
 
 const openAddDiscussionDialog = () => {
   dialogStore.changeDialogStatus()
