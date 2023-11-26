@@ -83,7 +83,6 @@ onMounted(async () => {
   await axios
     .get("/city-options")
     .then(async (response) => {
-      console.log(response)
       cityOptions.value=response.data
     })
     .catch((error) => {

@@ -98,13 +98,16 @@ import { useDiscussionStore } from '@/stores/discussion'
 import { useFavoriteStore } from '@/stores/favorite'
 import DiscussionDialog from '@/components/DiscussionDialog.vue'
 import { useAuthStore } from '@/stores/auth'
+import { useUserStore } from '@/stores/user';
+const userStore = useUserStore()
+
 const isShowDialog = ref(false)
 const loading = ref(false)
 const favoriteStroe = useFavoriteStore()
 const dialogStore = useDialogStore()
 const authStore = useAuthStore()
 const discussionStore = useDiscussionStore()
-const userId = localStorage.getItem("userId")
+const userId = ref('')
 const router = useRouter()
 const props = defineProps({
     discussion: { type: Object },
@@ -112,7 +115,9 @@ const props = defineProps({
 const emit = defineEmits(['fresh'])
 const deleteDiscussion = ref(false)
 
-
+onMounted(() => {
+    userId.value=userStore.user.id
+})
 const onDiscussionClick = (id) => {
 
     router.push({

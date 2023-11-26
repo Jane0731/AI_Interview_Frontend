@@ -43,9 +43,10 @@ export const useExperienceStore = defineStore("experience", () => {
         console.error(error);
       });
   };
-  const updateExperience = async (experience_id,company, position, date, description, result, difficulty, questions) => {
+  const updateExperience = async (experience_id,company,city, position, date, description, result, difficulty, questions) => {
     const json = JSON.stringify({
       company,
+      city,
       position,
       date,
       description,
@@ -66,9 +67,10 @@ export const useExperienceStore = defineStore("experience", () => {
         console.log(error);
       });
   };
-  const createExperience = async (company, position, date, description, result, difficulty, questions) => {
+  const createExperience = async (company,city, position, date, description, result, difficulty, questions) => {
     const json = JSON.stringify({
       company,
+      city, 
       position,
       date,
       description,
