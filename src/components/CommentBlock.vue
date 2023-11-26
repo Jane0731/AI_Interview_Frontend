@@ -26,7 +26,7 @@
                 <v-icon icon="mdi-account-circle"></v-icon>
 
                 <v-text-field placeholder="留言..." variant="plain" density="compact" hide-details="auto" rows="3"
-                    class="mx-2" @click.self="authStore.isAuthorized ? changeUseCommentStatus : isShowDialog = true" />
+                    class="mx-2" @click="authStore.isAuthorized ? changeUseCommentStatus() : (isShowDialog = true)" />
 
             </div>
         </v-row>
@@ -44,13 +44,15 @@
     </div>
 </template>
 <script setup>
-import { defineProps, ref, inject } from 'vue';
+import { defineProps, ref, onMounted } from 'vue';
 import { useFavoriteStore } from '@/stores/favorite'
 import { useAuthStore } from '@/stores/auth'
 import { useCommentStore } from '@/stores/comment';
 import { useUserStore } from '@/stores/user';
 import { useRouter, useRoute } from 'vue-router'
-
+onMounted(()=>{
+    console.log(authStore.isAuthorized)
+})
 const userStore = useUserStore()
 
 const authStore = useAuthStore()
@@ -71,7 +73,6 @@ const rules = {
     required: value => !!value || '欄位必填',
 }
 const addComment = async () => {
-    console.log(props.id)
     if (!form.value) return
     loading.value = true
     await commentStore.createComment(props.id, newComment.value, props.type)
