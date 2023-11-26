@@ -62,11 +62,12 @@ const onSubmit = async () => {
     await authStore.login(email.value, password.value)
     loading.value = false
     if (authStore.isAuthorized) {
-        if(redirect==''){
-            router.push("/profile")
+        if(redirect){
+            router.push(redirect)
         }
         else{
-            router.push(redirect)
+            router.push("/profile")
+           
         }
     }
 }
