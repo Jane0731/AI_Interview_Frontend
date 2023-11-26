@@ -1,9 +1,16 @@
 <template>
-    <v-container>
-        <v-row justify="space-between">
-            <v-col cols="2">
-                <v-spacer></v-spacer>
+    <v-container fluid v-if="isLoading" style="height: 100%;">
+        <v-row align="center" justify="center" style="height: 100%;">
+            <v-col cols="auto">
+                <div>
+                    <fade-loader loading="true" color="grey"></fade-loader>
+                </div>
             </v-col>
+        </v-row>
+    </v-container>
+    <v-container v-if="!isLoading">
+        <v-row justify="center">
+
             <v-col cols="6">
                 <v-sheet rounded="t-lg" width="100%">
                     <div class="pa-4 mx-auto my-5 discussion-block">
@@ -36,27 +43,35 @@
                             <v-sheet>
                                 <v-btn variant="plain" icon="mdi-heart" :ripple="false"
                                     :color="discussionStore.discussion.is_Favorite ? 'deep-orange-accent-4' : 'grey-lighten-4'"
-                                    @click.stop="clickFavoriteEvent(discussionStore.discussion.is_Favorite, 'discussion', discussionStore.discussion.id)"></v-btn>
+                                    @click.stop="authStore.isAuthorized ? clickFavoriteEvent(discussionStore.discussion.is_Favorite, 'discussion', discussionStore.discussion.id) : isShowDialog = true"></v-btn>
 
                                 {{ discussionStore.discussion.user_favorites_count }}
                             </v-sheet>
+                            <v-dialog v-model="isShowDialog" width="50%">
+                                <v-card>
+                                    <v-card-text class="text-h5">
+                                        請先登入才可點讚討論
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn color="primary" @click="isShowDialog=false">關閉</v-btn>
+                                        <v-btn color="primary" @click="login">前往登入</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
                         </div>
                         <v-divider></v-divider>
                         <v-sheet v-if="comments.length">
                             <div v-for="comment in comments" class="px-4 mx-auto mt-2">
-                                <Comment :type="type" :comment="comment" :typeId="discussionStore.discussion.id" 
-                                   />
+                                <Comment :type="type" :comment="comment" :typeId="discussionStore.discussion.id" />
                             </div>
                         </v-sheet>
                         <v-sheet v-else rounded="lg" width="100%" class="px-4 mx-auto mt-2">
                             尚無留言
                         </v-sheet>
                     </div>
-                    <CommentBlock :id="discussionStore.discussion.id" :type="type" :isFavorite="discussionStore.discussion.is_Favorite"/>
+                    <CommentBlock :id="discussionStore.discussion.id" :type="type"
+                        :isFavorite="discussionStore.discussion.is_Favorite" />
                 </v-sheet>
-            </v-col>
-            <v-col cols="2">
-                <Keywords />
             </v-col>
         </v-row>
     </v-container>
@@ -69,9 +84,15 @@ import Comment from '@/components/Comment.vue'
 import CommentBlock from '@/components/CommentBlock.vue';
 import { useDiscussionStore } from '@/stores/discussion'
 import { useCommentStore } from '@/stores/comment';
-import { useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useFavoriteStore } from '@/stores/favorite'
 import { storeToRefs } from 'pinia';
+import { useAuthStore } from '@/stores/auth'
+import FadeLoader from 'vue-spinner/src/FadeLoader.vue'
+
+const isLoading = ref(true)
+
+const authStore = useAuthStore()
 
 const commentStore = useCommentStore()
 const { comments } = storeToRefs(commentStore);
@@ -79,14 +100,15 @@ const discussionStore = useDiscussionStore()
 const route = useRoute()
 const type = ref("discussion")
 const favoriteStroe = useFavoriteStore()
-
+const router = useRouter()
 onMounted(async () => {
     await discussionStore.getDiscussion(route.params.id)
     await commentStore.getComment(route.params.id, "discussion")
+    isLoading.value = false
 })
-const onFresh = async() => {
-  renderKey.value += 1;
-  await discussionStore.getAllDiscussions()
+const onFresh = async () => {
+    renderKey.value += 1;
+    await discussionStore.getAllDiscussions()
 
 };
 const clickFavoriteEvent = async (isFavorite, type, id) => {
@@ -94,6 +116,16 @@ const clickFavoriteEvent = async (isFavorite, type, id) => {
         await favoriteStroe.addFavorites(type, id, "single")
     else
         await favoriteStroe.deleteFavorites(type, id, "single")
+}
+const isShowDialog = ref(false)
+
+const login = () => {
+    router.push({
+        name: 'Login',
+        query: {
+            redirect: route.fullPath
+        }
+    })
 }
 </script>
 <style scoped>

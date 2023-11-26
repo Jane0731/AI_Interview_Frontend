@@ -131,7 +131,7 @@
             <v-sheet>
                 <v-btn variant="plain" icon="mdi-heart" :ripple="false"
                     :color="experience.is_Favorite ? 'deep-orange-accent-4' : 'grey-lighten-4'"
-                    @click.stop="clickFavoriteEvent(experience.is_Favorite, 'experience', experience.id)"></v-btn>
+                    @click.stop="authStore.isAuthorized ?clickFavoriteEvent(experience.is_Favorite, 'experience', experience.id) : isShowDialog = true"></v-btn>
 
                 {{ experience.user_favorites_count }}
             </v-sheet>
@@ -143,17 +143,31 @@
                 </v-btn>
             </v-sheet>
         </div>
+        <v-dialog v-model="isShowDialog" width="50%">
+            <v-card>
+                <v-card-text class="text-h5">
+                    請先登入才可點讚面試分享
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn color="primary" @click="isShowDialog = false">關閉</v-btn>
+                    <v-btn color="primary" @click="login">前往登入</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-sheet>
 </template>
 <script setup>
-import { defineProps, ref,inject,onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { defineProps, ref, inject, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useExperienceStore } from '@/stores/experience'
 import { useDialogStore } from '@/stores/dialog'
 import { useFavoriteStore } from '@/stores/favorite'
 
 import ExperienceDialog from './ExperienceDialog.vue';
+import { useAuthStore } from '@/stores/auth'
+const isShowDialog = ref(false)
 const menuVisible = ref(false)
+const authStore = useAuthStore()
 
 const experienceStore = useExperienceStore()
 const dialogStore = useDialogStore()
@@ -164,7 +178,7 @@ const props = defineProps({
     experience: { type: Object },
     isSingleExperience: { type: Boolean, default: false }
 })
-const reload=inject("reload")
+const reload = inject("reload")
 const deleteExperience = ref(false)
 const userId = localStorage.getItem("userId")
 const loading = ref(false)
@@ -202,6 +216,15 @@ const clickFavoriteEvent = async (isFavorite, type, id) => {
         await favoriteStroe.deleteFavorites(type, id, "all")
         reload()
     }
+}
+const currentRoute = useRoute();
+const login = () => {
+    router.push({
+        name: 'Login',
+        query: {
+            redirect: currentRoute.fullPath
+        }
+    })
 }
 </script>
 <style scoped>

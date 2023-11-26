@@ -10,9 +10,9 @@
                 <InterviewStepOneCardVue v-for="item in items" :item="item"></InterviewStepOneCardVue>
             </div>
             <div class="d-flex justify-center mb-6">
-                <v-btn @click="goStepTwo()" color="primary" class="text-center mt-5 " size="x-large" width="60%">
+                <v-btn @click="authStore.isAuthorized?goStepTwo():login()" color="primary" class="text-center mt-5 " size="x-large" width="60%">
                     <div class="text-h5">
-                        模擬面試職缺選擇
+                        {{authStore.isAuthorized?'模擬面試職缺選擇':'請先登入'}}
                     </div>
                 </v-btn>
             </div>
@@ -24,9 +24,21 @@
 import InterviewStepOneCardVue from '@/components/InterviewStepOneCard.vue';
 import InterviewWindow from '@/components/InterviewWindow.vue';
 import { useStepperStore } from '@/stores/stepper';
+import { useRouter, useRoute } from 'vue-router'
 
+import { useAuthStore } from '@/stores/auth'
+const router = useRouter()
+const authStore=useAuthStore()
 const stepperStore = useStepperStore()
-
+const currentRoute = useRoute();
+const login = () => {
+    router.push({
+        name: 'Login',
+        query: {
+            redirect: currentRoute.fullPath
+        }
+    })
+}
 const items = [{
     title: "AI技術支持",
     subtitle: "我們的面試模擬是由最先進的人工智慧技術進行辨識，確保了高度的正確性。",
