@@ -14,7 +14,7 @@
             </v-sheet>
             <v-spacer></v-spacer>
             <v-sheet v-show="(userId == discussion.user_id)" class="menu">
-                <v-menu location="end" >
+                <v-menu location="end">
                     <template v-slot:activator="{ props }">
                         <v-btn variant="text" icon="mdi-dots-vertical" v-bind="props"></v-btn>
                     </template>
@@ -71,30 +71,38 @@
             <v-sheet>
                 <v-btn variant="plain" icon="mdi-heart" :ripple="false"
                     :color="discussion.is_Favorite ? 'deep-orange-accent-4' : 'grey-lighten-4'"
-                    @click.stop="authStore.isAuthorized ?clickFavoriteEvent(discussion.is_Favorite, 'discussion', discussion.id):openLoginDialog()"></v-btn>
+                    @click.stop="authStore.isAuthorized ? clickFavoriteEvent(discussion.is_Favorite, 'discussion', discussion.id) : isShowDialog = true"></v-btn>
 
                 {{ discussion.user_favorites_count }}
 
             </v-sheet>
-            <LoginDialog content="請先登入才可點讚討論" />
-
+            <v-dialog v-model="isShowDialog" width="50%">
+                <v-card>
+                    <v-card-text class="text-h5">
+                        請先登入才可點讚討論
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn color="primary" @click="isShowDialog=false">關閉</v-btn>
+                        <v-btn color="primary" @click="login">前往登入</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </div>
     </v-sheet>
 </template>
 <script setup>
 import { defineProps, ref, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useDialogStore } from '@/stores/dialog'
 import { useDiscussionStore } from '@/stores/discussion'
 import { useFavoriteStore } from '@/stores/favorite'
 import DiscussionDialog from '@/components/DiscussionDialog.vue'
-import LoginDialog from '@/components/LoginDialog.vue'
 import { useAuthStore } from '@/stores/auth'
-
+const isShowDialog = ref(false)
 const loading = ref(false)
 const favoriteStroe = useFavoriteStore()
 const dialogStore = useDialogStore()
-const authStore=useAuthStore()
+const authStore = useAuthStore()
 const discussionStore = useDiscussionStore()
 const userId = localStorage.getItem("userId")
 const router = useRouter()
@@ -103,9 +111,6 @@ const props = defineProps({
 })
 const emit = defineEmits(['fresh'])
 const deleteDiscussion = ref(false)
-const openLoginDialog = () => {
-  dialogStore.changeLoginDialogStatus()
-}
 
 
 const onDiscussionClick = (id) => {
@@ -137,5 +142,13 @@ const clickFavoriteEvent = async (isFavorite, type, id) => {
         await favoriteStroe.deleteFavorites(type, id, "all")
     emit('fresh')
 }
-
+const currentRoute = useRoute();
+const login = () => {
+  router.push({
+    name: 'Login',
+    query: {
+      redirect: currentRoute.fullPath
+    }
+  })
+}
 </script>

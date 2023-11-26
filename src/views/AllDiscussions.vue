@@ -8,7 +8,7 @@
       </v-col>
     </v-row>
   </v-container>
-  <v-container>
+  <v-container v-if="!isLoading">
 
     <v-row justify="space-between">
 
@@ -20,7 +20,7 @@
           <v-avatar color="brown" class="mr-4">
             <span class="text-h5">{{ userStore.user.name }}</span>
           </v-avatar>
-          <v-responsive max-width="800" @click="authStore.isAuthorized ? openAddDiscussionDialog() : openLoginDialog()">
+          <v-responsive max-width="800" @click="authStore.isAuthorized ? openAddDiscussionDialog() : isShowDialog = true">
             <v-text-field label="在想些什麼呢" variant="solo" single-line density="compact" hide-details="auto" readonly="" />
           </v-responsive>
         </div>
@@ -43,7 +43,17 @@
           </v-window-item>
         </v-window>
         <DiscussionDialog :user="{ name: userStore.user.name, id: userStore.user.id }" />
-        <LoginDialog content="請先登入才可發布討論" />
+        <v-dialog v-model="isShowDialog" width="50%">
+          <v-card>
+            <v-card-text class="text-h5">
+              請先登入才可發布討論
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" @click="isShowDialog=false">關閉</v-btn>
+              <v-btn color="primary" @click="login">前往登入</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
       </v-col>
       <v-col cols="2">
@@ -65,9 +75,10 @@ import { useDialogStore } from '@/stores/dialog'
 import { useUserStore } from '@/stores/user'
 import { useAuthStore } from '@/stores/auth'
 import FadeLoader from 'vue-spinner/src/FadeLoader.vue'
-import LoginDialog from '@/components/LoginDialog.vue'
+import { useRouter, useRoute } from 'vue-router'
 
 import DiscussionDialog from '@/components/DiscussionDialog.vue'
+const isShowDialog = ref(false)
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const discussionStore = useDiscussionStore()
@@ -85,12 +96,19 @@ onMounted(async () => {
   await discussionStore.getAllDiscussions()
   isLoading.value = false
 })
-
 const openAddDiscussionDialog = () => {
   dialogStore.changeDialogStatus()
   dialogStore.setDialogContent("新增討論", "發布", 1)
 }
-const openLoginDialog = () => {
-  dialogStore.changeLoginDialogStatus()
+
+const currentRoute = useRoute();
+const router = useRouter()
+const login = () => {
+  router.push({
+    name: 'Login',
+    query: {
+      redirect: currentRoute.fullPath
+    }
+  })
 }
 </script>

@@ -26,25 +26,34 @@
                 <v-icon icon="mdi-account-circle"></v-icon>
 
                 <v-text-field placeholder="留言..." variant="plain" density="compact" hide-details="auto" rows="3"
-                    class="mx-2" @click="changeUseCommentStatus" />
+                    class="mx-2" @click.self="authStore.isAuthorized ? changeUseCommentStatus : isShowDialog = true" />
 
             </div>
-            <div class="d-flex flex-row align-center px-10  mr-10">
-                <v-icon :color="isFavorite ? 'deep-orange-accent-4' : 'grey-lighten-4'"
-                    @click.stop="clickFavoriteEvent()">mdi-heart</v-icon>
-            </div>
         </v-row>
+        <v-dialog v-model="isShowDialog" width="50%">
+            <v-card>
+                <v-card-text class="text-h5">
+                    請先登入才可留言
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn color="primary" @click="isShowDialog = false">關閉</v-btn>
+                    <v-btn color="primary" @click="login">前往登入</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 <script setup>
 import { defineProps, ref, inject } from 'vue';
 import { useFavoriteStore } from '@/stores/favorite'
-
+import { useAuthStore } from '@/stores/auth'
 import { useCommentStore } from '@/stores/comment';
 import { useUserStore } from '@/stores/user';
-const userStore=useUserStore()
-const favoriteStroe = useFavoriteStore()
-const reload = inject("reload")
+import { useRouter, useRoute } from 'vue-router'
+
+const userStore = useUserStore()
+
+const authStore = useAuthStore()
 
 const props = defineProps({
     type: { type: String },
@@ -75,16 +84,17 @@ const changeUseCommentStatus = (() => {
     isUseComment.value = !isUseComment.value
 })
 
-const clickFavoriteEvent = async () => {
-    if (!props.isFavorite) {
-        await favoriteStroe.addFavorites(props.type, props.id, "all")
-        reload()
-    }
-    else {
-        await favoriteStroe.deleteFavorites(props.type, props.id, "all")
-        reload()
+const isShowDialog = ref(false)
+const router = useRouter()
+const route = useRoute()
 
-    }
+const login = () => {
+    router.push({
+        name: 'Login',
+        query: {
+            redirect: route.fullPath
+        }
+    })
 }
 </script>
 <style scoped>
