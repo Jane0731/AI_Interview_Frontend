@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
 import { defineStore } from "pinia";
 
 import axios from "@/api/axios.config";
@@ -10,11 +10,20 @@ moment.locales();
 export const useExperienceStore = defineStore("experience", () => {
   const experiences = reactive([]);
   const experience = reactive({});
+  const newExperiences=computed(()=>{
+    return experiences.new
+  })
+  const popularExperiences=computed(()=>{
+    return experiences.popular
+  })
   const getAllExperiences = async () => {
     await axios
       .get("/experience")
       .then((response) => {
-        response.data.forEach((experience) => {
+        response.data.new.forEach((experience) => {
+          experience.created_at = moment(experience.created_at).fromNow();
+        });
+        response.data.popular.forEach((experience) => {
           experience.created_at = moment(experience.created_at).fromNow();
         });
         Object.assign(experiences, response.data);
@@ -101,6 +110,8 @@ export const useExperienceStore = defineStore("experience", () => {
   return {
     experiences,
     experience,
+    newExperiences,
+    popularExperiences,
     getAllExperiences,
     getExperience,
     createExperience,

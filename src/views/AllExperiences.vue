@@ -1,65 +1,87 @@
 <template>
-  <v-container>
-    <v-row justify="center">
-      <v-col cols="8">
-        <div class="mt-4 pa-4 mx-auto">
-          <v-select clearable chips label="地區" class="py-4"
-            :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']" multiple variant="outlined" />
-          <Tabs v-model="tabsName" :values="tabValues" />
-        </div>
-        <TabWindow v-model="tabsName" :values="tabValues">
-          <template v-slot:view>
-            <div v-for="experience in experienceStore.experiences" class="pa-4 mx-auto mb-5">
-              <Experience :experience="experience" />
-            </div>
-          </template>
-        </TabWindow>
-      </v-col>
-      <Alert />
+    <v-container fluid v-if="isLoading" style="height: 100%;">
+      <v-row align="center" justify="center" style="height: 100%;">
+        <v-col cols="auto">
+          <div>
+            <fade-loader loading="true" color="grey"></fade-loader>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-container v-else>
 
-    </v-row>
+      <v-row justify="center">
+        <v-col cols="8">
+          <div class="mt-4 pa-4 mx-auto">
+            <v-select clearable chips label="地區" class="py-4"
+              :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']" multiple variant="outlined" />
+            <v-tabs v-model="tab">
+              <v-tab v-for="value in tabValues" :value="value.id">
+                {{ value.description }}
+              </v-tab>
+            </v-tabs>
+          </div>
+          <v-window v-model="tab">
+            <v-window-item value="hot">
+              <div v-for="experience in experienceStore.popularExperiences"
+                class="window-item pa-4 mx-auto my-5 rounded-lg ">
+                <Experience :experience="experience" />
+              </div>
+            </v-window-item>
+            <v-window-item value="new">
+              <div v-for="experience in experienceStore.newExperiences" class="window-item pa-4 mx-auto my-5 rounded-lg">
+                <Experience :experience="experience" />
+              </div>
+            </v-window-item>
+          </v-window>
+        </v-col>
+        <Alert />
 
-    <v-btn icon="mdi-plus" size="x-large" class="suspend-button" color="grey-lighten-3"
-      @click="openAddExperienceDialog()"> </v-btn>
-    <ExperienceDialog />
+      </v-row>
 
-  </v-container>
+      <v-btn icon="mdi-plus" size="x-large" class="suspend-button" color="grey-lighten-3"
+        @click="openAddExperienceDialog()"> </v-btn>
+      <ExperienceDialog />
+
+    </v-container>
 </template>
 
 <script setup>
+import FadeLoader from 'vue-spinner/src/FadeLoader.vue'
+
 import { ref, reactive, onMounted } from 'vue'
 import Experience from '@/components/Experience.vue'
-import Tabs from '@/components/Tabs.vue'
-import TabWindow from '@/components/TabWindow.vue'
 import { useDialogStore } from '@/stores/dialog'
 import ExperienceDialog from '@/components/ExperienceDialog.vue'
 import { useExperienceStore } from '@/stores/experience'
 import Alert from '@/components/Alert.vue'
+import { watch } from 'vue'
+const tab = ref("hot")
 
 const tabValues = [{ id: "hot", description: "熱門分享" }, { id: "new", description: "最新分享" }]
-const tabsName = ref("experienceTab")
-
+const isLoading = ref(true)
 const dialogStore = useDialogStore()
-const experienceStore=useExperienceStore()
+const experienceStore = useExperienceStore()
 
 
-
-onMounted(async() => {
+onMounted(async () => {
   await experienceStore.getAllExperiences()
+  isLoading.value = false
 })
+
 const openAddExperienceDialog = () => {
   dialogStore.changeDialogStatus()
   dialogStore.setDialogContent("分享面試心得", "發布", 1)
 }
 const clickFavoriteEvent = async (isFavorite, type, id) => {
-    if (!isFavorite) {
-        await favoriteStroe.addFavorites(type, id, "all")
-        reload()
-    }
-    else {
-        await favoriteStroe.deleteFavorites(type, id, "all")
-        reload()
-    }
+  if (!isFavorite) {
+    await favoriteStroe.addFavorites(type, id, "all")
+    reload()
+  }
+  else {
+    await favoriteStroe.deleteFavorites(type, id, "all")
+    reload()
+  }
 }
 </script>
 <style scoped>
