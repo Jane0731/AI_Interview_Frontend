@@ -265,8 +265,3 @@ onMounted(async () => {
     isLoading.value = false
 })
 </script>
-<style>
-main {
-    padding: 0 !important;
-}
-</style>
