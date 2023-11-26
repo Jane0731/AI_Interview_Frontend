@@ -16,9 +16,14 @@ export const useExperienceStore = defineStore("experience", () => {
   const popularExperiences=computed(()=>{
     return experiences.popular
   })
-  const getAllExperiences = async () => {
+  const getAllExperiences = async (city) => {
+    let url = "/experience";
+
+    if (city) {
+      url += '?city=' + encodeURIComponent(city)
+    }
     await axios
-      .get("/experience")
+      .get(url)
       .then((response) => {
         response.data.new.forEach((experience) => {
           experience.created_at = moment(experience.created_at).fromNow();
@@ -43,9 +48,10 @@ export const useExperienceStore = defineStore("experience", () => {
         console.error(error);
       });
   };
-  const updateExperience = async (experience_id,company, position, date, description, result, difficulty, questions) => {
+  const updateExperience = async (experience_id,company,city, position, date, description, result, difficulty, questions) => {
     const json = JSON.stringify({
       company,
+      city,
       position,
       date,
       description,
@@ -66,9 +72,10 @@ export const useExperienceStore = defineStore("experience", () => {
         console.log(error);
       });
   };
-  const createExperience = async (company, position, date, description, result, difficulty, questions) => {
+  const createExperience = async (company,city, position, date, description, result, difficulty, questions) => {
     const json = JSON.stringify({
       company,
+      city, 
       position,
       date,
       description,

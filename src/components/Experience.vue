@@ -7,7 +7,7 @@
                 </v-avatar>
             </v-sheet>
             <v-sheet class="ml-2 mr-4">
-                <div class="text-h6">{{ experience.company }}</div>
+                <div class="text-h6">{{ experience.company }}({{ experience.city }})</div>
             </v-sheet>
             <v-sheet>
                 <div class="text-body-2">{{ experience.created_at }}</div>
@@ -165,6 +165,9 @@ import { useFavoriteStore } from '@/stores/favorite'
 
 import ExperienceDialog from './ExperienceDialog.vue';
 import { useAuthStore } from '@/stores/auth'
+import { useUserStore } from '@/stores/user';
+const userStore = useUserStore()
+
 const isShowDialog = ref(false)
 const menuVisible = ref(false)
 const authStore = useAuthStore()
@@ -180,10 +183,11 @@ const props = defineProps({
 })
 const reload = inject("reload")
 const deleteExperience = ref(false)
-const userId = localStorage.getItem("userId")
+const userId = ref('')
 const loading = ref(false)
 
 onMounted(() => {
+    userId.value=userStore.user.id
     document.addEventListener('click', (e) => {
         if (e.target.className != "menu")
             menuVisible.value = false

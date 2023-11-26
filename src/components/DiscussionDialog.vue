@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialogStore.dialogStatus" width="50%">
+    <v-dialog v-model="dialogStore.dialogStatus" width="50%" v-if="!isLoading">
         <v-sheet rounded="lg" class="py-5 px-15 text-center ">
             <div class="ma-5">
                 <v-row justify="end" no-gutters class="flex-row align-center">
@@ -25,8 +25,8 @@
                         </v-sheet>
 
                         <v-sheet width="25%" class="ml-2 justify-end">
-                            <v-select :rules="[rules.required]" v-model="category" :items="items" item-value="id" item-title="name" placeholder="討論類別"
-                                variant="outlined"></v-select>
+                            <v-select :rules="[rules.required]" v-model="category" :items="items" item-value="id"
+                                item-title="name" placeholder="討論類別" variant="outlined"></v-select>
                         </v-sheet>
 
                     </div>
@@ -35,14 +35,8 @@
                             color="primary" variant="plain"></v-text-field>
                         <v-textarea :rules="[rules.required]" v-model="content" variant="plain" rows="6"
                             :placeholder="discussion.content ? discussion.content : '內文'"></v-textarea>
-                        <!-- <v-select v-model="tags" :items="items" placeholder="相關關鍵字" multiple variant="plain">
-                            <template v-slot:selection="{ item }">
-                                <v-chip closable="">
-                                    {{ item.title }}
-                                </v-chip>
-                            </template>
-                        </v-select> -->
-                        <v-combobox v-model="tags" :items="items" item-value="id" item-title="name" chips clearable label="關鍵字" multiple variant="plain">
+                        <v-combobox v-model="tags" :items="keywords" item-value="id" item-title="name" chips clearable
+                            label="關鍵字" multiple variant="plain">
                             <template v-slot:selection="{ attrs, item, select, selected }">
                                 <v-chip v-bind="attrs" :model-value="selected" closable @click="select"
                                     @click:close="remove(item)">
@@ -64,17 +58,35 @@
     </v-dialog>
 </template>
 <script setup>
+import FadeLoader from 'vue-spinner/src/FadeLoader.vue'
+import axios from "@/api/axios.config";
+
 import { useDialogStore } from '@/stores/dialog'
 import { useDiscussionStore } from '@/stores/discussion'
 import { useCategorysStore } from '@/stores/category';
-import { ref, defineProps, onMounted ,watch} from 'vue';
+import { ref, defineProps, onMounted, watch } from 'vue';
 const props = defineProps({
     user: { type: Object },
     discussion: { type: Object, default: "" }
 })
-onMounted(async() => {
+const keywords = ref([])
+const items = ref([])
+
+onMounted(async () => {
+    await axios
+        .get("/discussion/popular-tag")
+        .then(async (response) => {
+            keywords.value = response.data
+        })
+        .catch((error) => {
+            console.log(error)
+            // resultStore.error(error.response.data.message)
+        });
     await categoryStore.getCategorys()
+    items.value = categoryStore.categorys.slice(1, categoryStore.categorys.length);
+    isLoading.value = false
 })
+const isLoading = ref(true)
 const discussionStore = useDiscussionStore()
 const categoryStore = useCategorysStore()
 
@@ -83,7 +95,6 @@ const dialogContent = dialogStore.dialogContent
 const title = ref(props.discussion.title)
 const content = ref(props.discussion.content)
 const category = ref(props.discussion.category_id)
-const items = categoryStore.categorys
 const tags = ref(props.discussion.tags)
 const form = ref(false)
 const loading = ref(false)
@@ -94,13 +105,21 @@ const rules = {
 
 
 const onSubmit = async (discussionId) => {
+    console.log(tags.value)
+    const tag = tags.value.map(item => {
+        if (item.name)
+            return item.name
+        else
+            return item
+    })
+
     if (!form.value) return
     loading.value = true
     if (dialogContent.id == 1) {
-        await discussionStore.createDiscussion(title.value, content.value, category.value, tags.value)
+        await discussionStore.createDiscussion(title.value, content.value, category.value, tag)
     }
     else {
-        await discussionStore.updateDiscussion(title.value, content.value, category.value, tags.value, discussionId)
+        await discussionStore.updateDiscussion(title.value, content.value, category.value, tag, discussionId)
     }
     loading.value = false
     dialogStore.changeDialogStatus()

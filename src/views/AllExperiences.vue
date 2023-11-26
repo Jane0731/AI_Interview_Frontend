@@ -14,7 +14,7 @@
       <v-col cols="8">
         <div class="mt-4 pa-4 mx-auto">
           <v-select clearable chips label="地區" class="py-4"
-            :items="cityOptions" multiple variant="outlined" />
+            :items="cityOptions" multiple variant="outlined" v-model="city"/>
           <v-tabs v-model="tab">
             <v-tab v-for="value in tabValues" :value="value.id">
               {{ value.description }}
@@ -59,7 +59,7 @@
 <script setup>
 import FadeLoader from 'vue-spinner/src/FadeLoader.vue'
 
-import { ref, reactive, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import Experience from '@/components/Experience.vue'
 import { useDialogStore } from '@/stores/dialog'
 import ExperienceDialog from '@/components/ExperienceDialog.vue'
@@ -68,7 +68,7 @@ import Alert from '@/components/Alert.vue'
 import axios from "@/api/axios.config";
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-
+const city=ref([])
 const tab = ref("hot")
 const cityOptions=ref([])
 const tabValues = [{ id: "hot", description: "熱門分享" }, { id: "new", description: "最新分享" }]
@@ -78,12 +78,16 @@ const experienceStore = useExperienceStore()
 const isShowDialog = ref(false)
 const authStore = useAuthStore()
 
+watch(city,async(newValue)=>{
+  const city=newValue.join(',')
+  await experienceStore.getAllExperiences(city)
+
+})
 onMounted(async () => {
 
   await axios
     .get("/city-options")
     .then(async (response) => {
-      console.log(response)
       cityOptions.value=response.data
     })
     .catch((error) => {

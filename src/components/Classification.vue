@@ -8,7 +8,6 @@
 </template>
 <script setup>
 import { ref, onMounted, watch, defineEmits } from 'vue'
-import FadeLoader from 'vue-spinner/src/FadeLoader.vue'
 import { useDiscussionStore } from '@/stores/discussion'
 
 import { useCategorysStore } from '@/stores/category'

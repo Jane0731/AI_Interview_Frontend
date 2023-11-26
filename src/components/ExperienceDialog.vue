@@ -21,6 +21,11 @@
                         <v-text-field validate-on="input" class="mb-2" :rules="[rules.required]" v-model="company"
                             :placeholder="experience.company ? experience.company : '公司名稱'"
                             variant="underlined"></v-text-field>
+                        <div class="text-body-1">您面試的公司所在地區</div>
+                        <v-select v-model="city" :items="cityOptions"
+                            :placeholder="experience.city ? experience.city : '公司所在地區'" variant="underlined"></v-select>
+                        <!-- <v-text-field validate-on="input" class="mb-2" :rules="[rules.required]" 
+                             variant="underlined"></v-text-field> -->
 
                         <div class="text-body-1">您面試的職位名稱</div>
                         <v-text-field class="mb-2" :rules="[rules.required]" v-model="position"
@@ -90,8 +95,8 @@
 
                     <div v-if="stepTwo">
                         <div class="text-body-1">您面試的過程分享</div>
-                        <v-textarea class="my-3" :rules="[rules.required]" v-model="description" variant="underlined" rows="6"
-                            placeholder="面試分享"></v-textarea>
+                        <v-textarea class="my-3" :rules="[rules.required]" v-model="description" variant="underlined"
+                            rows="6" placeholder="面試分享"></v-textarea>
 
                         <div class="text-body-1 mb-2">您面試的問題</div>
                         <div v-for="(question, id) in questions" :key="id">
@@ -139,12 +144,15 @@
     </v-dialog>
 </template>
 <script setup>
+import axios from "@/api/axios.config";
+
 import { useDialogStore } from '@/stores/dialog'
 import { useExperienceStore } from '@/stores/experience'
-import { ref, defineProps, reactive, watch } from 'vue';
+import { ref, defineProps, reactive, onMounted } from 'vue';
 const props = defineProps({
     experience: { type: Object, default: {} }
 })
+const cityOptions = ref([])
 
 const experienceStore = useExperienceStore()
 
@@ -152,6 +160,7 @@ const date = ref(props.experience.date)
 const dialogStore = useDialogStore()
 const dialogContent = dialogStore.dialogContent
 const company = ref(props.experience.company)
+const city = ref(props.experience.city)
 const position = ref(props.experience.position)
 const difficulty = ref(props.experience.difficulty)
 const interviewDifficultys = [{ name: "簡單", value: 1 }, { name: "普通", value: 2 }, { name: "困難", value: 3 }]
@@ -159,7 +168,7 @@ const result = ref(props.experience.result)
 const interviewResults = [{ name: "未錄取", value: 1 }, { name: "已錄取", value: 2 }, { name: "等待中", value: 3 }]
 const description = ref(props.experience.description)
 const stepOne = ref(true)
-const questions = props.experience.questions?reactive(props.experience.questions):reactive([{question:"",answer:""}])
+const questions = props.experience.questions ? reactive(props.experience.questions) : reactive([{ question: "", answer: "" }])
 const stepTwo = ref(false)
 const dialogChangePage = (buttonId) => {
     if (buttonId == 1) {
@@ -184,10 +193,10 @@ const onSubmit = async (experienceId) => {
     if (!form.value) return
     loading.value = true
     if (dialogContent.id == 1) {
-        await experienceStore.createExperience(company.value, position.value, date.value, description.value, result.value, difficulty.value, questions)
+        await experienceStore.createExperience(company.value, city.value, position.value, date.value, description.value, result.value, difficulty.value, questions)
     }
     else {
-        await experienceStore.updateExperience(experienceId,company.value, position.value, date.value, description.value, result.value, difficulty.value, questions)
+        await experienceStore.updateExperience(experienceId, company.value, city.value, position.value, date.value, description.value, result.value, difficulty.value, questions)
     }
     loading.value = false
     dialogStore.changeDialogStatus()
@@ -200,6 +209,19 @@ const removeQuestion = () => {
     if (questions.length > 1)
         questions.splice(questions.length - 1, 1)
 }
+onMounted(async () => {
 
+    await axios
+        .get("/city-options")
+        .then(async (response) => {
+            cityOptions.value = response.data
+        })
+        .catch((error) => {
+            console.log(error)
+            // resultStore.error(error.response.data.message)
+        });
+
+    await experienceStore.getAllExperiences()
+})
 </script>
 <style scoped></style>
