@@ -6,13 +6,17 @@
             <div class="text-body-1">讓您更輕鬆地備戰面試，獲得即時的表現反饋，以確保您在職場競爭中更具競爭力。</div>
         </template>
         <template v-slot:card-text>
-            <div class="d-flex my-3 align-center justify-space-between">
-                <InterviewStepOneCardVue v-for="item in items" :item="item"></InterviewStepOneCardVue>
-            </div>
+            <v-row class="d-flex flex-nowrap my-3 align-center justify-center mx-auto">
+                <v-col v-for="item in items">
+                    <InterviewStepOneCardVue :item="item">
+                    </InterviewStepOneCardVue>
+                </v-col>
+            </v-row>
             <div class="d-flex justify-center mb-6">
-                <v-btn @click="authStore.isAuthorized?goStepTwo():login()" color="primary" class="text-center mt-5 " size="x-large" width="60%">
+                <v-btn @click="authStore.isAuthorized ? goStepTwo() : login()" color="primary" class="text-center mt-5 "
+                    size="x-large" width="60%">
                     <div class="text-h5">
-                        {{authStore.isAuthorized?'模擬面試職缺選擇':'請先登入'}}
+                        {{ authStore.isAuthorized ? '模擬面試職缺選擇' : '請先登入' }}
                     </div>
                 </v-btn>
             </div>
@@ -28,7 +32,7 @@ import { useRouter, useRoute } from 'vue-router'
 
 import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
-const authStore=useAuthStore()
+const authStore = useAuthStore()
 const stepperStore = useStepperStore()
 const currentRoute = useRoute();
 const login = () => {
