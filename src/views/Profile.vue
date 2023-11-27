@@ -4,7 +4,7 @@
             <v-sheet rounded="xl" width="100%" class="my-4 text-start mx-auto class-width">
                 <v-tabs v-model="tab" direction="vertical">
                     <v-sheet rounded="lg" :color="tab == menuItem.menuName ? 'primary' : '#B3B7C1'" v-for="menuItem in menuItems"
-                        class="ma-5  text-center">
+                        class="mx-5 mt-5 text-center">
                         <v-tab :value="menuItem.menuName" width="100%" class="pa-4 d-flex justify-center" height="100%">
                             <v-icon start size="x-large">
                                 {{ menuItem.menuIcon }}
