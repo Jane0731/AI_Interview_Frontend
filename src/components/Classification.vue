@@ -1,8 +1,11 @@
 <template>
-    <v-sheet rounded="lg" width="100%" class="my-4 text-center mx-auto class-width">
-        <div class="text-h5 text-center mb-3">討論類別</div>
-        <v-list :items="items" item-title="name" item-value="id" v-model:selected="category">
-            
+    <v-sheet rounded="lg" width="100%" class="mx-auto class-width">
+        <div class="text-h5 text-center pt-4 pb-1">討論類別</div>
+        <hr class="mx-4">
+        <v-list class="pa-0" v-model:selected="category">
+            <v-list-item class="text-center" v-for="item in items" :title="item.name" :value="item.id">
+
+            </v-list-item>
         </v-list>
     </v-sheet>
 </template>
@@ -15,14 +18,14 @@ const categoryStore = useCategorysStore()
 const isLoading = ref(true)
 const discussionStore = useDiscussionStore()
 const emit = defineEmits(['refresh'])
-const selectedItem=ref(null)
+const selectedItem = ref(null)
 const items = ref('')
 const category = ref([])
 onMounted(async () => {
     await categoryStore.getCategorys()
     items.value = categoryStore.categorys.slice(1, categoryStore.categorys.length);
     isLoading.value = false
-    category.value=items.value[0]
+    category.value = items.value[0]
 })
 watch(category, (newValue) => {
     if (newValue[0] == '全部類別')

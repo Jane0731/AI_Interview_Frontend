@@ -13,14 +13,14 @@
     <v-row justify="space-between">
 
       <v-col cols="2">
-        <Classification @refresh="refresh"/>
+        <Classification @refresh="refresh" />
       </v-col>
       <v-col cols="7">
-        <div class="d-flex flex-row align-center my-4">
+        <div class="d-flex flex-row align-center pa-4">
           <v-avatar color="brown" class="mr-4">
             <span class="text-h5">{{ userStore.user.name }}</span>
           </v-avatar>
-          <v-responsive max-width="800" @click="authStore.isAuthorized ? openAddDiscussionDialog() : isShowDialog = true">
+          <v-responsive @click="authStore.isAuthorized ? openAddDiscussionDialog() : isShowDialog = true">
             <v-text-field label="在想些什麼呢" variant="solo" single-line density="compact" hide-details="auto" readonly="" />
           </v-responsive>
         </div>
@@ -42,27 +42,25 @@
             </div>
           </v-window-item>
         </v-window>
-        <DiscussionDialog :user="{ name: userStore.user.name, id: userStore.user.id }" />
-        <v-dialog v-model="isShowDialog" width="50%">
-          <v-card>
-            <v-card-text class="text-h5">
-              請先登入才可發布討論
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="isShowDialog=false">關閉</v-btn>
-              <v-btn color="primary" @click="login">前往登入</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
 
       </v-col>
       <v-col cols="2">
-
-
-        <Keywords @refresh="refresh"/>
+        <Keywords @refresh="refresh" />
       </v-col>
     </v-row>
   </v-container>
+  <DiscussionDialog :user="{ name: userStore.user.name, id: userStore.user.id }" />
+  <v-dialog v-model="isShowDialog">
+    <v-card>
+      <v-card-text class="text-h5">
+        請先登入才可發布討論
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="primary" @click="isShowDialog = false">關閉</v-btn>
+        <v-btn color="primary" @click="login">前往登入</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
@@ -92,7 +90,7 @@ const onFresh = async () => {
   await discussionStore.getAllDiscussions()
 
 };
-const refresh=async(search)=>{
+const refresh = async (search) => {
   await discussionStore.getAllDiscussions(search)
 }
 onMounted(async () => {
