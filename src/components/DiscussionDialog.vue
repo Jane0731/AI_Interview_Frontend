@@ -1,6 +1,6 @@
 <template>
     <v-dialog v-model="dialogStore.dialogStatus" width="50%" v-if="!isLoading">
-        <v-sheet rounded="lg" class="py-5 px-15 text-center ">
+        <v-sheet rounded="lg" class="text-center ">
             <div class="ma-5">
                 <v-row justify="end" no-gutters class="flex-row align-center">
                     <v-col>
@@ -13,43 +13,44 @@
                         <v-btn variant="plain" icon="mdi-close-circle-outline" size="x-large" @click="close()"></v-btn>
                     </v-col>
                 </v-row>
-                <v-divider class="mt-3 mb-5"></v-divider>
-                <v-form v-model="form">
+                <v-divider></v-divider>
+                <v-form v-model="form" class="my-3">
 
-                    <div class="d-flex align-center my-4 justify-space-between">
-                        <v-sheet class="d-flex flex-row align-center">
-                            <v-avatar color="brown" class="mr-4">
-                                <div class="text-h5">{{ user.name }}</div>
-                            </v-avatar>
+                    <v-sheet class="d-flex flex-row align-center">
+                        <v-avatar color="brown" class="mr-4">
                             <div class="text-h5">{{ user.name }}</div>
-                        </v-sheet>
+                        </v-avatar>
+                        <div class="text-h5">{{ user.name }}</div>
+                    </v-sheet>
+                    <v-text-field :rules="[rules.required]" v-model="title" density="compact" label="標題"
+                        color="primary" variant="underlined"></v-text-field>
+                    <v-row>
+                        <v-col>
+                            <v-combobox v-model="tags" :items="keywords" item-value="id" item-title="name" chips clearable
+                                label="關鍵字" multiple variant="underlined">
+                                <template v-slot:selection="{ attrs, item, select, selected }">
+                                    <v-chip v-bind="attrs" :model-value="selected" closable @click="select"
+                                        @click:close="remove(item)">
+                                        <strong>{{ item }}</strong>&nbsp;
+                                        <span>(interest)</span>
+                                    </v-chip>
+                                </template>
+                            </v-combobox>
+                        </v-col>
+                        <v-col>
+                            <v-sheet class="justify-end">
+                                <v-select :rules="[rules.required]" v-model="category" :items="items" item-value="id"
+                                    item-title="name" label="討論類別" variant="underlined"></v-select>
+                            </v-sheet>
+                        </v-col>
+                    </v-row>
 
-                        <v-sheet width="25%" class="ml-2 justify-end">
-                            <v-select :rules="[rules.required]" v-model="category" :items="items" item-value="id"
-                                item-title="name" placeholder="討論類別" variant="outlined"></v-select>
-                        </v-sheet>
-
-                    </div>
-                    <div class="mx-2">
-                        <v-text-field :rules="[rules.required]" v-model="title" density="compact" placeholder="標題"
-                            color="primary" variant="plain"></v-text-field>
-                        <v-textarea :rules="[rules.required]" v-model="content" variant="plain" rows="6"
-                            :placeholder="discussion.content ? discussion.content : '內文'"></v-textarea>
-                        <v-combobox v-model="tags" :items="keywords" item-value="id" item-title="name" chips clearable
-                            label="關鍵字" multiple variant="plain">
-                            <template v-slot:selection="{ attrs, item, select, selected }">
-                                <v-chip v-bind="attrs" :model-value="selected" closable @click="select"
-                                    @click:close="remove(item)">
-                                    <strong>{{ item }}</strong>&nbsp;
-                                    <span>(interest)</span>
-                                </v-chip>
-                            </template>
-                        </v-combobox>
-                        <v-btn :disabled="!form" color="primary" width="100%" @click.stop="onSubmit(discussion.id)"
-                            :loading="loading">
-                            <div class="text-h5 ">{{ dialogContent.submit }}</div>
-                        </v-btn>
-                    </div>
+                    <v-textarea :rules="[rules.required]" v-model="content" variant="underlined" rows="6"
+                        :label="discussion.content ? discussion.content : '內文'"></v-textarea>
+                    <v-btn :disabled="!form" size="large" color="primary" class="text-right" @click.stop="onSubmit(discussion.id)"
+                        :loading="loading">
+                        <div class="text-h5 px-8">{{ dialogContent.submit }}</div>
+                    </v-btn>
                 </v-form>
 
 
