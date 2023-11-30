@@ -50,7 +50,7 @@
     </v-row>
   </v-container>
   <DiscussionDialog :user="{ name: userStore.user.name, id: userStore.user.id }" />
-  <v-dialog v-model="isShowDialog">
+  <v-dialog v-model="isShowDialog" max-width="600px" height="400px">
     <v-card>
       <v-card-text class="text-h5">
         請先登入才可發布討論

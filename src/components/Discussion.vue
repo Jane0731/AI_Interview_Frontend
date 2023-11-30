@@ -1,5 +1,5 @@
 <template>
-    <v-sheet rounded="lg" width="100%" @click.self="onDiscussionClick(discussion.id)">
+    <v-sheet rounded="lg" width="100%" @click="onDiscussionClick(discussion.id)" style="cursor: pointer;">
         <div class="d-flex flex-row align-center ma-2 pa-2">
             <v-sheet>
                 <v-avatar color="brown">

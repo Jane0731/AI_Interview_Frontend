@@ -22,7 +22,7 @@
                         </v-avatar>
                         <div class="text-h5">{{ user.name }}</div>
                     </v-sheet>
-                    <v-text-field :rules="[rules.required]" v-model="title" density="compact" label="標題"
+                    <v-text-field class="mt-4" :rules="[rules.required]" v-model="title" density="compact" label="標題"
                         color="primary" variant="underlined"></v-text-field>
                     <v-row>
                         <v-col>
