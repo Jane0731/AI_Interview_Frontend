@@ -39,10 +39,10 @@
 
     </v-row>
 
-    <v-btn icon="mdi-plus" size="x-large" class="suspend-button" color="grey-lighten-3"
+    <v-btn icon="mdi-plus" size="x-large" class="suspend-button" color="primary"
       @click="authStore.isAuthorized ? openAddExperienceDialog() : isShowDialog = true"> </v-btn>
     <ExperienceDialog />
-    <v-dialog v-model="isShowDialog" width="50%">
+    <v-dialog v-model="isShowDialog" max-width="600px" height="400px">
           <v-card>
             <v-card-text class="text-h5">
               請先登入才可發布面試分享
