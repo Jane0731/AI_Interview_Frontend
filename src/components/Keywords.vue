@@ -4,16 +4,15 @@
             hide-details="auto" prepend-inner-icon="mdi-magnify">
         </v-text-field>
     </v-responsive>
-    <v-sheet rounded="lg" width="100%" class="key-width my-4 mx-auto">
-        <div class="text-h5 text-center pt-3 pb-1">熱門關鍵字</div>
-        <hr class="mx-4">
-        <v-sheet v-for="keyword in keywords" :key="keyword.id">
-            <v-btn @click="setSearch(keyword.name)" class="justify-start pl-8" width="100%" prepend-icon="mdi-pound" variant="text">
-                <div></div>
+    <div rounded="lg" width="100%" class="key-width my-4 mx-auto">
+        <div class="text-h5 text-center py-1">熱門關鍵字</div>
+        <hr>
+        <div v-for="keyword in keywords" :key="keyword.id">
+            <v-btn @click="setSearch(keyword.name)" class="justify-start" width="100%" prepend-icon="mdi-pound" variant="text">
                 {{ keyword.name }}
             </v-btn>
-        </v-sheet>
-    </v-sheet>
+        </div>
+    </div>
 </template>
 <script setup>
 import { ref, defineEmits, onMounted, watch } from 'vue'

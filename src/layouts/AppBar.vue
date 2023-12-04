@@ -12,14 +12,12 @@
     <v-btn variant="text" class="text-h6 mx-4" @click="onExperiencesClick">面試分享</v-btn>
     <v-btn variant="text" class="text-h6 mx-4" @click="onInterviewClick">模擬面試</v-btn>
 
-    <v-btn variant="text" icon="mdi-bell"></v-btn>
-
     <div class="mx-5">
       <v-menu v-if="authStore.isAuthorized">
         <template v-slot:activator="{ props }">
           <v-btn icon="mdi-dots-vertical" v-bind="props">
             <v-avatar color="brown">
-              <div class="text-h5">{{ userStore?.user?.name}}</div>
+              <div class="text-h5">{{ userStore?.user?.name.substr(0, 2) }}</div>
             </v-avatar>
           </v-btn>
         </template>

@@ -7,41 +7,39 @@
             <div class="text-h5">{{ userStore.user.name }}</div>
         </div>
         <v-form v-model="form">
-            <v-textarea :rules="[rules.required]" v-model="newComment" class="ma-4" variant="plain" rows="2" no-resize
+            <v-textarea :rules="[rules.required]" v-model="newComment" class="ma-4" no-resize
                 placeholder="留言"></v-textarea>
             <div class="d-flex mr-4 pb-6 justify-end">
-                <v-btn color="disabled" variant="text">
-                    <div class="text-h5" @click="changeUseCommentStatus">取消</div>
+                <v-btn class="mx-2" color="disabled" variant="text" @click="changeUseCommentStatus">
+                    取消
                 </v-btn>
-                <v-btn color="primary" :disabled="!form" :loading="loading" type="submit" @click.prevent="addComment()">
-                    <div class="text-h5">送出</div>
+                <v-btn class="mx-2" color="primary" :disabled="!form" :loading="loading" type="submit"
+                    @click.prevent="addComment()">
+                    送出
                 </v-btn>
             </div>
         </v-form>
 
     </div>
-    <div class="comment-block d-flex" v-else>
-        <v-row justify="space-between" width="100%">
-            <div class="d-flex flex-row align-center pl-10 ">
-                <v-icon icon="mdi-account-circle"></v-icon>
+    <div class="comment-block d-flex align-center px-2" v-else>
 
-                <v-text-field placeholder="留言..." variant="plain" density="compact" hide-details="auto" rows="3"
-                    class="mx-2" @click="authStore.isAuthorized ? changeUseCommentStatus() : (isShowDialog = true)" />
+        <v-icon icon="mdi-account-circle align-center"></v-icon>
 
-            </div>
-        </v-row>
-        <v-dialog v-model="isShowDialog" width="50%">
-            <v-card>
-                <v-card-text class="text-h5">
-                    請先登入才可留言
-                </v-card-text>
-                <v-card-actions>
-                    <v-btn color="primary" @click="isShowDialog = false">關閉</v-btn>
-                    <v-btn color="primary" @click="login">前往登入</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+        <v-text-field placeholder="留言" variant="underlined" density="compact" hide-details="auto" class="mx-2 mb-2"
+            @click="authStore.isAuthorized ? changeUseCommentStatus() : (isShowDialog = true)" />
+
     </div>
+    <v-dialog v-model="isShowDialog" width="100%" max-width="300px">
+        <v-card>
+            <v-card-text class="text-h5">
+                請先登入才可留言
+            </v-card-text>
+            <v-card-actions>
+                <v-btn color="primary" @click="isShowDialog = false">關閉</v-btn>
+                <v-btn color="primary" @click="login">前往登入</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 <script setup>
 import { defineProps, ref, onMounted } from 'vue';
@@ -50,7 +48,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useCommentStore } from '@/stores/comment';
 import { useUserStore } from '@/stores/user';
 import { useRouter, useRoute } from 'vue-router'
-onMounted(()=>{
+onMounted(() => {
     console.log(authStore.isAuthorized)
 })
 const userStore = useUserStore()

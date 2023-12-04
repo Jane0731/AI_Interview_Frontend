@@ -18,7 +18,7 @@
 
                     <v-sheet class="d-flex flex-row align-center">
                         <v-avatar color="brown" class="mr-4">
-                            <div class="text-h5">{{ user.name }}</div>
+                            <div class="text-h5">{{ user.name.substr(0, 2) }}</div>
                         </v-avatar>
                         <div class="text-h5">{{ user.name }}</div>
                     </v-sheet>

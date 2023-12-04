@@ -3,7 +3,7 @@
         <v-sheet width="100%" color="primary" height="120" class="d-flex align-center justify-space-between pa-10">
             <div class="d-flex align-center">
                 <v-avatar color="brown" size="x-large">
-                    <div class="text-h5">{{ userStore.user?.name }}</div>
+                    <div class="text-h5">{{ userStore.user?.name.substr(0, 2) }}</div>
                 </v-avatar>
                 <div class="text-h4  mx-3 pa-6">{{ "Hi~ " + userStore.user?.name }}</div>
             </div>
@@ -120,7 +120,7 @@ const oldPassword = ref(null)
 const password = ref(null)
 const confirmPassword = ref(null)
 const showOldPassword = ref(false)
-const name=ref(userStore.user?.name)
+const name = ref(userStore.user?.name)
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 const rules = {
@@ -148,7 +148,7 @@ const closeDialog = () => {
     confirmPassword.value = null
 
 }
-const openUpdateProfile = async() => {
+const openUpdateProfile = async () => {
     await userStore.updateProfile(name.value)
 }
 const changeSex = computed(() => {
@@ -167,13 +167,13 @@ const form = ref(false)
 
 const onPasswordSubmit = async () => {
     if (!form.value) return
-    if(await userStore.restPassword(oldPassword.value, password.value, confirmPassword.value)){
+    if (await userStore.restPassword(oldPassword.value, password.value, confirmPassword.value)) {
         closeDialog()
         alert("密碼更新成功,請重新登入")
         router.push("/Login");
 
     }
-        
+
 }
 </script>
 

@@ -1,9 +1,9 @@
 <template>
-    <v-sheet rounded="lg" width="100%" @click.self="onDiscussionClick(discussion.id)">
+    <v-sheet rounded="lg" width="100%" @click="onDiscussionClick(discussion.id)" style="cursor: pointer;">
         <div class="d-flex flex-row align-center ma-2 pa-2">
             <v-sheet>
                 <v-avatar color="brown">
-                    <span class="text-h5">{{ discussion.poster_name }}</span>
+                    <span class="text-h5">{{ discussion.poster_name.substr(0, 2) }}</span>
                 </v-avatar>
             </v-sheet>
             <v-sheet class="ml-2 mr-4">
@@ -24,34 +24,31 @@
                                 <div class="text-body-1">編輯</div>
                             </v-list-item-title>
                         </v-list-item>
-                        <DiscussionDialog :user="{ name: '劉賊賊', id: 1 }" :discussion="discussion" />
 
-                        <v-list-item @click.stop="deleteDiscussion = !deleteDiscussion">
-
-                            <v-dialog v-model="deleteDiscussion" width="20%" persistent>
-                                <template v-slot:activator="{ props }">
-                                    <v-list-item-title>
-                                        <div class="text-body-1" :="props">刪除</div>
-                                    </v-list-item-title>
-                                </template>
-
-                                <v-card>
-                                    <v-card-text>
-                                        是否確定刪除文章
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-
-                                        <v-btn color="primary" @click="deleteDiscussion = false">取消</v-btn>
-                                        <v-btn color="primary" :loading="loading"
-                                            @click.stop="onDeleteDiscussion(discussion.id)">刪除</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
-                        </v-list-item>
-
+                        <v-list-item @click.stop="deleteDiscussion = !deleteDiscussion" />
                     </v-list>
+                    <DiscussionDialog :user="{ name: '劉賊賊', id: 1 }" :discussion="discussion" />
 
+                    <v-dialog v-model="deleteDiscussion" width="20%" persistent>
+                        <template v-slot:activator="{ props }">
+                            <v-list-item-title>
+                                <div class="text-body-1" :="props">刪除</div>
+                            </v-list-item-title>
+                        </template>
+
+                        <v-card>
+                            <v-card-text>
+                                是否確定刪除文章
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+
+                                <v-btn color="primary" @click="deleteDiscussion = false">取消</v-btn>
+                                <v-btn color="primary" :loading="loading"
+                                    @click.stop="onDeleteDiscussion(discussion.id)">刪除</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                 </v-menu>
 
             </v-sheet>
@@ -68,27 +65,28 @@
                 <v-btn variant="text" icon="mdi-comment" color="primary"></v-btn>
                 {{ discussion.comments_count }}
             </v-sheet>
-            <v-sheet>
-                <v-btn variant="plain" icon="mdi-heart" :ripple="false"
-                    :color="discussion.is_Favorite ? 'deep-orange-accent-4' : 'grey-lighten-4'"
+            <v-sheet><v-btn variant="plain" :ripple="false"
+                    :icon="discussion.is_Favorite ? 'mdi-heart' : 'mdi-heart-outline'"
+                    :color="discussion.is_Favorite ? 'deep-orange-accent-4' : 'grey-darken-4'"
                     @click.stop="authStore.isAuthorized ? clickFavoriteEvent(discussion.is_Favorite, 'discussion', discussion.id) : isShowDialog = true"></v-btn>
+
 
                 {{ discussion.user_favorites_count }}
 
             </v-sheet>
-            <v-dialog v-model="isShowDialog" width="50%">
-                <v-card>
-                    <v-card-text class="text-h5">
-                        請先登入才可點讚討論
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-btn color="primary" @click="isShowDialog=false">關閉</v-btn>
-                        <v-btn color="primary" @click="login">前往登入</v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
         </div>
     </v-sheet>
+    <v-dialog v-model="isShowDialog" width="100%" max-width="300px">
+        <v-card>
+            <v-card-text class="text-h5">
+                請先登入才可點讚討論
+            </v-card-text>
+            <v-card-actions>
+                <v-btn color="primary" @click="isShowDialog = false">關閉</v-btn>
+                <v-btn color="primary" @click="login">前往登入</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 <script setup>
 import { defineProps, ref, onMounted, watch } from 'vue'
@@ -116,7 +114,7 @@ const emit = defineEmits(['fresh'])
 const deleteDiscussion = ref(false)
 
 onMounted(() => {
-    userId.value=userStore.user.id
+    userId.value = userStore.user.id
 })
 const onDiscussionClick = (id) => {
 
@@ -149,11 +147,11 @@ const clickFavoriteEvent = async (isFavorite, type, id) => {
 }
 const currentRoute = useRoute();
 const login = () => {
-  router.push({
-    name: 'Login',
-    query: {
-      redirect: currentRoute.fullPath
-    }
-  })
+    router.push({
+        name: 'Login',
+        query: {
+            redirect: currentRoute.fullPath
+        }
+    })
 }
 </script>

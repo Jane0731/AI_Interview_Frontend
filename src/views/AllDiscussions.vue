@@ -11,14 +11,13 @@
   <v-container v-if="!isLoading">
 
     <v-row justify="space-between">
-
       <v-col cols="2">
         <Classification @refresh="refresh" />
       </v-col>
       <v-col cols="7">
-        <div class="d-flex flex-row align-center pa-4">
+        <div class="d-flex flex-row align-center px-4">
           <v-avatar color="brown" class="mr-4">
-            <span class="text-h5">{{ userStore.user.name }}</span>
+            <span class="text-h5">{{ userStore.user.name.substr(0, 2) }}</span>
           </v-avatar>
           <v-responsive @click="authStore.isAuthorized ? openAddDiscussionDialog() : isShowDialog = true">
             <v-text-field label="在想些什麼呢" variant="solo" single-line density="compact" hide-details="auto" readonly="" />
@@ -30,7 +29,7 @@
             {{ value.description }}
           </v-tab>
         </v-tabs>
-        <v-window v-model="tab">
+        <v-window v-model="tab" class="bg-white">
           <v-window-item value="hot">
             <div v-for="discussion in discussionStore.popularDiscussions" class="pa-4 mx-auto my-5">
               <Discussion :discussion="discussion" @fresh="onFresh()" :key="renderKey" />

@@ -3,7 +3,7 @@
         <div class="d-flex flex-row align-center ">
             <div>
                 <v-avatar color="brown">
-                    <span class="text-h5">aa</span>
+                    <span class="text-h5">{{ comment.poster_name.substr(0, 2) }}</span>
                 </v-avatar>
             </div>
             <div class="ml-2 mr-4">
@@ -60,7 +60,7 @@
             </div>
             <div v-else>
                 <v-text-field v-model="oldComment" variant='plain' density="compact">
-                    <template v-slot:append-inner >
+                    <template v-slot:append-inner>
                         <v-btn icon="mdi-close" variant="plain" @click="onCancelUpdate"></v-btn>
                         <v-btn icon="mdi-check" variant="plain" @click="onUpdateComment(comment.id)"></v-btn>
                     </template>
@@ -73,7 +73,7 @@
     </v-sheet>
 </template>
 <script setup>
-import { defineProps, ref,defineEmits } from 'vue'
+import { defineProps, ref, defineEmits } from 'vue'
 import { useCommentStore } from '@/stores/comment';
 const emit = defineEmits(['fresh'])
 
@@ -100,8 +100,8 @@ const onDeleteComment = async (id) => {
 
 }
 
-const onUpdateComment = async(id) => {
-    await commentStroe.updateComment(id, props.typeId, props.type,oldComment.value)
+const onUpdateComment = async (id) => {
+    await commentStroe.updateComment(id, props.typeId, props.type, oldComment.value)
     commentReadonly.value = true
 
 }

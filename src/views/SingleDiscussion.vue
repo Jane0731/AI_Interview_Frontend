@@ -16,9 +16,8 @@
                     <div class="pa-4 mx-auto my-5 discussion-block">
                         <div class="d-flex flex-row align-center ma-2 pa-2">
                             <v-avatar color="brown">
-                                <span class="text-h5">{{ discussionStore.discussion.poster_sex }}</span>
+                                <span class="text-h5">{{ discussionStore.discussion.poster_name.substr(0, 2) }}</span>
                             </v-avatar>
-                            <div class="text-body-1 ml-2 mr-4">{{ discussionStore.discussion.poster_name }}</div>
                         </div>
                         <div class="text-h6 ma-2 pa-2">
                             {{ discussionStore.discussion.title }}
@@ -53,7 +52,7 @@
                                         請先登入才可點讚討論
                                     </v-card-text>
                                     <v-card-actions>
-                                        <v-btn color="primary" @click="isShowDialog=false">關閉</v-btn>
+                                        <v-btn color="primary" @click="isShowDialog = false">關閉</v-btn>
                                         <v-btn color="primary" @click="login">前往登入</v-btn>
                                     </v-card-actions>
                                 </v-card>

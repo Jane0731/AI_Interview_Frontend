@@ -95,7 +95,7 @@
                 <v-col cols="12" sm="6" md="4" v-for="experience in experienceStore.newExperiences.slice(0, 6)">
                     <v-card class="pa-4 h-100">
                         <div class="d-flex">
-                            <v-avatar color="surface-variant">{{ experience.poster_name }}</v-avatar>
+                            <v-avatar color="surface-variant">{{ experience.poster_name.substr(0, 2) }}</v-avatar>
                             <div class="d-flex flex-column ml-2 font-weight-black">
                                 <div class="d-inline-block ml-2 font-weight-black">
                                     {{ experience.company }}

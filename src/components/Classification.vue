@@ -1,13 +1,15 @@
 <template>
-    <v-sheet rounded="lg" width="100%" class="mx-auto class-width">
-        <div class="text-h5 text-center pt-4 pb-1">討論類別</div>
-        <hr class="mx-4">
-        <v-list class="pa-0" v-model:selected="category">
-            <v-list-item class="text-center" v-for="item in items" :title="item.name" :value="item.id">
+    <div width="100%" class="mx-auto py-2">
+        <div class="text-h5 text-center pb-1">討論類別</div>
+        <hr>
 
-            </v-list-item>
-        </v-list>
-    </v-sheet>
+        <div v-for="item in items" :key="item.id">
+            <v-btn @click="getCategory(item.id)" class="justify-start" width="100%"
+                variant="text">
+                {{ item.name }}
+            </v-btn>
+        </div>
+    </div>
 </template>
 <script setup>
 import { ref, onMounted, watch, defineEmits } from 'vue'
@@ -27,17 +29,8 @@ onMounted(async () => {
     isLoading.value = false
     category.value = items.value[0]
 })
-watch(category, (newValue) => {
-    if (newValue[0] == '全部類別')
-        discussionStore.setCategory('')
-    else
-        discussionStore.setCategory(newValue[0])
+const getCategory = (id) => {
+    discussionStore.setCategory(id)
     emit('refresh')
-
-})
-</script>
-<style>
-.class-width {
-    height: calc(100vh - 136px)
 }
-</style>
+</script>

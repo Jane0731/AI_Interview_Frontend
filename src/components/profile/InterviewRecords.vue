@@ -16,7 +16,7 @@
                 </div>
                 <div class="text-center rounded">
                     <v-sheet class="d-flex align-center justify-center flex-wrap text-center mx-auto pa-4" elevation="4"
-                        height="500" rounded max-width="800" width="100%">
+                        height="400" rounded max-width="800" width="100%">
                         <Pie :barData="{
                             labels: history.dataLabel,
                             datasets: [{

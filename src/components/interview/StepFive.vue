@@ -28,24 +28,24 @@
             <div class="text-center rounded">
                 <!-- <v-sheet class="d-flex align-center justify-center flex-wrap text-center mx-auto px-4" elevation="4"
                     height="250" rounded max-width="800" width="100%"> -->
-                    <Pie :barData="{
-                        labels: interviewStore.getAllMotionsLabel,
-                        datasets: [{
-                            label: '出現次數',
-                            backgroundColor: [
-                                '#96CDCD',
-                                '#FFE4C4',
-                                '#FFF5EE',
-                                '#E6E6FA',
-                                '#90EE90',
-                                '#EE7942',
-                                '#8B8682'
-                            ],
-                            data: interviewStore.getAllMotionsFrequency,
-                            borderWidth: 1
-                        }]
-                    }" />
-                    <!-- </v-sheet> -->
+                <Pie :barData="{
+                    labels: interviewStore.getAllMotionsLabel,
+                    datasets: [{
+                        label: '出現次數',
+                        backgroundColor: [
+                            '#96CDCD',
+                            '#FFE4C4',
+                            '#FFF5EE',
+                            '#E6E6FA',
+                            '#90EE90',
+                            '#EE7942',
+                            '#8B8682'
+                        ],
+                        data: interviewStore.getAllMotionsFrequency,
+                        borderWidth: 1
+                    }]
+                }" style="height: 400px;" />
+                <!-- </v-sheet> -->
 
             </div>
             <div class="ma-2 pa-2 text-h6">

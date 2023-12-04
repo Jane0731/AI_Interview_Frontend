@@ -3,7 +3,7 @@
         <div class="d-flex flex-row align-center ma-2 pa-2">
             <v-sheet class="ma-2">
                 <v-avatar color="brown">
-                    <span class="text-h5">{{ experience.poster_name }}</span>
+                    <span class="text-h5">{{ experience.poster_name.substr(0, 2) }}</span>
                 </v-avatar>
             </v-sheet>
             <v-sheet class="ml-2 mr-4">
@@ -131,7 +131,7 @@
             <v-sheet>
                 <v-btn variant="plain" icon="mdi-heart" :ripple="false"
                     :color="experience.is_Favorite ? 'deep-orange-accent-4' : 'grey-lighten-4'"
-                    @click.stop="authStore.isAuthorized ?clickFavoriteEvent(experience.is_Favorite, 'experience', experience.id) : isShowDialog = true"></v-btn>
+                    @click.stop="authStore.isAuthorized ? clickFavoriteEvent(experience.is_Favorite, 'experience', experience.id) : isShowDialog = true"></v-btn>
 
                 {{ experience.user_favorites_count }}
             </v-sheet>
@@ -187,7 +187,7 @@ const userId = ref('')
 const loading = ref(false)
 
 onMounted(() => {
-    userId.value=userStore.user.id
+    userId.value = userStore.user.id
     document.addEventListener('click', (e) => {
         if (e.target.className != "menu")
             menuVisible.value = false
