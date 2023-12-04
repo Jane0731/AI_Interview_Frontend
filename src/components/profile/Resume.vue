@@ -4,7 +4,7 @@
             <div class="text-h4">我的履歷</div>
         </v-sheet>
         <v-card-text class="overflow-auto cardtext-width ">
-            <Part1/>
+            <!-- <Part1/> -->
             <Part2/>
             <Part3/>
             <Part4/>

@@ -2,7 +2,7 @@
     <v-sheet class="pa-4 mx-auto my-5 rounded-lg sheet-border" width="90%">
         <div class="d-flex align-center part-border-bottom mx-2 pa-2">
             <div class="text-h6 ">
-                第六部分：技能
+                技能
             </div>
             <v-spacer></v-spacer>
             <div>
