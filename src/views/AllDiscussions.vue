@@ -26,15 +26,18 @@
           </v-responsive>
         </div>
 
-        <v-tabs v-model="tab">
+        <v-tabs v-model="tab" class="mt-2">
           <v-tab v-for="value in tabValues" :value="value.id">
             {{ value.description }}
           </v-tab>
         </v-tabs>
         <v-window v-model="tab" class="bg-white">
           <v-window-item value="hot">
-            <div v-for="discussion in discussionStore.popularDiscussions" class="pa-4 mx-auto my-5">
-              <Discussion :discussion="discussion" @fresh="onFresh()" :key="renderKey" />
+            <div v-for="(discussion, index) in discussionStore.popularDiscussions">
+              <v-divider v-if="index != 0" class="mx-3"></v-divider>
+              <div class="pa-4 mx-auto my-5">
+                <Discussion :discussion="discussion" @fresh="onFresh()" :key="renderKey" />
+              </div>
             </div>
           </v-window-item>
           <v-window-item value="new">
