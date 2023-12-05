@@ -2,7 +2,7 @@
     <v-sheet class="pa-4 mx-auto my-5 rounded-lg sheet-border" width="90%">
         <div class="d-flex align-center part-border-bottom mx-2 pa-2">
             <div class="text-h6 ">
-                第一部分：基本資料
+                基本資料
             </div>
             <v-spacer></v-spacer>
             <div>
@@ -16,22 +16,17 @@
                 </v-btn>
             </div>
         </div>
-
         <div class="d-flex flex-row text-h6">
-            <div class="ma-2 pa-2">姓名</div>
-            <div class="my-2  mx-8 pa-2">劉賊賊</div>
-        </div>
-        <div class="d-flex flex-row text-h6">
-            <div class="ma-2 pa-2">姓名</div>
-            <div class="my-2  mx-8 pa-2">劉賊賊</div>
-        </div>
-        <div class="d-flex flex-row text-h6">
-            <div class="ma-2 pa-2">姓名</div>
-            <div class="my-2  mx-8 pa-2">劉賊賊</div>
-        </div>
-        <div class="d-flex flex-row text-h6">
-            <div class="ma-2 pa-2">姓名</div>
-            <div class="my-2  mx-8 pa-2">劉賊賊</div>
+            <div class="d-flex flex-column text-h6">
+                <div class="ma-2 pa-2">姓名</div>
+                <div class="ma-2 pa-2">求學狀況</div>
+                <div class="ma-2 pa-2">求職狀況</div>
+            </div>
+            <div class="d-flex flex-column text-h6">
+                <div class="my-2 mx-8 pa-2">劉賊賊</div>
+                <div class="my-2 mx-8 pa-2">已畢業</div>
+                <div class="my-2 mx-8 pa-2">求職中</div>
+            </div>
         </div>
     </v-sheet>
 </template>

@@ -27,10 +27,10 @@
                     color="primary" variant="underlined" :readonly="loading"
                     :rules="[rules.required, rules.name]"></v-text-field>
 
-                <v-radio-group v-model="sex" inline :rules="[rules.required]">
+                <v-radio-group v-model="sex" inline>
                     <v-radio label="男性" value="M" color="info"></v-radio>
                     <v-radio label="女性" value="F" color="info"></v-radio>
-                    <v-radio label="其他" value="O" color="info"></v-radio>
+                    <v-radio label="其他" :value="null" color="info"></v-radio>
                 </v-radio-group>
                 <v-card class="mb-4" :color="resultStore.result.type" variant="tonal" v-if="resultStore.result.message">
                     <v-card-text>
