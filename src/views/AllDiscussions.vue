@@ -16,8 +16,10 @@
       </v-col>
       <v-col cols="7">
         <div class="d-flex flex-row align-center px-4">
-          <v-avatar color="brown" class="mr-4">
-            <span class="text-h5">{{ userStore.user.name.substr(0, 2) }}</span>
+          <v-avatar v-if="userStore?.user?.name" color="brown" class="mr-4">
+            <span class="text-h5">{{ userStore.user.name?.substr(0, 2) }}</span>
+          </v-avatar>
+          <v-avatar v-else icon="mdi-account" color="white" class="mr-4">
           </v-avatar>
           <v-responsive @click="authStore.isAuthorized ? openAddDiscussionDialog() : isShowDialog = true">
             <v-text-field label="在想些什麼呢" variant="solo" single-line density="compact" hide-details="auto" readonly="" />

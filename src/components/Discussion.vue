@@ -7,10 +7,8 @@
                 </v-avatar>
             </v-sheet>
             <v-sheet class="ml-2 mr-4">
-                <div class="text-body-1">{{ discussion.categoryName }}</div>
-            </v-sheet>
-            <v-sheet>
-                <div class="text-body-2">{{ discussion.created_at }}</div>
+                <div class="text-body-1">{{ discussion.title }}</div>
+                <div class="text-body-2 text-grey">{{ discussion.created_at }}</div>
             </v-sheet>
             <v-spacer></v-spacer>
             <v-sheet v-show="(userId == discussion.user_id)" class="menu">
@@ -55,9 +53,6 @@
             </v-sheet>
 
         </div>
-        <div class="text-h6 ma-2 pa-2">
-            {{ discussion.title }}
-        </div>
         <div class="text-body-2 ma-2 pa-2">
             {{ discussion.content }}
         </div>
@@ -66,8 +61,8 @@
                 <v-btn variant="text" icon="mdi-comment" color="primary"></v-btn>
                 {{ discussion.comments_count }}
             </v-sheet>
-            <v-sheet><v-btn variant="plain" :ripple="false"
-                    :icon="discussion.is_Favorite ? 'mdi-heart' : 'mdi-heart-outline'"
+            <v-sheet>
+                <v-btn variant="plain" :ripple="false" :icon="discussion.is_Favorite ? 'mdi-heart' : 'mdi-heart-outline'"
                     :color="discussion.is_Favorite ? 'deep-orange-accent-4' : 'grey-darken-4'"
                     @click.stop="authStore.isAuthorized ? clickFavoriteEvent(discussion.is_Favorite, 'discussion', discussion.id) : isShowDialog = true"></v-btn>
 

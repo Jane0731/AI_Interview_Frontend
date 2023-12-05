@@ -8,9 +8,7 @@
             </v-sheet>
             <v-sheet class="ml-2 mr-4">
                 <div class="text-h6">{{ experience.company }}({{ experience.city }})</div>
-            </v-sheet>
-            <v-sheet>
-                <div class="text-body-2">{{ experience.created_at }}</div>
+                <div class="text-body-2 text-grey">{{ experience.created_at }}</div>
             </v-sheet>
             <v-spacer></v-spacer>
             <v-sheet v-show="(userId == experience.user_id)" class="menu">
@@ -129,8 +127,9 @@
                 {{ experience.comments_count }}
             </v-sheet>
             <v-sheet>
-                <v-btn variant="plain" icon="mdi-heart" :ripple="false"
-                    :color="experience.is_Favorite ? 'deep-orange-accent-4' : 'grey-lighten-4'"
+                <v-btn variant="plain" :ripple="false"
+                    :icon="experience.is_Favorite ? 'mdi-heart' : 'mdi-heart-outline'"
+                    :color="experience.is_Favorite ? 'deep-orange-accent-4' : 'grey-darken-4'"
                     @click.stop="authStore.isAuthorized ? clickFavoriteEvent(experience.is_Favorite, 'experience', experience.id) : isShowDialog = true"></v-btn>
 
                 {{ experience.user_favorites_count }}
