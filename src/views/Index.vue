@@ -29,7 +29,7 @@
                         <div class="py-6 px-10 bg-indigo rounded-xl">
                             <div class="d-flex flex-column justify-center mx-auto">
                                 <div class="text-left text-h4 my-3">註冊人數</div>
-                                <div class="text-right text-h4 my-3">100</div>
+                                <div class="text-right text-h4 my-3">{{ statistics.user }}</div>
                             </div>
                         </div>
                     </v-col>
@@ -37,7 +37,7 @@
                         <div class="py-6 px-10 bg-teal rounded-xl">
                             <div class="d-flex flex-column justify-center mx-auto">
                                 <div class="text-left text-h4 my-3">討論貼文</div>
-                                <div class="text-right text-h4 my-3">100</div>
+                                <div class="text-right text-h4 my-3">{{ statistics.discussion }}</div>
                             </div>
                         </div>
                     </v-col>
@@ -45,7 +45,7 @@
                         <div class="py-6 px-10 bg-red rounded-xl">
                             <div class="d-flex flex-column justify-center mx-auto">
                                 <div class="text-left text-h4 my-3">面試分享</div>
-                                <div class="text-right text-h4 my-3">100</div>
+                                <div class="text-right text-h4 my-3">{{ statistics.experience }}</div>
                             </div>
                         </div>
                     </v-col>
@@ -53,7 +53,7 @@
                         <div class="py-6 px-10 bg-deep-orange rounded-xl">
                             <div class="d-flex flex-column justify-center mx-auto">
                                 <div class="text-left text-h4 my-3">模擬面試</div>
-                                <div class="text-right text-h4 my-3">100</div>
+                                <div class="text-right text-h4 my-3">{{ statistics.Interview }}</div>
                             </div>
                         </div>
                     </v-col>
@@ -233,11 +233,12 @@ import { useRouter } from 'vue-router'
 import { useExperienceStore } from '@/stores/experience';
 import { onMounted, ref } from 'vue';
 import FadeLoader from 'vue-spinner/src/FadeLoader.vue'
+import axios from "@/api/axios.config";
 
 import { useDiscussionStore } from '@/stores/discussion'
 const discussionStore = useDiscussionStore()
 const isLoading = ref(true)
-
+const statistics = ref({})
 const experienceStore = useExperienceStore()
 const router = useRouter()
 const introduces = [
@@ -262,6 +263,15 @@ const onExperienceClick = (id) => {
 onMounted(async () => {
     await experienceStore.getAllExperiences()
     await discussionStore.getAllDiscussions()
+    await axios
+        .get("/statistics")
+        .then(async (response) => {
+            statistics.value = response.data
+        })
+        .catch((error) => {
+            console.log(error)
+            // resultStore.error(error.response.data.message)
+        });
     isLoading.value = false
 })
 </script>
