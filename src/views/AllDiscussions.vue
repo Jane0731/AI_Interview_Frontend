@@ -8,7 +8,7 @@
       </v-col>
     </v-row>
   </v-container>
-  <v-container v-if="!isLoading">
+  <v-container v-if="!isLoading" class="mt-3">
 
     <v-row justify="space-between">
       <v-col cols="2">
