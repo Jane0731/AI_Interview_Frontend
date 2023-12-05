@@ -28,7 +28,7 @@
             <div class="text-center rounded">
                 <!-- <v-sheet class="d-flex align-center justify-center flex-wrap text-center mx-auto px-4" elevation="4"
                     height="250" rounded max-width="800" width="100%"> -->
-                <Pie :barData="{
+                <Pie class="mx-auto" :barData="{
                     labels: interviewStore.getAllMotionsLabel,
                     datasets: [{
                         label: '出現次數',

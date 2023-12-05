@@ -5,7 +5,7 @@ export const useQuestionStore = defineStore("questions", () => {
     const progress = ref(1);
     const questions = ref([])
     const isEnd = ref(true)
-    const total = ref(5)
+    const total = ref(1)
     const isLoading = ref(true)
     const addProgress = () => {
         progress.value += 1
