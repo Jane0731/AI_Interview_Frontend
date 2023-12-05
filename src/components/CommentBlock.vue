@@ -7,8 +7,7 @@
             <div class="text-h5">{{ userStore.user.name }}</div>
         </div>
         <v-form v-model="form">
-            <v-textarea :rules="[rules.required]" v-model="newComment" class="ma-4" no-resize
-                placeholder="留言"></v-textarea>
+            <v-textarea :rules="[rules.required]" v-model="newComment" class="ma-4" no-resize placeholder="留言"></v-textarea>
             <div class="d-flex mr-4 pb-6 justify-end">
                 <v-btn class="mx-2" color="disabled" variant="text" @click="changeUseCommentStatus">
                     取消
@@ -43,17 +42,20 @@
 </template>
 <script setup>
 import { defineProps, ref, onMounted } from 'vue';
-import { useFavoriteStore } from '@/stores/favorite'
+import { useDiscussionStore } from '@/stores/discussion'
 import { useAuthStore } from '@/stores/auth'
 import { useCommentStore } from '@/stores/comment';
 import { useUserStore } from '@/stores/user';
 import { useRouter, useRoute } from 'vue-router'
+import { useExperienceStore } from '@/stores/experience'
+
 onMounted(() => {
     console.log(authStore.isAuthorized)
 })
 const userStore = useUserStore()
 
 const authStore = useAuthStore()
+const experienceStore = useExperienceStore()
 
 const props = defineProps({
     type: { type: String },
@@ -63,6 +65,7 @@ const props = defineProps({
 const commentStore = useCommentStore()
 const form = ref(false)
 const loading = ref(false)
+const discussionStore = useDiscussionStore()
 
 const isUseComment = ref(false)
 const newComment = ref("")
@@ -78,6 +81,12 @@ const addComment = async () => {
     loading.value = false
     changeUseCommentStatus()
     newComment.value = ""
+    if (props.type == 'discussion')
+        await discussionStore.getDiscussion(props.id)
+    else
+        await experienceStore.getExperience(props.id)
+
+
 }
 const changeUseCommentStatus = (() => {
     isUseComment.value = !isUseComment.value
