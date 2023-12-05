@@ -3,7 +3,9 @@ import { defineStore } from "pinia";
 import axios from "@/api/axios.config";
 import { useResultStore } from "./result";
 import { useAuthStore } from "./auth";
-
+import moment from "moment";
+import "moment/dist/locale/zh-tw";
+moment.locales();
 export const useUserStore = defineStore("user", () => {
   const userId = ref(null);
   const name = ref("");
@@ -23,27 +25,27 @@ export const useUserStore = defineStore("user", () => {
     userId.value = id;
   };
   const restore = async () => {
-    
     await axios
       .get("/auth/profile")
       .then((response) => {
-        const auth=useAuthStore()
+        const auth = useAuthStore();
         Object.assign(user, response.data);
-        auth.setAuthorize(true)
-
+        auth.setAuthorize(true);
       })
       .catch((error) => {
         console.log(error);
-        const auth=useAuthStore()
+        const auth = useAuthStore();
 
-        auth.setAuthorize(false)
-
+        auth.setAuthorize(false);
       });
-  }
+  };
   const getDiscussionPost = async () => {
     await axios
       .get("/auth/discussion")
       .then((response) => {
+        response.data.forEach((discussionPost) => {
+          discussionPost.created_at = moment(discussionPost.created_at).fromNow();
+        });
         Object.assign(discussionPosts, response.data);
       })
       .catch((error) => {
@@ -54,6 +56,9 @@ export const useUserStore = defineStore("user", () => {
     await axios
       .get("/auth/experience")
       .then((response) => {
+        response.data.forEach((experiencePost) => {
+          experiencePost.created_at = moment(experiencePost.created_at).fromNow();
+        });
         Object.assign(experiencePosts, response.data);
       })
       .catch((error) => {
@@ -65,73 +70,85 @@ export const useUserStore = defineStore("user", () => {
       .get("/interview-record")
       .then((response) => {
         response.data.forEach((element) => {
-          let date = new Date(element.created_at)
+          let date = new Date(element.created_at);
           let year = date.getFullYear();
-          let month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需要加1，并且补零
-          let day = String(date.getDate()).padStart(2, '0');
-          let hours = String(date.getHours()).padStart(2, '0');
-          let minutes = String(date.getMinutes()).padStart(2, '0');
-          let seconds = String(date.getSeconds()).padStart(2, '0');
-          element.created_at = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+          let month = String(date.getMonth() + 1).padStart(2, "0"); // 月份从0开始，需要加1，并且补零
+          let day = String(date.getDate()).padStart(2, "0");
+          let hours = String(date.getHours()).padStart(2, "0");
+          let minutes = String(date.getMinutes()).padStart(2, "0");
+          let seconds = String(date.getSeconds()).padStart(2, "0");
+          element.created_at =
+            year +
+            "-" +
+            month +
+            "-" +
+            day +
+            " " +
+            hours +
+            ":" +
+            minutes +
+            ":" +
+            seconds;
 
-          const data = element.interview_questions
+          const data = element.interview_questions;
           const translationMap = {
-            'hand_on_hip': '手揮動放低於超過偵測畫面',
-            'hand_above_head': '手揮動高度超過頭頂',
-            'hand_on_head': '手頭揮動高度在頭',
-            'hand_on_neck': '手揮動高度在脖子',
-            'hand_below_chest': '手揮動於胸部以下的位置',
-            'hand_on_chest': '手揮動高度於胸部附',
-            'hand_crossed_chest': '手交叉於胸前'
+            hand_on_hip: "手揮動放低於超過偵測畫面",
+            hand_above_head: "手揮動高度超過頭頂",
+            hand_on_head: "手頭揮動高度在頭",
+            hand_on_neck: "手揮動高度在脖子",
+            hand_below_chest: "手揮動於胸部以下的位置",
+            hand_on_chest: "手揮動高度於胸部附",
+            hand_crossed_chest: "手交叉於胸前",
           };
           const newData = {
-            'hand_on_hip': 0,
-            'hand_above_head': 0,
-            'hand_on_head': 0,
-            'hand_on_neck': 0,
-            'hand_below_chest': 0,
-            'hand_on_chest': 0,
-            'hand_crossed_chest': 0
-          }
+            hand_on_hip: 0,
+            hand_above_head: 0,
+            hand_on_head: 0,
+            hand_on_neck: 0,
+            hand_below_chest: 0,
+            hand_on_chest: 0,
+            hand_crossed_chest: 0,
+          };
           data.map((item) => {
             for (const key in item.motion) {
               newData[key] = newData[key] + item.motion[key];
             }
-          })
-          const dataLabel = element.interview_questions[0].motion
-          const translatedA = Object.keys(dataLabel).map((key) => translationMap[key]);
-          element.dataLabel = translatedA
-          element.allData = Object.values(newData)
+          });
+          const dataLabel = element.interview_questions[0].motion;
+          const translatedA = Object.keys(dataLabel).map(
+            (key) => translationMap[key]
+          );
+          element.dataLabel = translatedA;
+          element.allData = Object.values(newData);
           let translatedData = {};
           let motiontimesData = {
-            'hand_on_hip': 0,
-            'hand_above_head': 0,
-            'hand_on_head': 0,
-            'hand_on_neck': 0,
-            'hand_below_chest': 0,
-            'hand_on_chest': 0,
-            'hand_crossed_chest': 0
+            hand_on_hip: 0,
+            hand_above_head: 0,
+            hand_on_head: 0,
+            hand_on_neck: 0,
+            hand_below_chest: 0,
+            hand_on_chest: 0,
+            hand_crossed_chest: 0,
           };
 
           data.forEach((item) => {
-            translatedData = {}
+            translatedData = {};
             Object.keys(item.motion).forEach((key) => {
               translatedData[translationMap[key] || key] = item.motion[key];
-              motiontimesData[translationMap[key] || key] = motiontimesData[translationMap[key] || key] + item.motion[key]
+              motiontimesData[translationMap[key] || key] =
+                motiontimesData[translationMap[key] || key] + item.motion[key];
             });
-            item.motion = translatedData
-          })
-          element.interview_questions = data
-        })
+            item.motion = translatedData;
+          });
+          element.interview_questions = data;
+        });
         Object.assign(interviewRecord, response.data);
       })
       .catch((error) => {
         console.log(error);
       });
   };
-  const updateProfile = async (
-    name
-  ) => {
+  const updateProfile = async (name) => {
     return new Promise(async (resolve, reject) => {
       const json = JSON.stringify({
         name,
@@ -141,7 +158,7 @@ export const useUserStore = defineStore("user", () => {
         .then((response) => {
           const resultStore = useResultStore();
           resultStore.clear();
-          console.log(response)
+          console.log(response);
           resolve(true);
         })
         .catch((error) => {
@@ -171,7 +188,6 @@ export const useUserStore = defineStore("user", () => {
             break;
           }
           reject(false);
-
         });
     });
   };
@@ -223,6 +239,6 @@ export const useUserStore = defineStore("user", () => {
     restPassword,
     updateProfile,
     getInterviewRecord,
-    interviewRecord
+    interviewRecord,
   };
 });
