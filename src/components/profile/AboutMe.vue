@@ -25,15 +25,15 @@
             <div class="d-flex flex-row text-h6 ma-4">
                 <div class="ma-2">信箱</div>
                 <v-text-field class="mx-8" density="compact" v-model="changeMail" variant="outlined"
-                    readonly></v-text-field>
+                    ></v-text-field>
             </div>
             <div class="d-flex flex-row text-h6 ma-4">
                 <div class="ma-2">性別</div>
-                <v-text-field readonly class="mx-8" density="compact" v-model="changeSex" variant="outlined"></v-text-field>
+                <v-select class="mx-8" density="compact" v-model="sex" :items="sexItem" item-title="title" variant="outlined"></v-select>
             </div>
             <div class="d-flex flex-row text-h6 ma-4">
                 <div class="ma-2">生日</div>
-                <v-text-field readonly class="mx-8" density="compact" v-model="changeBirth"
+                <v-text-field class="mx-8" type="date" density="compact" v-model="changeBirth"
                     variant="outlined"></v-text-field>
             </div>
             <div class="d-flex flex-row justify-end ">
@@ -121,8 +121,23 @@ const password = ref(null)
 const confirmPassword = ref(null)
 const showOldPassword = ref(false)
 const name = ref(userStore.user?.name)
+const sex = ref(userStore.user?.sex)
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
+const sexItem=[
+    {
+        title:'男',
+        value:'M'
+    },
+    {
+        title:'女',
+        value:'F'
+    },
+    {
+        title:'其他',
+        value:null
+    }
+];
 const rules = {
     required: value => !!value || '欄位必填',
     password: value => {
@@ -151,17 +166,17 @@ const closeDialog = () => {
 const openUpdateProfile = async () => {
     await userStore.updateProfile(name.value)
 }
-const changeSex = computed(() => {
-    return userStore.user?.sex == 'F' ? '女' : userStore.user?.sex == 'M' ? '男' : '其他'
-})
-const changeName = computed(() => {
-    return userStore.user?.name ? userStore.user?.name : '無提供資料'
-})
+// const changeSex = computed(() => {
+//     return userStore.user?.sex
+// })
+// const changeName = computed(() => {
+//     return userStore.user?.name ? userStore.user?.name : '無提供資料'
+// })
 const changeMail = computed(() => {
     return userStore.user?.email ? userStore.user?.email : '無提供資料'
 })
 const changeBirth = computed(() => {
-    return userStore.user?.birthday ? userStore.user?.birthday : '無提供資料'
+    return userStore.user?.birthday
 })
 const form = ref(false)
 
