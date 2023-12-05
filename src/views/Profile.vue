@@ -21,9 +21,9 @@
                     <v-window-item value="基本資料">
                         <About />
                     </v-window-item>
-                    <v-window-item value="我的履歷">
+                    <!-- <v-window-item value="我的履歷">
                         <Resume />
-                    </v-window-item>
+                    </v-window-item> -->
                     <v-window-item value="面試紀錄">
                         <InterviewRecords />
                     </v-window-item>
@@ -54,10 +54,10 @@ const menuItems = [
         menuName: "基本資料",
         menuIcon: "mdi-information-outline",
     },
-    {
-        menuName: "我的履歷",
-        menuIcon: "mdi-file-outline"
-    },
+    // {
+    //     menuName: "我的履歷",
+    //     menuIcon: "mdi-file-outline"
+    // },
     {
         menuName: "面試紀錄",
         menuIcon: "mdi-monitor-account"
