@@ -25,30 +25,31 @@
                             </v-list-item-title>
                         </v-list-item>
 
-                        <v-list-item @click.stop="deleteDiscussion = !deleteDiscussion" />
+                        <DiscussionDialog :user="{ name: '劉賊賊', id: 1 }" :discussion="discussion" />
+
+                        <v-list-item @click.stop="deleteDiscussion = !deleteDiscussion">
+                            <v-dialog v-model="deleteDiscussion" width="20%" persistent>
+                                <template v-slot:activator="{ props }">
+                                    <v-list-item-title>
+                                        <div class="text-body-1" :="props">刪除</div>
+                                    </v-list-item-title>
+                                </template>
+
+                                <v-card>
+                                    <v-card-text>
+                                        是否確定刪除文章
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+
+                                        <v-btn color="primary" @click="deleteDiscussion = false">取消</v-btn>
+                                        <v-btn color="primary" :loading="loading"
+                                            @click.stop="onDeleteDiscussion(discussion.id)">刪除</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                        </v-list-item>
                     </v-list>
-                    <DiscussionDialog :user="{ name: '劉賊賊', id: 1 }" :discussion="discussion" />
-
-                    <v-dialog v-model="deleteDiscussion" width="20%" persistent>
-                        <template v-slot:activator="{ props }">
-                            <v-list-item-title>
-                                <div class="text-body-1" :="props">刪除</div>
-                            </v-list-item-title>
-                        </template>
-
-                        <v-card>
-                            <v-card-text>
-                                是否確定刪除文章
-                            </v-card-text>
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-
-                                <v-btn color="primary" @click="deleteDiscussion = false">取消</v-btn>
-                                <v-btn color="primary" :loading="loading"
-                                    @click.stop="onDeleteDiscussion(discussion.id)">刪除</v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-dialog>
                 </v-menu>
 
             </v-sheet>
